@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#00609C" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="TheLifeCo" />
+  <meta name="description" content="Your personalized wellness portal at TheLifeCo St. Lucia" />
+  <title>TheLifeCo · Hasan Akkaya</title>
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --blue: #00609C;
+      --blue-dark: #004F82;
+      --blue-light: #E8F4FC;
+      --teal: #00BED6;
+      --teal-light: #E0F7FA;
+      --orange: #F6A358;
+
+      --bg: #FAF9F6;
+      --surface: #FFFFFF;
+      --surface-2: #F5F4F1;
+      --border: #E8E6E1;
+      --border-light: #F0EEE9;
+
+      --text: #1A1A2E;
+      --text-2: #4A5568;
+      --text-3: #718096;
+      --text-4: #A0AEC0;
+
+      --pill-group: #E8E8E8;
+      --pill-group-text: #4A4A4A;
+      --pill-food: #D4EDDA;
+      --pill-food-text: #1E5631;
+      --pill-clinic: #FFF3CD;
+      --pill-clinic-text: #856404;
+      --pill-extra: #F8D7DA;
+      --pill-extra-text: #721C24;
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+
+      --nav-height: 68px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #app {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100dvh;
+      position: relative;
+      background: var(--bg);
+    }
+
+    /* === BOTTOM NAV === */
+    #bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      height: calc(var(--nav-height) + var(--safe-bottom));
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      padding-top: 8px;
+      padding-bottom: var(--safe-bottom);
+      z-index: 100;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-4);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      transition: color 0.2s ease;
+      min-height: 44px;
+    }
+    .nav-item.active { color: var(--blue); }
+    .nav-item svg { width: 22px; height: 22px; transition: transform 0.2s ease; }
+    .nav-item.active svg { transform: scale(1.08); }
+    .nav-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--blue); opacity: 0; transition: opacity 0.2s ease; }
+    .nav-item.active .nav-dot { opacity: 1; }
+
+    /* === TABS === */
+    .tab-panel { display: none; padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 16px); min-height: 100dvh; animation: fadeIn 0.25s ease; }
+    .tab-panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* === PAGE HEADER === */
+    .page-header {
+      background: linear-gradient(135deg, #00609C 0%, #004F82 100%);
+      color: white;
+      padding: 52px 20px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+    }
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -20px;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      background: rgba(0,190,214,0.12);
+    }
+    .header-greeting {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 26px;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 4px;
+      position: relative;
+      z-index: 1;
+    }
+    .header-date { font-size: 13px; font-weight: 400; opacity: 0.8; position: relative; z-index: 1; margin-bottom: 18px; }
+    .program-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 100px;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      position: relative;
+      z-index: 1;
+    }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #00BED6; display: inline-block; }
+
+    /* === PROGRESS === */
+    .progress-section {
+      background: var(--surface);
+      margin: 16px 16px 0;
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+    }
+    .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .progress-label { font-size: 12px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; }
+    .progress-value { font-size: 13px; font-weight: 600; color: var(--blue); }
+    .progress-bar-track { height: 6px; background: var(--surface-2); border-radius: 100px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, #00BED6, #00609C); transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+    .progress-days { display: flex; justify-content: space-between; margin-top: 10px; }
+    .progress-day { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; font-weight: 500; color: var(--text-4); }
+    .progress-day.active { color: var(--blue); font-weight: 700; }
+    .progress-day-dot { width: 20px; height: 20px; border-radius: 50%; background: var(--surface-2); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; }
+    .progress-day.completed .progress-day-dot { background: #00BED6; color: white; }
+    .progress-day.active .progress-day-dot { background: #00609C; color: white; box-shadow: 0 0 0 3px rgba(0,96,156,0.2); }
+
+    /* === SECTION TITLE === */
+    .section-title { font-size: 13px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; padding: 20px 20px 8px; }
+
+    /* === TIMELINE === */
+    .timeline { padding: 0 16px; }
+    .timeline-item { display: flex; gap: 16px; position: relative; padding-bottom: 4px; }
+    .timeline-item:not(:last-child)::after { content: ''; position: absolute; left: 39px; top: 36px; bottom: -4px; width: 1px; background: linear-gradient(to bottom, var(--border) 0%, var(--border-light) 60%, transparent 100%); }
+    .timeline-left { display: flex; flex-direction: column; align-items: center; width: 48px; flex-shrink: 0; }
+    .timeline-time { font-size: 11px; font-weight: 700; color: var(--text-3); white-space: nowrap; margin-top: 14px; letter-spacing: 0.02em; }
+    .timeline-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--border); margin-top: 4px; flex-shrink: 0; }
+    .timeline-dot.group { background: #9E9E9E; }
+    .timeline-dot.food { background: #4CAF50; }
+    .timeline-dot.clinic { background: #FF9800; }
+    .timeline-dot.extra { background: #E91E63; }
+    .timeline-item.now .timeline-dot { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { box-shadow: 0 0 0 4px rgba(0,96,156,0.15); } 50% { box-shadow: 0 0 0 8px rgba(0,96,156,0.05); } }
+
+    .timeline-card {
+      flex: 1;
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
+    }
+    .timeline-card:active { transform: scale(0.98); box-shadow: var(--shadow-sm); }
+    .timeline-card.now { border-color: #00609C; background: linear-gradient(135deg, #F0F7FF, #FFFFFF); box-shadow: 0 2px 16px rgba(0,96,156,0.18), 0 0 0 2px rgba(0,96,156,0.08); animation: cardGlow 3s ease-in-out infinite; }
+    @keyframes cardGlow { 0%,100% { box-shadow: 0 2px 16px rgba(0,96,156,0.18), 0 0 0 2px rgba(0,96,156,0.08); } 50% { box-shadow: 0 4px 24px rgba(0,96,156,0.28), 0 0 0 3px rgba(0,96,156,0.14); } }
+    .timeline-card.expanded { box-shadow: var(--shadow-md); }
+    .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .card-name { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.3; flex: 1; }
+    .type-pill { display: inline-flex; align-items: center; border-radius: 100px; padding: 3px 8px; font-size: 10px; font-weight: 700; letter-spacing: 0.03em; white-space: nowrap; flex-shrink: 0; }
+    .type-pill.group { background: var(--pill-group); color: var(--pill-group-text); }
+    .type-pill.food { background: var(--pill-food); color: var(--pill-food-text); }
+    .type-pill.clinic { background: var(--pill-clinic); color: var(--pill-clinic-text); }
+    .type-pill.extra { background: var(--pill-extra); color: var(--pill-extra-text); }
+    .now-label { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: #00609C; margin-top: 4px; }
+    .now-dot { width: 6px; height: 6px; border-radius: 50%; background: #00609C; animation: pulsedot 2s infinite; }
+    @keyframes pulsedot { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .card-body { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-light); font-size: 13px; color: var(--text-2); line-height: 1.55; display: none; }
+    .timeline-card.expanded .card-body { display: block; }
+    .card-chevron { position: absolute; right: 12px; bottom: 10px; color: var(--text-4); transition: transform 0.2s ease; }
+    .timeline-card.expanded .card-chevron { transform: rotate(180deg); }
+    .ask-btn { display: inline-flex; align-items: center; gap: 4px; margin-top: 10px; padding: 6px 14px; background: #00609C; color: white; border: none; border-radius: 100px; font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; text-decoration: none; transition: background 0.2s ease; }
+    .ask-btn:hover { background: #004F82; }
+
+    /* === NUTRITION === */
+    .nutrition-card { margin: 8px 16px 0; background: var(--surface); border-radius: var(--radius-lg); padding: 16px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); }
+    .nutrition-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .nutrition-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border-light); }
+    .nutrition-item:last-child { border-bottom: none; }
+    .nutrition-time { font-size: 11px; font-weight: 700; color: var(--text-3); width: 36px; flex-shrink: 0; }
+    .nutrition-name { font-size: 13px; color: var(--text-2); flex: 1; }
+    .nutrition-check { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 100px; background: var(--pill-food); color: var(--pill-food-text); }
+
+    /* === SCHEDULE TAB === */
+    .date-picker { position: sticky; top: 0; z-index: 10; background: var(--bg); padding: 16px 16px 8px; border-bottom: 1px solid var(--border); }
+    .date-scroll { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 4px; }
+    .date-scroll::-webkit-scrollbar { display: none; }
+    .date-chip {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      padding: 10px 14px; border-radius: var(--radius-md); cursor: pointer;
+      border: 1.5px solid var(--border); background: var(--surface);
+      min-width: 56px; transition: all 0.2s ease; flex-shrink: 0; font-family: inherit;
+    }
+    .date-chip.active { background: #00609C; border-color: #00609C; color: white; box-shadow: 0 4px 12px rgba(0,96,156,0.25); }
+    .date-chip.today:not(.active) { border-color: #00609C; color: #00609C; }
+    .date-chip-day { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7; }
+    .date-chip.active .date-chip-day { opacity: 1; }
+    .date-chip-num { font-size: 18px; font-weight: 700; line-height: 1; }
+    .date-chip-month { font-size: 9px; font-weight: 500; opacity: 0.7; }
+    .day-stats { display: flex; gap: 8px; padding: 12px 16px 0; }
+    .stat-chip { flex: 1; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 8px; text-align: center; }
+    .stat-num { font-size: 18px; font-weight: 700; color: var(--text); line-height: 1; }
+    .stat-label { font-size: 10px; font-weight: 500; color: var(--text-3); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .legend { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 16px; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-3); font-weight: 500; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    /* === EXPLORE === */
+    .explore-header { background: linear-gradient(135deg, #00609C 0%, #004F82 100%); color: white; padding: 52px 20px 24px; }
+    .explore-title { font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+    .explore-subtitle { font-size: 13px; opacity: 0.8; }
+    .search-bar { margin: 16px; position: relative; }
+    .search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--text-4); pointer-events: none; }
+    .search-input { width: 100%; padding: 12px 16px 12px 42px; border: 1.5px solid var(--border); border-radius: var(--radius-md); font-family: inherit; font-size: 14px; background: var(--surface); color: var(--text); outline: none; transition: border-color 0.2s ease; }
+    .search-input:focus { border-color: #00609C; }
+    .category-section { margin-bottom: 4px; }
+    .category-header { padding: 12px 20px 8px; font-size: 13px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+    .category-icon { width: 28px; height: 28px; border-radius: var(--radius-sm); background: #E8F4FC; display: flex; align-items: center; justify-content: center; color: #00609C; }
+    .therapy-cards { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
+    .therapy-card { background: var(--surface); border-radius: var(--radius-md); padding: 14px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); display: flex; align-items: flex-start; gap: 12px; }
+    .therapy-info { flex: 1; }
+    .therapy-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .therapy-desc { font-size: 12px; color: var(--text-3); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .therapy-card.expanded .therapy-desc { display: block; -webkit-line-clamp: unset; overflow: visible; }
+    .therapy-card { cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+    .therapy-card:active { transform: scale(0.98); }
+    .badge-popular { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 100px; font-size: 9px; font-weight: 700; letter-spacing: 0.03em; background: #FFF3E0; color: #E65100; }
+    .badge-recommended { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 100px; font-size: 9px; font-weight: 700; letter-spacing: 0.03em; background: #E8F5E9; color: #2E7D32; }
+    .request-btn { display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; background: #00609C; color: white; border: none; border-radius: var(--radius-sm); font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: none; transition: background 0.2s ease, transform 0.15s ease; flex-shrink: 0; }
+    .request-btn:active { transform: scale(0.95); background: #004F82; }
+
+    /* === INFO === */
+    .info-header { background: linear-gradient(135deg, #00609C 0%, #004F82 100%); color: white; padding: 52px 20px 24px; }
+    .info-title { font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+    .info-subtitle { font-size: 13px; opacity: 0.8; }
+    .accordion { padding: 8px 16px; display: flex; flex-direction: column; gap: 8px; }
+    .accordion-item { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border-light); overflow: hidden; box-shadow: var(--shadow-sm); }
+    .accordion-trigger { width: 100%; display: flex; align-items: center; gap: 12px; padding: 16px; background: none; border: none; font-family: inherit; cursor: pointer; text-align: left; min-height: 56px; }
+    .acc-icon { width: 32px; height: 32px; border-radius: var(--radius-sm); background: #E8F4FC; display: flex; align-items: center; justify-content: center; color: #00609C; flex-shrink: 0; }
+    .acc-label { flex: 1; font-size: 14px; font-weight: 600; color: var(--text); }
+    .acc-chevron { color: var(--text-4); transition: transform 0.25s ease; flex-shrink: 0; }
+    .accordion-item.open .acc-chevron { transform: rotate(180deg); }
+    .accordion-content { display: none; padding: 0 16px 16px; font-size: 13px; color: var(--text-2); line-height: 1.65; }
+    .accordion-item.open .accordion-content { display: block; animation: slideDown 0.2s ease; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    .info-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .info-list li { display: flex; align-items: flex-start; gap: 8px; }
+    .info-bullet { color: #00BED6; font-weight: 700; flex-shrink: 0; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
+    .contact-card { display: flex; flex-direction: column; gap: 4px; background: #E8F4FC; border-radius: var(--radius-sm); padding: 10px 12px; text-decoration: none; }
+    .contact-label { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; }
+    .contact-value { font-size: 13px; font-weight: 600; color: #00609C; }
+    .info-highlight { background: #FFF3CD; color: #856404; padding: 8px 12px; border-radius: 8px; font-size: 12px; }
+    .faq-q { font-weight: 600; color: var(--text); margin-bottom: 3px; margin-top: 10px; }
+    .faq-q:first-child { margin-top: 0; }
+
+    /* === SCHEDULE HEADER === */
+    .schedule-page-header { background: linear-gradient(135deg, #00609C 0%, #004F82 100%); color: white; padding: 52px 20px 20px; }
+    .schedule-title { font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+    .schedule-subtitle { font-size: 13px; opacity: 0.8; }
+
+    /* === ONBOARDING BANNER === */
+    .onboarding-banner { margin: 12px 16px 4px; background: linear-gradient(135deg, #E8F4FC, #F0FBFD); border: 1px solid #B3D9EF; border-radius: var(--radius-md); padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; }
+    .onboarding-banner-icon { font-size: 20px; line-height: 1; flex-shrink: 0; }
+    .onboarding-banner-body { flex: 1; }
+    .onboarding-banner-title { font-size: 13px; font-weight: 700; color: #00609C; margin-bottom: 2px; }
+    .onboarding-banner-desc { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+
+    /* === EMPTY STATE === */
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-3); }
+    .empty-state p { font-size: 14px; margin-top: 12px; }
+
+    /* === HELP BUTTON === */
+    #help-btn {
+      position: fixed;
+      bottom: calc(var(--nav-height) + var(--safe-bottom) + 16px);
+      right: 16px;
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: #25D366;
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(37,211,102,0.4);
+      z-index: 90;
+      text-decoration: none;
+      transition: transform 0.2s ease;
+    }
+    #help-btn:active { transform: scale(0.92); }
+    #help-btn.bounce { animation: waBounce 0.8s cubic-bezier(0.36,0.07,0.19,0.97) both; }
+    @keyframes waBounce { 0%,100%{transform:translateY(0);} 15%{transform:translateY(-10px);} 30%{transform:translateY(0);} 45%{transform:translateY(-6px);} 60%{transform:translateY(0);} 75%{transform:translateY(-3px);} }
+    .today-updated { text-align: center; font-size: 11px; color: var(--text-4); padding: 12px 20px 4px; }
+
+    .hidden { display: none !important; }
+
+    @media (min-width: 480px) {
+      #bottom-nav { left: 50%; transform: translateX(-50%); }
+      #help-btn { right: calc(50vw - 240px + 16px); }
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- TODAY TAB -->
+  <div id="tab-today" class="tab-panel active">
+    <div class="page-header">
+      <div class="header-greeting" id="greeting"></div>
+      <div class="header-date" id="header-date"></div>
+      <div class="program-badge">
+        <span class="badge-dot"></span>
+        <span id="program-badge-text"></span>
+      </div>
+    </div>
+    <div class="progress-section">
+      <div class="progress-header">
+        <span class="progress-label">Stay Progress</span>
+        <span class="progress-value" id="progress-pct"></span>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+      </div>
+      <div class="progress-days" id="progress-days"></div>
+    </div>
+    <div class="section-title" id="today-section-title"></div>
+    <div class="timeline" id="today-timeline"></div>
+    <div class="section-title">Nutrition Today</div>
+    <div class="nutrition-card" id="nutrition-card"></div>
+  </div>
+
+  <!-- SCHEDULE TAB -->
+  <div id="tab-schedule" class="tab-panel">
+    <div class="schedule-page-header">
+      <div class="schedule-title">Full Schedule</div>
+      <div class="schedule-subtitle">March 9–15, 2026 · St. Lucia</div>
+    </div>
+    <div class="date-picker">
+      <div class="date-scroll" id="date-scroll"></div>
+    </div>
+    <div class="day-stats" id="day-stats"></div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#9E9E9E"></div>Group</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#4CAF50"></div>Nutrition</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#FF9800"></div>Therapy</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#E91E63"></div>Treatment</div>
+    </div>
+    <div class="timeline" id="schedule-timeline" style="padding-top:4px"></div>
+  </div>
+
+  <!-- EXPLORE TAB -->
+  <div id="tab-explore" class="tab-panel">
+    <div class="explore-header">
+      <div class="explore-title">Explore Treatments</div>
+      <div class="explore-subtitle">Enhance your wellness journey with premium add-ons</div>
+    </div>
+    <div class="search-bar">
+      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="search" class="search-input" id="search-input" placeholder="Search treatments..." aria-label="Search treatments" />
+    </div>
+    <div id="explore-content"></div>
+  </div>
+
+  <!-- INFO TAB -->
+  <div id="tab-info" class="tab-panel">
+    <div class="info-header">
+      <div class="info-title">Your Guide</div>
+      <div class="info-subtitle">Everything you need to know about your stay</div>
+    </div>
+    <div class="accordion" id="info-accordion"></div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<nav id="bottom-nav" role="navigation" aria-label="Main navigation">
+  <button class="nav-item active" data-tab="today" aria-label="Today" aria-selected="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+    <div class="nav-dot"></div>
+    Today
+  </button>
+  <button class="nav-item" data-tab="schedule" aria-label="Schedule" aria-selected="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+    </svg>
+    <div class="nav-dot"></div>
+    Schedule
+  </button>
+  <button class="nav-item" data-tab="explore" aria-label="Explore" aria-selected="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+    </svg>
+    <div class="nav-dot"></div>
+    Explore
+  </button>
+  <button class="nav-item" data-tab="info" aria-label="Info" aria-selected="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+    </svg>
+    <div class="nav-dot"></div>
+    Info
+  </button>
+</nav>
+
+<!-- FLOATING WHATSAPP BUTTON -->
+<a id="help-btn" href="https://wa.me/17582861869?text=Hi%2C%20I%20need%20help%20please." aria-label="Need help? WhatsApp us" target="_blank" rel="noopener noreferrer">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+  </svg>
+</a>
+
+<script>
+'use strict';
+
+// =============================================================
+// GUEST DATA
+// =============================================================
+var GUEST = {
+  firstName: 'Hasan',
+  program: 'Green Salad Program',
+  checkIn: '2026-03-09',
+  totalDays: 7,
+  waBase: 'https://wa.me/17582861869'
+};
+
+// Demo: hardcoded today for meaningful schedule data
+var TODAY_DATE = new Date('2026-03-13T00:00:00');
+
+var TYPE_LABELS = { group: 'Group', food: 'Nutrition', clinic: 'Therapy', extra: 'Treatment' };
+
+var DESCRIPTIONS = {
+  'Scaneca': 'A comprehensive body composition analysis using advanced bioimpedance technology. Measures fat mass, muscle mass, hydration levels, and metabolic rate to personalize your wellness journey.',
+  'Live Blood Analysis w/Chamu': 'A microscopic examination of a single drop of live blood to assess your cellular health, hydration, and nutritional status. Results guide personalized supplement recommendations.',
+  'Live Blood Analysis': 'A microscopic examination of a single drop of live blood to assess your cellular health, hydration, and nutritional status. Results guide personalized supplement recommendations.',
+  'Medical Consultation': 'A one-on-one session with our clinic physician to review your health history, current condition, and personalized program goals.',
+  'Massage': 'A therapeutic massage tailored to your needs, helping to release tension, improve circulation, and support your detox process.',
+  'Bio-Hacking: EMS Magnetic Chair': 'High-intensity focused electromagnetic (HIFEM) technology stimulates deep muscle contractions — equivalent to thousands of sit-ups — without any effort.',
+  'Bio-Hacking: HU-GO PEMF': 'Pulsed Electromagnetic Field therapy uses low-frequency magnetic fields to stimulate cellular repair, reduce inflammation, and enhance mitochondrial function.',
+  'Mindful Living w/Selen': 'Led by wellness coach Selen, this session guides you through mindfulness exercises, body scan meditation, and journaling prompts to build lasting habits.',
+  'Mindful Living w/Heba': 'Led by wellness coach Heba, this workshop explores the connection between thoughts, emotions, and physical well-being through mindful living practices.',
+  'Morning Walk': 'A guided walk through the beautiful St. Lucia landscape to start your day with gentle movement, fresh air, and connection with nature.',
+  'Immune Boost': 'A potent blend of vitamin C, zinc, and herbal adaptogens to strengthen your immune system during the detox process.',
+  'Dynamic Yoga': 'A flowing, energizing yoga practice that combines breath with movement to build strength, flexibility, and mental clarity.',
+  'Detox Salad + 2 Digestive Enzymes': 'A carefully crafted plant-based salad rich in phytonutrients, fiber, and antioxidants — paired with digestive enzymes to maximize nutrient absorption.',
+  'Mandala Creation': 'A meditative art therapy session using the ancient mandala form as a tool for introspection, creativity, and mindful focus.',
+  'Pressotherapy Lymphatic Drainage': 'A mechanical lymphatic drainage treatment using sequential air compression to reduce water retention, boost circulation, and accelerate detoxification.',
+  'Alkalize + Wheatgrass + 2 Spirulina, Kelp & Nettle': 'An alkalizing protocol combining wheatgrass juice with spirulina, kelp, and nettle — powerful superfoods that neutralize acidity and flood your cells with micronutrients.',
+  'Functional Training': 'A circuit-based group fitness session focused on real-world movement patterns: strength, balance, and coordination.',
+  'Gentle Yoga + Alkalize': 'An evening restorative yoga session followed by an alkalizing drink to calm the nervous system and prepare the body for deep sleep.',
+  'Meditation / Breathwork': 'A guided group session combining breath-based techniques (pranayama) with silent meditation to reduce cortisol and promote deep rest.',
+  'Pilates': 'A core-focused group session using Pilates principles to strengthen deep stabilizing muscles, improve posture, and enhance body awareness.',
+  'Crafts Session': 'A creative and therapeutic art session to engage your right brain, relieve stress, and foster community connection.',
+  'Aquagym': 'Low-impact water aerobics in the pool that builds cardiovascular fitness while being gentle on your joints.',
+  'Wellness Therapies, Biohackings & IV Treatments Talk': 'An educational session with our clinic team explaining the range of optional therapies available, their benefits, and how to incorporate them into your program.',
+  'Partner Yoga + Alkalize': 'A partner yoga session using shared poses to deepen stretches and build connection — followed by your evening alkalizing drink.',
+  'Face Yoga': 'A group session of facial muscle exercises to improve tone, circulation, and the natural glow of your skin.',
+  'Art of Coping': 'A facilitated group workshop exploring healthy coping mechanisms, emotional regulation tools, and resilience strategies.',
+  'Gentle Yoga': 'A slow, restorative yoga class using supported poses and breathing to gently release tension and calm the mind.',
+  'Alkalize': 'Your daily alkalizing drink — a blend of greens and minerals designed to maintain an optimal pH balance in the body.',
+  'Detox Salad + 2 Digestive Enzymes & 2 Probiotics': 'Your evening plant-based meal with digestive enzymes and probiotics to support gut flora restoration and overnight cellular repair.',
+  'Lunch': 'A nourishing plant-based meal prepared by our kitchen team, tailored to your Green Salad Program caloric targets.',
+  'Dinner': 'A satisfying plant-based dinner designed to complement your daily supplement protocol and support overnight detoxification.',
+};
+
+var SCHEDULE = {
+  '2026-03-09': [
+    { time: '13:30', name: 'Scaneca', type: 'clinic' },
+    { time: '14:30', name: 'Live Blood Analysis w/Chamu', type: 'clinic' },
+    { time: '18:00', name: 'Dinner', type: 'food' }
+  ],
+  '2026-03-10': [
+    { time: '12:00', name: 'Lunch', type: 'food' },
+    { time: '13:00', name: 'Live Blood Analysis', type: 'clinic' },
+    { time: '13:30', name: 'Medical Consultation', type: 'clinic' },
+    { time: '14:00', name: 'Massage', type: 'extra' },
+    { time: '16:00', name: 'Bio-Hacking: EMS Magnetic Chair', type: 'clinic' },
+    { time: '18:00', name: 'Dinner', type: 'food' }
+  ],
+  '2026-03-11': [
+    { time: '12:00', name: 'Lunch', type: 'food' },
+    { time: '14:00', name: 'Bio-Hacking: HU-GO PEMF', type: 'clinic' },
+    { time: '16:00', name: 'Mindful Living w/Selen', type: 'group' },
+    { time: '18:00', name: 'Dinner', type: 'food' }
+  ],
+  '2026-03-12': [
+    { time: '07:00', name: 'Morning Walk', type: 'group' },
+    { time: '07:30', name: 'Morning Walk', type: 'group' },
+    { time: '08:00', name: 'Immune Boost', type: 'food' },
+    { time: '09:30', name: 'Dynamic Yoga', type: 'group' },
+    { time: '12:30', name: 'Detox Salad + 2 Digestive Enzymes', type: 'food' },
+    { time: '14:00', name: 'Mandala Creation', type: 'group' },
+    { time: '14:30', name: 'Pressotherapy Lymphatic Drainage', type: 'clinic' },
+    { time: '15:30', name: 'Alkalize + Wheatgrass + 2 Spirulina, Kelp & Nettle', type: 'food' },
+    { time: '16:00', name: 'Functional Training', type: 'group' },
+    { time: '18:30', name: 'Detox Salad + 2 Digestive Enzymes & 2 Probiotics', type: 'food' },
+    { time: '20:00', name: 'Gentle Yoga + Alkalize', type: 'group' },
+    { time: '21:00', name: 'Meditation / Breathwork', type: 'group' }
+  ],
+  '2026-03-13': [
+    { time: '07:00', name: 'Morning Walk', type: 'group' },
+    { time: '07:30', name: 'Morning Walk', type: 'group' },
+    { time: '08:00', name: 'Immune Boost', type: 'food' },
+    { time: '09:30', name: 'Pilates', type: 'group' },
+    { time: '12:30', name: 'Detox Salad + 2 Digestive Enzymes', type: 'food' },
+    { time: '14:00', name: 'Crafts Session', type: 'group' },
+    { time: '15:30', name: 'Alkalize + Wheatgrass + 2 Spirulina, Kelp & Nettle', type: 'food' },
+    { time: '16:00', name: 'Aquagym', type: 'group' },
+    { time: '17:00', name: 'Wellness Therapies, Biohackings & IV Treatments Talk', type: 'group' },
+    { time: '18:30', name: 'Detox Salad + 2 Digestive Enzymes & 2 Probiotics', type: 'food' },
+    { time: '20:00', name: 'Partner Yoga + Alkalize', type: 'group' },
+    { time: '21:00', name: 'Meditation / Breathwork', type: 'group' }
+  ],
+  '2026-03-14': [
+    { time: '07:00', name: 'Morning Walk', type: 'group' },
+    { time: '07:30', name: 'Morning Walk', type: 'group' },
+    { time: '08:00', name: 'Immune Boost', type: 'food' },
+    { time: '09:30', name: 'Dynamic Yoga', type: 'group' },
+    { time: '12:30', name: 'Detox Salad + 2 Digestive Enzymes', type: 'food' },
+    { time: '14:00', name: 'Face Yoga', type: 'group' },
+    { time: '15:30', name: 'Alkalize + Wheatgrass + 2 Spirulina, Kelp & Nettle', type: 'food' },
+    { time: '17:00', name: 'Art of Coping', type: 'group' },
+    { time: '18:30', name: 'Detox Salad + 2 Digestive Enzymes & 2 Probiotics', type: 'food' },
+    { time: '20:00', name: 'Alkalize', type: 'food' }
+  ],
+  '2026-03-15': [
+    { time: '07:00', name: 'Morning Walk', type: 'group' },
+    { time: '07:30', name: 'Morning Walk', type: 'group' },
+    { time: '08:00', name: 'Immune Boost', type: 'food' },
+    { time: '09:30', name: 'Pilates', type: 'group' },
+    { time: '12:30', name: 'Detox Salad + 2 Digestive Enzymes', type: 'food' },
+    { time: '14:00', name: 'Gentle Yoga', type: 'group' },
+    { time: '15:30', name: 'Alkalize + Wheatgrass + 2 Spirulina, Kelp & Nettle', type: 'food' },
+    { time: '17:00', name: 'Mindful Living w/Heba', type: 'group' },
+    { time: '18:30', name: 'Detox Salad + 2 Digestive Enzymes & 2 Probiotics', type: 'food' },
+    { time: '20:00', name: 'Alkalize', type: 'food' }
+  ]
+};
+
+var EXPLORE_CATEGORIES = [
+  {
+    id: 'biohacking',
+    title: 'Bio-Hacking Technologies',
+    therapies: [
+      { name: 'PEMF Therapy (HU-GO)', desc: 'Pulsed Electromagnetic Field therapy uses electromagnetic waves to stimulate cellular repair, reduce inflammation, and accelerate healing. Enhances cellular performance at the mitochondrial level, improving energy production and tissue regeneration. Sessions are 30 minutes.', popular: true },
+      { name: 'Hyperbaric Chamber', desc: 'Breathing pure oxygen at elevated pressure to accelerate healing, reduce inflammation, and boost cognitive clarity. Enhances stem cell production, supports wound healing, and delivers oxygen directly to tissues at a cellular level — powerfully anti-aging.' },
+      { name: 'EMS Magnetic Chair', desc: 'HIFEM (High-Intensity Focused Electromagnetic) technology delivers 20,000 supramaximal muscle contractions in a single 30-minute session. Strengthens pelvic floor muscles and core without any physical effort or discomfort. Clinically proven for core rehabilitation.' },
+      { name: 'Carol Bike', desc: 'AI-powered exercise bike using the REHIT (Reduced Exertion High-Intensity Training) protocol — just 5 minutes delivering the equivalent of 45 minutes of conventional cardio. Scientifically proven to achieve maximum glycogen depletion and cardiovascular conditioning with minimal time investment.', popular: true },
+      { name: 'Cold Plunge', desc: 'Cold water immersion activates brown adipose tissue, boosts dopamine levels by up to 250%, and triggers a powerful anti-inflammatory response across the entire body. Builds mental resilience, improves sleep quality, and creates a lasting mood-elevating effect that can persist for hours.', popular: true },
+      { name: 'RedLight Bed', desc: 'Full-body red and near-infrared light therapy stimulates collagen production, reduces inflammation, accelerates muscle recovery, and supports mitochondrial function throughout the body. Clinically shown to improve skin tone, reduce joint pain, and enhance cellular energy production.' },
+      { name: 'REAX Board', desc: 'A reactive balance training system that generates unpredictable surface movements to engage proprioceptive pathways. Improves balance, coordination, and functional movement patterns through neurological challenge — highly effective for injury prevention and athletic performance.' },
+      { name: 'Braintap', desc: 'Guided audio sessions using binaural beats, isochronic tones, and light frequency therapy delivered through a specialized headset. Reduces chronic stress, improves sleep quality, and enhances mental clarity by guiding brainwaves into deeply restorative states.' },
+      { name: 'Pulsetto', desc: 'Vagus nerve stimulation device that applies gentle electrical pulses to the neck to directly activate the parasympathetic nervous system. Reduces anxiety, lowers heart rate variability stress markers, and promotes the "rest and digest" state essential for deep healing and detoxification.' },
+      { name: 'Neurofeedback Wall', desc: 'Interactive neurofeedback sessions using an immersive visual display to provide real-time feedback on brainwave activity. Trains specific brainwave patterns to improve sustained focus, reduce anxiety, enhance memory consolidation, and optimize cognitive performance over time.' }
+    ]
+  },
+  {
+    id: 'iv',
+    title: 'IV Infusions & Protocols',
+    therapies: [
+      { name: 'NAD+ IV Infusion (500mg)', desc: 'Nicotinamide Adenine Dinucleotide is the essential coenzyme that powers cellular energy production across every cell in the body. Directly supports DNA repair, activates longevity-linked sirtuins, and has been shown to reverse measurable aspects of cellular aging. The gold standard anti-aging and energy infusion.', recommended: true },
+      { name: 'Liver Support Protocol', desc: 'A powerful combination of Glutathione (1800mg) — the body\'s master antioxidant — with Alpha Lipoic Acid and Folic Acid. Directly fuels Phase I and Phase II liver detoxification, neutralizes free radicals, supports cellular protection, and brightens skin tone. Highly recommended during any detox program.', recommended: true },
+      { name: 'Brain Protocol', desc: 'A targeted neurological support infusion combining Vitamin B1, B6, Zinc, Folic Acid, and Glutathione (1800mg). Designed to support cognitive clarity, enhance memory function, protect neurons from oxidative damage, and restore nervous system health depleted by chronic stress or inflammation.' },
+      { name: 'Anti-Stress Protocol', desc: 'High-dose Vitamin C (12.5g), B1, B6, B12, Zinc, and Folic Acid delivered intravenously to combat chronic stress at a physiological level. Replenishes adrenal nutrients depleted by prolonged stress, supports immune function, and restores the nervous system\'s capacity for resilience.' },
+      { name: 'Sugar Balance', desc: 'Alpha Lipoic Acid, Curcumin, Zinc, and Selenium working synergistically to support insulin sensitivity and blood sugar regulation. Reduces glycation damage, improves metabolic flexibility, and supports the hormonal pathways that govern energy stability and fat metabolism.' },
+      { name: 'Immune Support Protocol', desc: 'Comprehensive immune system fortification using Vitamin C (12.5g), Vitamin B1, B6, Zinc, and Selenium. Delivers direct antioxidant defense, supports natural killer cell activity, and creates a powerful anti-inflammatory environment — especially beneficial during detoxification when the immune system is actively engaged.', recommended: true },
+      { name: 'Vitamin C High-Dose (25g)', desc: 'Pharmaceutical-grade intravenous Vitamin C at therapeutic doses far exceeding what is possible orally. Provides powerful antioxidant protection, enhances immune surveillance, supports collagen synthesis throughout connective tissue, and delivers potent anti-inflammatory effects systemically.' },
+      { name: 'Curcumin + Resveratrol IV', desc: 'Curcumin (100mg) and Resveratrol (50mg) — two of the most studied anti-inflammatory and anti-aging botanical compounds — delivered directly into the bloodstream for 100% bioavailability. Activates longevity pathways, reduces systemic inflammation, and supports cardiovascular and neurological health.' },
+      { name: 'Mineral IV Infusion', desc: 'Essential electrolyte replenishment using pharmaceutical-grade Calcium, Magnesium, and Potassium. Critical during fasting or detox programs to support cardiac rhythm, prevent muscle cramping, maintain nervous system function, and sustain energy production at a cellular level.' }
+    ]
+  },
+  {
+    id: 'massage',
+    title: 'Massage & Body',
+    therapies: [
+      { name: 'Thai Massage', desc: 'Ancient healing art combining acupressure, assisted yoga-like stretching, and energy line work. Performed on a mat using hands, elbows, knees, and feet for deep tissue release. Improves flexibility, relieves chronic muscle tension, and restores energy flow through the body\'s sen lines.' },
+      { name: 'Aromatherapy Massage', desc: 'Therapeutic full-body massage using carefully selected essential plant oils absorbed through the skin and inhaled for systemic effect. Clinically shown to reduce cortisol levels by up to 30% while promoting deep relaxation, improving sleep quality, and supporting the emotional dimension of detoxification.' },
+      { name: 'Shiatsu Massage', desc: 'Japanese finger pressure technique applied along meridian lines to restore energy flow, relieve accumulated tension, and promote the body\'s natural self-healing ability. Balances the autonomic nervous system and is particularly effective for stress-related conditions and chronic fatigue.' },
+      { name: 'Chi Nei Tsang Abdominal', desc: 'Ancient Taoist abdominal massage targeting the internal organs directly. Releases emotional blockages stored in the gut, improves digestive function, stimulates lymphatic drainage in the abdomen, and detoxifies the visceral organs. Profoundly effective for those experiencing emotional dimensions of their healing journey.' },
+      { name: 'Biomeridian Massage', desc: 'Energy-based massage following bioenergetic meridian pathways to restore balance throughout the body\'s electromagnetic field. Reduces chronic pain, releases energetic blockages, and harmonizes the interplay between physical structure and subtle energy systems.' },
+      { name: 'Turkish Bath Scrub & Foam Massage', desc: 'Traditional hammam ritual featuring deep exfoliation with a kese scrub to remove dead skin cells, followed by a luxurious full-body foam massage. Deeply cleanses pores, significantly improves circulation, promotes lymphatic drainage, and leaves the skin profoundly soft and renewed.' },
+      { name: 'Thalasso Therapy', desc: 'Marine-based therapeutic treatment using the healing properties of seawater, algae wraps, and concentrated sea minerals. Remineralizes the body at a cellular level, improves circulation, reduces water retention, and supports the detoxification process through transdermal mineral absorption.' },
+      { name: 'Therapeutic Foot Reflexology', desc: 'Precision pressure applied to specific reflex points on the feet that correspond to every organ, gland, and body system. Improves circulation throughout the body, stimulates the lymphatic system, reduces pain in corresponding areas, and promotes whole-body healing from the ground up.' }
+    ]
+  },
+  {
+    id: 'beauty',
+    title: 'Beauty & Reshaping',
+    therapies: [
+      { name: 'Selenia Body Reshaping', desc: 'Advanced non-invasive body contouring using multi-frequency electromagnetic and radiofrequency technology. Targets stubborn fat deposits that resist diet and exercise, tightens and firms skin, and visibly improves body contour and silhouette. 30-minute sessions with no downtime.' },
+      { name: 'EMSculpt', desc: 'High-Intensity Focused Electromagnetic technology that simultaneously builds lean muscle mass and reduces subcutaneous fat in a single session. Clinically equivalent to performing 20,000 crunches in 30 minutes — without any physical effort or recovery time required.' },
+      { name: 'Hydrafacial', desc: 'Multi-step medical-grade skin treatment combining deep cleansing, gentle chemical exfoliation, painless extraction of impurities, intense hydration, and antioxidant protection in one session. Produces immediate, visible improvement in skin tone, texture, and luminosity suitable for all skin types.' },
+      { name: 'Pressotherapy Lymphatic Drainage', desc: 'Sequential pneumatic compression therapy using specialized garments to accelerate lymphatic flow throughout the body. Reduces water retention, eliminates accumulated toxins, improves venous circulation, and restores healthy tissue fluid balance. Ideal as a complement to any detox program.', popular: true }
+    ]
+  },
+  {
+    id: 'clinical',
+    title: 'Clinical Treatments',
+    therapies: [
+      { name: 'Blood Ozone IV Therapy', desc: 'Your blood is drawn, mixed with precisely measured medical-grade ozone, and reinfused. Enhances cellular oxygen utilization, powerfully boosts immune function, has broad anti-microbial properties, and stimulates production of antioxidant enzymes throughout the body.' },
+      { name: 'Multipass Medozone Therapy', desc: 'The most advanced form of ozone therapy — blood is drawn, ozonated, and reinfused multiple times in a single session for maximum therapeutic effect. Provides superior immune modulation, anti-inflammatory response, and regenerative stimulation compared to single-pass protocols.' },
+      { name: 'Ozone Sauna', desc: 'Full-body ozone therapy delivered through transdermal absorption in a personal steam cabinet. The combination of heat and ozone detoxifies through the skin — the body\'s largest detoxification organ — killing pathogens, stimulating circulation, and enhancing metabolic function.' },
+      { name: 'Stem Cell Therapy', desc: 'Cutting-edge regenerative medicine using mesenchymal stem cells to repair tissue damage throughout the body. Reduces systemic inflammation, stimulates local tissue repair, modulates the immune system, and has measurable effects on reversing cellular aging markers.' },
+      { name: 'Hypoxia Therapy', desc: 'Alternating cycles of low-oxygen (hypoxic) and normal-oxygen breathing conditions to trigger the physiological adaptations of altitude training. Improves cellular oxygen efficiency, boosts mitochondrial biogenesis, enhances endurance capacity, and activates longevity-associated pathways.' },
+      { name: 'Coffee Enema', desc: 'Therapeutic colon cleansing using an organic coffee solution. Stimulates bile flow from the liver and gallbladder, directly activates glutathione S-transferase production in the liver — one of the body\'s most critical detox enzymes — and supports Phase II liver detoxification pathways.' }
+    ]
+  },
+  {
+    id: 'mind',
+    title: 'Mind & Meditation',
+    therapies: [
+      { name: 'Private Guided Meditation', desc: 'One-on-one meditation session with an expert guide who tailors the practice specifically to your needs — whether that is stress reduction, sleep improvement, emotional processing, grief, or spiritual deepening. Far more effective than group classes for establishing a personal practice.', popular: true },
+      { name: 'Neurofeedback Sessions', desc: 'Personalized brain training using real-time EEG biofeedback to show you your own brainwave activity and learn to optimize it. Improves sustained focus and concentration, reduces anxiety and overthinking, enhances sleep quality, and builds lasting cognitive performance improvements.' },
+      { name: 'Private Psychology Session', desc: 'A confidential one-on-one session with an in-house licensed psychologist. Explores emotional patterns, stress responses, relationship dynamics, and personal growth goals. Available during your stay and as part of ongoing remote support after you return home.' }
+    ]
+  }
+];
+
+// =============================================================
+// DOM HELPERS
+// =============================================================
+
+function el(tag, className) {
+  var e = document.createElement(tag);
+  if (className) e.className = className;
+  return e;
+}
+
+function txt(str) {
+  return document.createTextNode(String(str));
+}
+
+function makeSVG(paths, viewBox) {
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', viewBox || '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2');
+  svg.setAttribute('aria-hidden', 'true');
+  paths.forEach(function(p) {
+    var el2 = document.createElementNS('http://www.w3.org/2000/svg', p.tag);
+    Object.keys(p.attrs).forEach(function(k) { el2.setAttribute(k, p.attrs[k]); });
+    svg.appendChild(el2);
+  });
+  return svg;
+}
+
+function makeChevronSVG() {
+  return makeSVG([{ tag: 'polyline', attrs: { points: '6 9 12 15 18 9', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' } }]);
+}
+
+function makeLeafSVG() {
+  return makeSVG([
+    { tag: 'path', attrs: { d: 'M12 22V12m0 0C12 6 6 2 6 2s1 5 0 10m6 0c0-6 6-10 6-10s-1 5 0 10' } }
+  ]);
+}
+
+function makeBoltSVG() {
+  return makeSVG([{ tag: 'path', attrs: { d: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z' } }]);
+}
+
+function makeIVSVG() {
+  return makeSVG([{ tag: 'path', attrs: { d: 'M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 7.9 7 7l-.71 2.06C3.83 9.93 2 11.79 2 14.25c0 2.22 1.8 4.05 4 4.05M12 7h10M12 11h7M12 15h4' } }]);
+}
+
+function makeHeartSVG() {
+  return makeSVG([{ tag: 'path', attrs: { d: 'M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z' } }]);
+}
+
+function makeStarSVG() {
+  return makeSVG([{ tag: 'circle', attrs: { cx: '12', cy: '8', r: '6' } }, { tag: 'path', attrs: { d: 'M15.477 12.89L17 22l-5-3-5 3 1.523-9.11' } }]);
+}
+
+function makePulseSVG() {
+  return makeSVG([{ tag: 'path', attrs: { d: 'M22 12h-4l-3 9L9 3l-3 9H2' } }]);
+}
+
+function makeCircleSVG() {
+  return makeSVG([
+    { tag: 'circle', attrs: { cx: '12', cy: '12', r: '10' } },
+    { tag: 'path', attrs: { d: 'M9 9a3 3 0 1 1 5.12 2.13C13.39 12.02 12 13 12 14' } },
+    { tag: 'line', attrs: { x1: '12', y1: '18', x2: '12.01', y2: '18' } }
+  ]);
+}
+
+function makeCategoryIcon(categoryId) {
+  switch (categoryId) {
+    case 'biohacking': return makeBoltSVG();
+    case 'iv': return makeIVSVG();
+    case 'massage': return makeHeartSVG();
+    case 'beauty': return makeStarSVG();
+    case 'clinical': return makePulseSVG();
+    case 'mind': return makeCircleSVG();
+    default: return makeBoltSVG();
+  }
+}
+
+// =============================================================
+// UTILITIES
+// =============================================================
+
+function getTodayStr() {
+  var y = TODAY_DATE.getFullYear();
+  var m = String(TODAY_DATE.getMonth() + 1).padStart('0', 2);
+  var d = String(TODAY_DATE.getDate()).padStart('0', 2);
+  // padStart polyfill if needed
+  m = m.length < 2 ? '0' + m : m;
+  d = d.length < 2 ? '0' + d : d;
+  return y + '-' + m + '-' + d;
+}
+
+function formatDateLong(dateStr) {
+  var d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+function getDayNum(dateStr) {
+  var start = new Date(GUEST.checkIn + 'T00:00:00');
+  var d = new Date(dateStr + 'T00:00:00');
+  return Math.round((d - start) / 86400000) + 1;
+}
+
+function getGreeting() {
+  var h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
+
+function parseTimeMinutes(timeStr) {
+  var parts = timeStr.split(':');
+  return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+}
+
+function findNowIndex(activities) {
+  var now = new Date();
+  var currentMins = now.getHours() * 60 + now.getMinutes();
+  var idx = -1;
+  for (var i = 0; i < activities.length; i++) {
+    if (parseTimeMinutes(activities[i].time) <= currentMins) {
+      idx = i;
+    }
+  }
+  if (idx === -1 && activities.length > 0) {
+    if (currentMins < parseTimeMinutes(activities[0].time)) return 0;
+  }
+  if (currentMins > 22 * 60) return -1;
+  return idx;
+}
+
+// =============================================================
+// TIMELINE BUILDER
+// =============================================================
+
+function buildTimelineItem(activity, isNow, isToday) {
+  var wrapper = el('div', 'timeline-item' + (isNow ? ' now' : ''));
+
+  // Left column
+  var left = el('div', 'timeline-left');
+  var timeEl = el('div', 'timeline-time');
+  timeEl.appendChild(txt(activity.time));
+  var dot = el('div', 'timeline-dot ' + activity.type);
+  left.appendChild(timeEl);
+  left.appendChild(dot);
+
+  // Card
+  var card = el('div', 'timeline-card' + (isNow ? ' now' : ''));
+  card.setAttribute('role', 'button');
+  card.setAttribute('tabindex', '0');
+  card.setAttribute('aria-expanded', 'false');
+
+  // Card header
+  var cardHeader = el('div', 'card-header');
+  var nameEl = el('div', 'card-name');
+  nameEl.appendChild(txt(activity.name));
+  var pill = el('span', 'type-pill ' + activity.type);
+  pill.appendChild(txt(TYPE_LABELS[activity.type]));
+  cardHeader.appendChild(nameEl);
+  cardHeader.appendChild(pill);
+  card.appendChild(cardHeader);
+
+  // Now label
+  if (isNow && isToday) {
+    var nowLabel = el('div', 'now-label');
+    var nowDot = el('span', 'now-dot');
+    nowLabel.appendChild(nowDot);
+    nowLabel.appendChild(txt('Now'));
+    card.appendChild(nowLabel);
+  }
+
+  // Expandable body
+  var cardBody = el('div', 'card-body');
+  var desc = DESCRIPTIONS[activity.name] || null;
+  var descText = desc || 'Tap to expand details. Ask your wellness team for more information about this session.';
+  var p = el('p');
+  p.appendChild(txt(descText));
+  cardBody.appendChild(p);
+
+  if (desc && (activity.type === 'clinic' || activity.type === 'extra')) {
+    var askLink = el('a', 'ask-btn');
+    askLink.href = GUEST.waBase + '?text=' + encodeURIComponent("Hi, I'd like to learn more about " + activity.name + " please.");
+    askLink.target = '_blank';
+    askLink.rel = 'noopener noreferrer';
+    askLink.appendChild(txt('Ask our team'));
+    cardBody.appendChild(askLink);
+  }
+
+  card.appendChild(cardBody);
+
+  // Chevron
+  var chevronWrap = el('div', 'card-chevron');
+  var chevronSVG = makeChevronSVG();
+  chevronSVG.style.width = '14px';
+  chevronSVG.style.height = '14px';
+  chevronSVG.setAttribute('stroke-width', '2.5');
+  chevronWrap.appendChild(chevronSVG);
+  card.appendChild(chevronWrap);
+
+  function toggle() {
+    var expanded = card.classList.contains('expanded');
+    card.classList.toggle('expanded', !expanded);
+    card.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+  }
+
+  card.addEventListener('click', toggle);
+  card.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+  });
+
+  wrapper.appendChild(left);
+  wrapper.appendChild(card);
+  return wrapper;
+}
+
+function buildTimeline(dateStr, container, isToday) {
+  while (container.firstChild) container.removeChild(container.firstChild);
+
+  var activities = SCHEDULE[dateStr];
+  if (!activities || activities.length === 0) {
+    var emptyEl = el('div', 'empty-state');
+    var emptyIcon = makeSVG([
+      { tag: 'rect', attrs: { x: '3', y: '4', width: '18', height: '18', rx: '2' } },
+      { tag: 'line', attrs: { x1: '16', y1: '2', x2: '16', y2: '6' } },
+      { tag: 'line', attrs: { x1: '8', y1: '2', x2: '8', y2: '6' } },
+      { tag: 'line', attrs: { x1: '3', y1: '10', x2: '21', y2: '10' } }
+    ]);
+    emptyIcon.style.width = '48px';
+    emptyIcon.style.height = '48px';
+    emptyEl.appendChild(emptyIcon);
+    var emptyP = el('p');
+    emptyP.appendChild(txt('No activities scheduled for this day.'));
+    emptyEl.appendChild(emptyP);
+    container.appendChild(emptyEl);
+    return;
+  }
+
+  var nowIdx = isToday ? findNowIndex(activities) : -1;
+
+  activities.forEach(function(activity, i) {
+    container.appendChild(buildTimelineItem(activity, i === nowIdx, isToday));
+  });
+
+  if (isToday && nowIdx >= 0) {
+    setTimeout(function() {
+      var items = container.querySelectorAll('.timeline-item');
+      if (items[nowIdx]) {
+        items[nowIdx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 300);
+  }
+}
+
+// =============================================================
+// TODAY TAB
+// =============================================================
+
+function initToday() {
+  var todayStr = getTodayStr();
+  var dayNum = getDayNum(todayStr);
+
+  document.getElementById('greeting').textContent = getGreeting() + ', ' + GUEST.firstName;
+  document.getElementById('header-date').textContent = formatDateLong(todayStr);
+  document.getElementById('program-badge-text').textContent = GUEST.program + ' \u00B7 Day ' + dayNum + ' of ' + GUEST.totalDays;
+
+  var sectionTitle = document.getElementById('today-section-title');
+  sectionTitle.textContent = "Today \u2014 " + TODAY_DATE.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+
+  // Progress
+  var pct = Math.round(((dayNum - 1) / GUEST.totalDays) * 100);
+  document.getElementById('progress-pct').textContent = pct + '%';
+  setTimeout(function() {
+    document.getElementById('progress-bar').style.width = pct + '%';
+  }, 120);
+
+  // Day dots
+  var daysContainer = document.getElementById('progress-days');
+  var dates = Object.keys(SCHEDULE);
+  dates.forEach(function(d, i) {
+    var isPast = d < todayStr;
+    var isActive = d === todayStr;
+    var dayWrapper = el('div', 'progress-day' + (isActive ? ' active' : '') + (isPast ? ' completed' : ''));
+    var dotEl = el('div', 'progress-day-dot');
+    dotEl.appendChild(txt(String(i + 1)));
+    var labelEl = el('span');
+    var dayDate = new Date(d + 'T00:00:00');
+    labelEl.appendChild(txt(dayDate.toLocaleDateString('en-US', { weekday: 'short' }).slice(0, 2)));
+    dayWrapper.appendChild(dotEl);
+    dayWrapper.appendChild(labelEl);
+    daysContainer.appendChild(dayWrapper);
+  });
+
+  buildTimeline(todayStr, document.getElementById('today-timeline'), true);
+  buildNutritionCard(todayStr);
+
+  // Last updated timestamp
+  var updatedEl = el('div', 'today-updated');
+  var now2 = new Date();
+  var timeStr = now2.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  updatedEl.appendChild(txt('Schedule last updated \u00B7 ' + timeStr));
+  document.getElementById('tab-today').appendChild(updatedEl);
+}
+
+function buildNutritionCard(dateStr) {
+  var activities = SCHEDULE[dateStr] || [];
+  var nutrition = activities.filter(function(a) { return a.type === 'food'; });
+  var container = document.getElementById('nutrition-card');
+
+  var titleEl = el('div', 'nutrition-title');
+  var leafIcon = makeLeafSVG();
+  leafIcon.style.width = '18px';
+  leafIcon.style.height = '18px';
+  leafIcon.style.color = '#00BED6';
+  titleEl.appendChild(leafIcon);
+  titleEl.appendChild(txt('Nutrition & Supplements'));
+  container.appendChild(titleEl);
+
+  if (nutrition.length === 0) {
+    var noMeals = el('p');
+    noMeals.style.fontSize = '13px';
+    noMeals.style.color = 'var(--text-3)';
+    noMeals.appendChild(txt('No meals scheduled today.'));
+    container.appendChild(noMeals);
+    return;
+  }
+
+  nutrition.forEach(function(item) {
+    var row = el('div', 'nutrition-item');
+    var timeEl = el('div', 'nutrition-time');
+    timeEl.appendChild(txt(item.time));
+    var nameEl = el('div', 'nutrition-name');
+    nameEl.appendChild(txt(item.name));
+    var check = el('span', 'nutrition-check');
+    check.appendChild(txt('\u2713'));
+    row.appendChild(timeEl);
+    row.appendChild(nameEl);
+    row.appendChild(check);
+    container.appendChild(row);
+  });
+}
+
+// =============================================================
+// SCHEDULE TAB
+// =============================================================
+
+var selectedDate = getTodayStr();
+
+function initSchedule() {
+  var scroll = document.getElementById('date-scroll');
+  var todayStr = getTodayStr();
+  var dates = Object.keys(SCHEDULE);
+
+  dates.forEach(function(dateStr) {
+    var d = new Date(dateStr + 'T00:00:00');
+    var isActive = dateStr === selectedDate;
+    var isToday = dateStr === todayStr;
+    var chip = el('button', 'date-chip' + (isActive ? ' active' : '') + (isToday ? ' today' : ''));
+    chip.setAttribute('type', 'button');
+    chip.setAttribute('aria-label', formatDateLong(dateStr));
+
+    var dayEl = el('div', 'date-chip-day');
+    dayEl.appendChild(txt(d.toLocaleDateString('en-US', { weekday: 'short' })));
+    var numEl = el('div', 'date-chip-num');
+    numEl.appendChild(txt(String(d.getDate())));
+    var monthEl = el('div', 'date-chip-month');
+    monthEl.appendChild(txt(d.toLocaleDateString('en-US', { month: 'short' })));
+
+    chip.appendChild(dayEl);
+    chip.appendChild(numEl);
+    chip.appendChild(monthEl);
+
+    chip.addEventListener('click', function() {
+      selectedDate = dateStr;
+      scroll.querySelectorAll('.date-chip').forEach(function(c) { c.classList.remove('active'); });
+      chip.classList.add('active');
+      renderScheduleDay(dateStr);
+      chip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    });
+
+    scroll.appendChild(chip);
+  });
+
+  renderScheduleDay(selectedDate);
+
+  setTimeout(function() {
+    var activeChip = scroll.querySelector('.active');
+    if (activeChip) activeChip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }, 100);
+}
+
+var ONBOARDING_DATES = { '2026-03-09': true, '2026-03-10': true, '2026-03-11': true };
+
+function renderScheduleDay(dateStr) {
+  var activities = SCHEDULE[dateStr] || [];
+  var todayStr = getTodayStr();
+  var isToday = dateStr === todayStr;
+
+  var statsContainer = document.getElementById('day-stats');
+  while (statsContainer.firstChild) statsContainer.removeChild(statsContainer.firstChild);
+
+  var total = activities.length;
+  var therapies = activities.filter(function(a) { return a.type === 'clinic' || a.type === 'extra'; }).length;
+  var meals = activities.filter(function(a) { return a.type === 'food'; }).length;
+
+  [
+    { num: total, label: 'Activities' },
+    { num: therapies, label: 'Therapies' },
+    { num: meals, label: 'Meals' }
+  ].forEach(function(stat) {
+    var chip = el('div', 'stat-chip');
+    var numEl = el('div', 'stat-num');
+    numEl.appendChild(txt(String(stat.num)));
+    var labelEl = el('div', 'stat-label');
+    labelEl.appendChild(txt(stat.label));
+    chip.appendChild(numEl);
+    chip.appendChild(labelEl);
+    statsContainer.appendChild(chip);
+  });
+
+  // Show onboarding banner for initial assessment days
+  var timelineEl = document.getElementById('schedule-timeline');
+  var existingBanner = document.getElementById('onboarding-day-banner');
+  if (existingBanner) existingBanner.parentNode.removeChild(existingBanner);
+
+  if (ONBOARDING_DATES[dateStr]) {
+    var banner = el('div', 'onboarding-banner');
+    banner.id = 'onboarding-day-banner';
+    var bannerIcon = el('div', 'onboarding-banner-icon');
+    bannerIcon.appendChild(txt('\uD83C\uDF31'));
+    var bannerBody = el('div', 'onboarding-banner-body');
+    var bannerTitle = el('div', 'onboarding-banner-title');
+    bannerTitle.appendChild(txt('Onboarding Day'));
+    var bannerDesc = el('div', 'onboarding-banner-desc');
+    bannerDesc.appendChild(txt('This was an initial assessment day \u2014 medical consultation, body composition analysis, and live blood analysis to personalize your program. Full group schedule begins from Day 4.'));
+    bannerBody.appendChild(bannerTitle);
+    bannerBody.appendChild(bannerDesc);
+    banner.appendChild(bannerIcon);
+    banner.appendChild(bannerBody);
+    timelineEl.parentNode.insertBefore(banner, timelineEl);
+  }
+
+  buildTimeline(dateStr, timelineEl, isToday);
+}
+
+// =============================================================
+// EXPLORE TAB
+// =============================================================
+
+function initExplore() {
+  var container = document.getElementById('explore-content');
+
+  EXPLORE_CATEGORIES.forEach(function(cat) {
+    var section = el('div', 'category-section');
+    section.setAttribute('data-category', cat.id);
+
+    // Header
+    var header = el('div', 'category-header');
+    var iconBox = el('div', 'category-icon');
+    var catIcon = makeCategoryIcon(cat.id);
+    catIcon.style.width = '16px';
+    catIcon.style.height = '16px';
+    iconBox.appendChild(catIcon);
+    header.appendChild(iconBox);
+    header.appendChild(txt(cat.title));
+    section.appendChild(header);
+
+    // Cards
+    var cards = el('div', 'therapy-cards');
+    cat.therapies.forEach(function(therapy) {
+      var card = el('div', 'therapy-card');
+      var searchVal = therapy.name.toLowerCase() + ' ' + therapy.desc.toLowerCase();
+      card.setAttribute('data-search', searchVal);
+
+      var info = el('div', 'therapy-info');
+
+      var nameRow = el('div', 'therapy-name');
+      nameRow.appendChild(txt(therapy.name));
+      if (therapy.popular) {
+        var popBadge = el('span', 'badge-popular');
+        popBadge.appendChild(txt('Popular'));
+        nameRow.appendChild(popBadge);
+      }
+      if (therapy.recommended) {
+        var recBadge = el('span', 'badge-recommended');
+        recBadge.appendChild(txt('Recommended'));
+        nameRow.appendChild(recBadge);
+      }
+
+      var descEl = el('div', 'therapy-desc');
+      descEl.appendChild(txt(therapy.desc));
+
+      info.appendChild(nameRow);
+      info.appendChild(descEl);
+
+      var waMsg = encodeURIComponent("Hi, I'd like to book " + therapy.name + " please.");
+      var reqBtn = el('a', 'request-btn');
+      reqBtn.href = GUEST.waBase + '?text=' + waMsg;
+      reqBtn.target = '_blank';
+      reqBtn.rel = 'noopener noreferrer';
+      reqBtn.appendChild(txt('Request'));
+
+      card.appendChild(info);
+      card.appendChild(reqBtn);
+
+      // Tap card body to expand/collapse description
+      info.addEventListener('click', function(e) {
+        if (e.target === reqBtn || reqBtn.contains(e.target)) return;
+        card.classList.toggle('expanded');
+      });
+
+      cards.appendChild(card);
+    });
+
+    section.appendChild(cards);
+    container.appendChild(section);
+  });
+
+  // Search
+  document.getElementById('search-input').addEventListener('input', function() {
+    var q = this.value.toLowerCase().trim();
+    container.querySelectorAll('.therapy-card').forEach(function(card) {
+      var match = q.length === 0 || (card.getAttribute('data-search') || '').includes(q);
+      card.classList.toggle('hidden', !match);
+    });
+    container.querySelectorAll('.category-section').forEach(function(section) {
+      var hasVisible = section.querySelectorAll('.therapy-card:not(.hidden)').length > 0;
+      section.classList.toggle('hidden', !hasVisible);
+    });
+  });
+}
+
+// =============================================================
+// INFO TAB
+// =============================================================
+
+var INFO_SECTIONS = [
+  { id: 'method',       title: 'TheLifeCo Method',           iconFn: function() { return makeSVG([{ tag:'path', attrs:{ d:'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z' } }]); } },
+  { id: 'program',      title: 'Your Program: Green Salad',  iconFn: function() { return makeSVG([{ tag:'path', attrs:{ d:'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z' } }]); } },
+  { id: 'nutrition',    title: 'Nutrition Plans',            iconFn: function() { return makeLeafSVG(); } },
+  { id: 'included',     title: 'Included Services',          iconFn: function() { return makeSVG([{ tag:'polyline', attrs:{ points:'9 11 12 14 22 4' } }, { tag:'path', attrs:{ d:'M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11' } }]); } },
+  { id: 'programs',     title: 'Other Programs Available',   iconFn: function() { return makeSVG([{ tag:'path', attrs:{ d:'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01' } }]); } },
+  { id: 'facilities',   title: 'Facilities',                 iconFn: function() { return makeSVG([{ tag:'path', attrs:{ d:'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z' } }, { tag:'polyline', attrs:{ points:'9 22 9 12 15 12 15 22' } }]); } },
+  { id: 'activities',   title: 'Weekly Group Activities',    iconFn: function() { return makeSVG([{ tag:'rect', attrs:{ x:'3', y:'4', width:'18', height:'18', rx:'2', ry:'2' } }, { tag:'line', attrs:{ x1:'16', y1:'2', x2:'16', y2:'6' } }, { tag:'line', attrs:{ x1:'8', y1:'2', x2:'8', y2:'6' } }, { tag:'line', attrs:{ x1:'3', y1:'10', x2:'21', y2:'10' } }]); } },
+  { id: 'cancellation', title: 'Cancellation Policy',       iconFn: function() { return makeSVG([{ tag:'circle', attrs:{ cx:'12', cy:'12', r:'10' } }, { tag:'polyline', attrs:{ points:'12 6 12 12 16 14' } }]); } },
+  { id: 'predetox',     title: 'Pre-Detox Guide',           iconFn: function() { return makeSVG([{ tag:'path', attrs:{ d:'M12 22V12m0 0C12 6 6 2 6 2s1 5 0 10m6 0c0-6 6-10 6-10s-1 5 0 10' } }]); } },
+  { id: 'faq',          title: 'FAQ',                       iconFn: function() { return makeSVG([{ tag:'circle', attrs:{ cx:'12', cy:'12', r:'10' } }, { tag:'line', attrs:{ x1:'12', y1:'16', x2:'12', y2:'12' } }, { tag:'line', attrs:{ x1:'12', y1:'8', x2:'12.01', y2:'8' } }]); } },
+  { id: 'contact',      title: 'Contact Your Team',         iconFn: function() { return makeSVG([{ tag:'path', attrs:{ d:'M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.9 1.17h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z' } }]); } }
+];
+
+function makeInfoList(items) {
+  var list = el('ul', 'info-list');
+  items.forEach(function(item) {
+    var li = document.createElement('li');
+    var bullet = el('span', 'info-bullet');
+    bullet.setAttribute('aria-hidden', 'true');
+    bullet.appendChild(txt('\u00B7'));
+    li.appendChild(bullet);
+    li.appendChild(txt(item));
+    list.appendChild(li);
+  });
+  return list;
+}
+
+function makeInfoSubheading(text) {
+  var h = el('div');
+  h.style.fontWeight = '700';
+  h.style.fontSize = '12px';
+  h.style.color = 'var(--text-3)';
+  h.style.textTransform = 'uppercase';
+  h.style.letterSpacing = '0.07em';
+  h.style.marginTop = '14px';
+  h.style.marginBottom = '6px';
+  h.appendChild(txt(text));
+  return h;
+}
+
+function makeNutritionRow(plan, cals, desc, isCurrent) {
+  var row = el('div');
+  row.style.padding = '10px 12px';
+  row.style.borderRadius = '8px';
+  row.style.marginBottom = '6px';
+  row.style.background = isCurrent ? 'linear-gradient(135deg,#E8F4FC,#F0FBFD)' : 'var(--surface-2)';
+  row.style.border = isCurrent ? '1.5px solid #00609C' : '1px solid var(--border-light)';
+  var topRow = el('div');
+  topRow.style.display = 'flex';
+  topRow.style.justifyContent = 'space-between';
+  topRow.style.alignItems = 'center';
+  topRow.style.marginBottom = '3px';
+  var nameEl = el('span');
+  nameEl.style.fontWeight = '700';
+  nameEl.style.fontSize = '13px';
+  nameEl.style.color = isCurrent ? '#00609C' : 'var(--text)';
+  nameEl.appendChild(txt(plan));
+  if (isCurrent) {
+    var curBadge = el('span');
+    curBadge.style.fontSize = '9px';
+    curBadge.style.fontWeight = '700';
+    curBadge.style.background = '#00609C';
+    curBadge.style.color = 'white';
+    curBadge.style.borderRadius = '100px';
+    curBadge.style.padding = '2px 7px';
+    curBadge.style.marginLeft = '6px';
+    curBadge.appendChild(txt('YOUR PLAN'));
+    nameEl.appendChild(curBadge);
+  }
+  var calEl = el('span');
+  calEl.style.fontSize = '11px';
+  calEl.style.fontWeight = '600';
+  calEl.style.color = 'var(--text-3)';
+  calEl.appendChild(txt(cals));
+  topRow.appendChild(nameEl);
+  topRow.appendChild(calEl);
+  var descEl = el('p');
+  descEl.style.fontSize = '12px';
+  descEl.style.color = 'var(--text-2)';
+  descEl.style.lineHeight = '1.5';
+  descEl.appendChild(txt(desc));
+  row.appendChild(topRow);
+  row.appendChild(descEl);
+  return row;
+}
+
+function makeProgramRow(name, shortDesc) {
+  var row = el('div');
+  row.style.padding = '10px 0';
+  row.style.borderBottom = '1px solid var(--border-light)';
+  var nameRow = el('div');
+  nameRow.style.display = 'flex';
+  nameRow.style.justifyContent = 'space-between';
+  nameRow.style.alignItems = 'flex-start';
+  nameRow.style.gap = '8px';
+  var nameEl = el('span');
+  nameEl.style.fontWeight = '600';
+  nameEl.style.fontSize = '13px';
+  nameEl.style.color = 'var(--text)';
+  nameEl.appendChild(txt(name));
+  var waMsg = encodeURIComponent('Hi, I\'d like to learn more about the ' + name + ' program please.');
+  var learnBtn = el('a');
+  learnBtn.href = GUEST.waBase + '?text=' + waMsg;
+  learnBtn.target = '_blank';
+  learnBtn.rel = 'noopener noreferrer';
+  learnBtn.style.fontSize = '11px';
+  learnBtn.style.fontWeight = '700';
+  learnBtn.style.color = '#00609C';
+  learnBtn.style.textDecoration = 'none';
+  learnBtn.style.whiteSpace = 'nowrap';
+  learnBtn.style.flexShrink = '0';
+  learnBtn.appendChild(txt('Ask team'));
+  nameRow.appendChild(nameEl);
+  nameRow.appendChild(learnBtn);
+  var descEl = el('p');
+  descEl.style.fontSize = '12px';
+  descEl.style.color = 'var(--text-3)';
+  descEl.style.lineHeight = '1.5';
+  descEl.style.marginTop = '2px';
+  descEl.appendChild(txt(shortDesc));
+  row.appendChild(nameRow);
+  row.appendChild(descEl);
+  return row;
+}
+
+function buildInfoContent(id) {
+  var wrapper = el('div');
+
+  if (id === 'method') {
+    var intro = el('p');
+    intro.style.marginBottom = '12px';
+    intro.style.lineHeight = '1.65';
+    intro.appendChild(txt('TheLifeCo approach is built on two fundamental foundations that address both sides of cellular aging:'));
+    wrapper.appendChild(intro);
+
+    wrapper.appendChild(makeInfoSubheading('Two Core Foundations'));
+    wrapper.appendChild(makeInfoList([
+      'Detoxification & Cellular Cleansing \u2014 removing accumulated toxins, damaged cells, and metabolic waste',
+      'Mental & Emotional Regulation \u2014 addressing the nervous system patterns that drive accelerated aging'
+    ]));
+
+    wrapper.appendChild(makeInfoSubheading('Natural vs. Accelerated Aging'));
+    wrapper.appendChild(makeInfoList([
+      'Natural Aging is slowed through medically supervised fasting, lifestyle modification, and regenerative therapies',
+      'Accelerated Aging is actively reversed through deep detox, nervous system regulation, and targeted clinical protocols',
+      'Autophagy \u2014 your body\'s cellular self-cleaning process \u2014 is powerfully activated through supervised liquid fasting',
+      '100% plant-based, whole-food kitchen supporting the detox and regenerative process'
+    ]));
+
+    wrapper.appendChild(makeInfoSubheading('The 8 Pillars'));
+    var pillars = [
+      '1. Detoxification & Cellular Cleansing',
+      '2. Mental & Emotional Regulation',
+      '3. Clinic Services: Integrative Medicine',
+      '4. Movement & Daily Activities',
+      '5. Pampering & Beauty Treatments',
+      '6. Inspiring Education & Environment',
+      '7. Bio-Hacking Technologies',
+      '8. Long-Term Support After Departure'
+    ];
+    wrapper.appendChild(makeInfoList(pillars));
+
+  } else if (id === 'program') {
+    var calNote = el('div', 'info-highlight');
+    calNote.style.marginBottom = '12px';
+    calNote.appendChild(txt('750\u2013850 calories per day \u2014 ideal for pre-cleansing and guests seeking more than juice fasting. 100% plant-based whole-food meals.'));
+    wrapper.appendChild(calNote);
+
+    wrapper.appendChild(makeInfoSubheading('Daily Protocol'));
+    wrapper.appendChild(makeInfoList([
+      'Morning: Alkalize drink + Wheatgrass shot + 2 Spirulina tablets',
+      'Morning: Kelp & Nettle supplements + Immune Boost drink',
+      'Lunch: Detox Salad + 2 Digestive Enzymes',
+      'Afternoon: Alkalizing drink + Wheatgrass shot',
+      'Dinner: Detox Salad + 2 Digestive Enzymes + 2 Probiotics',
+      'Evening: Alkalizing drink to support overnight cellular repair'
+    ]));
+
+    wrapper.appendChild(makeInfoSubheading('What to Expect'));
+    wrapper.appendChild(makeInfoList([
+      'Mild detox symptoms (headaches, fatigue) in Days 1\u20132 are normal and expected',
+      'Energy typically increases significantly from Day 3 onward',
+      'Supports liver function, cellular regeneration, and microbiome restoration',
+      'Ideal as a foundation before transitioning to a more intensive protocol'
+    ]));
+
+  } else if (id === 'nutrition') {
+    var nutIntro = el('p');
+    nutIntro.style.marginBottom = '12px';
+    nutIntro.style.fontSize = '13px';
+    nutIntro.style.color = 'var(--text-2)';
+    nutIntro.appendChild(txt('TheLifeCo offers 9 personalized nutrition plans. Your current plan is highlighted. Speak to your wellness coach to discuss transitioning to a different plan.'));
+    wrapper.appendChild(nutIntro);
+
+    wrapper.appendChild(makeNutritionRow('Master Detox', '300\u2013400 cal/day', 'Ultimate cleansing and weight loss. The most intensive detox protocol.', false));
+    wrapper.appendChild(makeNutritionRow('Green Juice Cleanse', '550\u2013650 cal/day', 'Alkalizing juice cleanse for body rebalancing and deep cellular cleansing.', false));
+    wrapper.appendChild(makeNutritionRow('Green Salad', '750\u2013850 cal/day', 'Pre-cleansing program with whole-food plant-based salads. Ideal entry point.', true));
+    wrapper.appendChild(makeNutritionRow('Water Fasting', '0 cal/day', 'The most powerful protocol for disease prevention and cellular autophagy activation.', false));
+    wrapper.appendChild(makeNutritionRow('Low Calorie', '1200 cal/day', 'Sustainable long-term weight loss with satisfying plant-based meals.', false));
+    wrapper.appendChild(makeNutritionRow('Intermittent Fasting', '800 cal/day', 'Time-restricted eating for digestive rest, insulin sensitivity, and cellular renewal.', false));
+    wrapper.appendChild(makeNutritionRow('Ketogenic', '<17g net carbs/day', 'Vegan ketogenic therapeutic diet for metabolic and neurological conditions.', false));
+    wrapper.appendChild(makeNutritionRow('Mental Wellness', '1450\u20131550 cal/day', 'Nervous system-supportive diet enriched with CBD oil and tryptophan.', false));
+    wrapper.appendChild(makeNutritionRow('Get Fit & Healthy', '1500\u20131600 cal/day', 'Active cleansing with 125g protein/day for guests focused on fitness and body composition.', false));
+
+  } else if (id === 'included') {
+    wrapper.appendChild(makeInfoSubheading('Accommodation & Nutrition'));
+    wrapper.appendChild(makeInfoList([
+      'Accommodation (private room)',
+      'Full nutrition plan (Master Detox, Green Juice, Green Salad, Water Fasting, Low Calorie, Intermittent Fasting, GetFit, Ketogenic, or Mental Wellness)'
+    ]));
+
+    wrapper.appendChild(makeInfoSubheading('Consultations & Assessments'));
+    wrapper.appendChild(makeInfoList([
+      'Doctor Consultation',
+      'Consultation with Expert Wellness Coaches',
+      'Holistic Aesthetic Consultation',
+      'Body Composition & Posture Analysis \u2014 2 sessions (before and after)',
+      'Live Blood Analysis \u2014 2 sessions (before and after)'
+    ]));
+
+    wrapper.appendChild(makeInfoSubheading('Daily Clinic Services'));
+    wrapper.appendChild(makeInfoList([
+      'Colon Cleansing (self-administered)',
+      'Oxygen Therapy'
+    ]));
+
+    wrapper.appendChild(makeInfoSubheading('SPA & Wellness Amenities'));
+    wrapper.appendChild(makeInfoList([
+      'Infrared Sauna',
+      'Steam Room',
+      'Turkish Bath (self-using)',
+      'Sonix Pulsation Vibration Therapy',
+      'Therapy Pools',
+      'Swimming Pool & Gym Access'
+    ]));
+
+    wrapper.appendChild(makeInfoSubheading('Daily Group Programs'));
+    wrapper.appendChild(makeInfoList([
+      'Group Exercise (daily)',
+      'Yoga & Pilates (daily)',
+      'Mindfulness & Meditation Classes (daily)',
+      'Educational Sessions on Healthy Lifestyle Topics'
+    ]));
+
+    wrapper.appendChild(makeInfoSubheading('Unlimited Throughout Your Stay'));
+    wrapper.appendChild(makeInfoList([
+      'Herbal tea',
+      'Detox soup',
+      'Herbal iced tea',
+      'Alkaline water'
+    ]));
+
+  } else if (id === 'programs') {
+    var progIntro = el('p');
+    progIntro.style.marginBottom = '12px';
+    progIntro.style.fontSize = '13px';
+    progIntro.style.color = 'var(--text-2)';
+    progIntro.appendChild(txt('TheLifeCo offers specialized programs for a wide range of health goals. If any of these align with your needs, speak to your wellness coach or ask via WhatsApp.'));
+    wrapper.appendChild(progIntro);
+
+    var programs = [
+      ['Weight Loss & Management', 'Medically supervised, sustainable fat loss combining nutrition, movement, and metabolic therapies.'],
+      ['Mental Wellness Program', 'Holistic support for anxiety, depression, burnout, and nervous system dysregulation.'],
+      ['Master Detox (Cleansing & Detox)', 'The most intensive detox protocol for deep cellular cleansing and rapid transformation.'],
+      ['Green Juice Cleanse', 'Alkalizing juice fasting for body rebalancing and digestive system renewal.'],
+      ['Medically Supervised Water Fasting', 'Zero-calorie fasting under clinical supervision for maximum autophagy and disease reversal.'],
+      ['Ultimate Longevity', 'Comprehensive anti-aging program combining detox, bio-hacking, and regenerative medicine.'],
+      ['Hormonal Longevity (Women\'s / Men\'s)', 'Targeted hormonal optimization addressing perimenopause, menopause, testosterone decline, and thyroid health.'],
+      ['Cancer Prevention & Support', 'Integrative oncology support combining detox, immune enhancement, and targeted clinical protocols.'],
+      ['Beauty & Body Reshaping', 'Aesthetic and body composition transformation using non-invasive technologies.'],
+      ['Diabetes Program', 'Blood sugar regulation and insulin sensitivity restoration through fasting and metabolic therapies.'],
+      ['Cardiovascular Disease Program', 'Heart health support combining anti-inflammatory nutrition, movement therapy, and ozone treatments.'],
+      ['Chronic Fatigue Recovery', 'Adrenal and mitochondrial restoration for those experiencing persistent exhaustion and brain fog.'],
+      ['Liver Detox', 'Intensive liver cleansing and regeneration for those with elevated enzymes, fatty liver, or chemical exposure.'],
+      ['Digestive & Gut Health', 'Microbiome restoration, leaky gut healing, and digestive enzyme optimization.'],
+      ['Inflammation & Immune Reset', 'Systemic anti-inflammatory protocol combining ozone, IV therapies, and targeted nutrition.']
+    ];
+
+    var listWrap = el('div');
+    programs.forEach(function(p) {
+      listWrap.appendChild(makeProgramRow(p[0], p[1]));
+    });
+    wrapper.appendChild(listWrap);
+  } else if (id === 'facilities') {
+    wrapper.appendChild(makeInfoList([
+      'Private beach access with sun loungers',
+      'Fresh juice bar and plant-based restaurant',
+      'Full-service spa and massage center',
+      'Tropical gardens and outdoor relaxation areas',
+      'Comfortable private rooms with garden or ocean views',
+      'Medical clinic with licensed practitioners',
+      'Sauna, steam room, and Turkish bath (hammam)'
+    ]));
+  } else if (id === 'activities') {
+    wrapper.appendChild(makeInfoList([
+      'Every day: Morning Walk 7:00\u20138:00am',
+      'Every day: Yoga (Dynamic / Pilates / Gentle) 9:30\u201311:00am',
+      'Monday: Therapeutic Juice Workshop 4\u20135pm + Fitness 5\u20136pm',
+      'Tuesday: Longevity Talk 4\u20135pm + Qigong 5\u20136pm',
+      'Wednesday: Life After Program Talk 4\u20135pm + Functional Fitness 5\u20136pm',
+      'Thursday: Gut & Brain Connection 4\u20135pm + Gentle Stretching 5\u20136pm',
+      'Friday: TLC Extra Therapies Talk 4\u20135pm + Functional Fitness 5\u20136pm',
+      'Saturday: Life After Program 4\u20135pm + Qigong 5\u20136pm',
+      'Sunday: Mental Wellness Talk 4\u20135pm + Gentle Stretching 5\u20136pm'
+    ]));
+  } else if (id === 'cancellation') {
+    var p1 = el('p');
+    p1.style.marginBottom = '8px';
+    p1.appendChild(txt('Cancellation 3+ hours before your appointment is free of charge.'));
+    var p2 = el('p');
+    p2.style.marginBottom = '10px';
+    p2.appendChild(txt('Cancellation less than 3 hours before will incur a 50% charge of the treatment cost.'));
+    var p3 = el('p', 'info-highlight');
+    p3.appendChild(txt('Note: For treatments with external therapists, cancellation is mandatory regardless of timing to avoid the full charge.'));
+    wrapper.appendChild(p1);
+    wrapper.appendChild(p2);
+    wrapper.appendChild(p3);
+  } else if (id === 'predetox') {
+    var intro = el('p');
+    intro.style.marginBottom = '10px';
+    intro.appendChild(txt('To maximize your results, ideally 2 weeks before arrival:'));
+    wrapper.appendChild(intro);
+    wrapper.appendChild(makeInfoList([
+      'Eliminate red meat, poultry, and dairy products',
+      'Remove salt, refined sugar, and processed foods',
+      'Gradually reduce caffeine to avoid withdrawal headaches',
+      'Drink water equal to 6% of your body weight daily (e.g., 4.8L for 80kg)',
+      'Increase raw fruits and vegetables in your diet',
+      'Begin light daily movement: 30-minute walks, stretching'
+    ]));
+  } else if (id === 'faq') {
+    var faqItems = [
+      ['Check-in & Check-out', 'Check-in is after 2:00 PM. Check-out is before 11:00 AM. Late checkout may be arranged subject to availability.'],
+      ['Wi-Fi', 'Complimentary high-speed Wi-Fi is available throughout the resort.'],
+      ['Laundry', 'Laundry service is available for an additional fee. Please ask at the front desk.'],
+      ['Pool & Beach', 'Pool and beach access is included. Towels are provided at the pool area.'],
+      ['Smoking', 'Smoking is only permitted in designated outdoor areas. Not permitted in rooms, restaurant, or spa.'],
+      ['Pets', 'We are a pet-free facility to maintain the peaceful retreat environment.'],
+      ['Age Requirement', 'Minimum age for program guests is 18 years.']
+    ];
+    faqItems.forEach(function(item) {
+      var qEl = el('p', 'faq-q');
+      qEl.appendChild(txt(item[0]));
+      var aEl = el('p');
+      aEl.style.marginBottom = '6px';
+      aEl.appendChild(txt(item[1]));
+      wrapper.appendChild(qEl);
+      wrapper.appendChild(aEl);
+    });
+  } else if (id === 'contact') {
+    var contactIntro = el('p');
+    contactIntro.style.marginBottom = '12px';
+    contactIntro.appendChild(txt('Your wellness team is here to help. Reach out anytime:'));
+    wrapper.appendChild(contactIntro);
+
+    var grid = el('div', 'contact-grid');
+    var contactItems = [
+      { label: 'WhatsApp Group', value: 'Guest Group', href: GUEST.waBase + '?text=' + encodeURIComponent('Hi team!') },
+      { label: 'Therapy Planner', value: 'Bu\u011Fra (Lobby)', href: GUEST.waBase + '?text=' + encodeURIComponent('Hi Bu\u011Fra, I need help with my therapy schedule please.') },
+      { label: 'Front Desk', value: 'Reception', href: 'tel:+17582861869' },
+      { label: 'Emergency', value: '24/7 On Call', href: 'tel:+17582861869' }
+    ];
+    contactItems.forEach(function(c) {
+      var card = el('a', 'contact-card');
+      card.href = c.href;
+      card.target = '_blank';
+      card.rel = 'noopener noreferrer';
+      var labelEl = el('div', 'contact-label');
+      labelEl.appendChild(txt(c.label));
+      var valueEl = el('div', 'contact-value');
+      valueEl.appendChild(txt(c.value));
+      card.appendChild(labelEl);
+      card.appendChild(valueEl);
+      grid.appendChild(card);
+    });
+    wrapper.appendChild(grid);
+  }
+
+  return wrapper;
+}
+
+function initInfo() {
+  var accordion = document.getElementById('info-accordion');
+
+  INFO_SECTIONS.forEach(function(section) {
+    var item = el('div', 'accordion-item');
+
+    var trigger = el('button', 'accordion-trigger');
+    trigger.setAttribute('type', 'button');
+    trigger.setAttribute('aria-expanded', 'false');
+
+    var iconBox = el('div', 'acc-icon');
+    var sectionIcon = section.iconFn();
+    sectionIcon.style.width = '16px';
+    sectionIcon.style.height = '16px';
+    iconBox.appendChild(sectionIcon);
+
+    var labelEl = el('div', 'acc-label');
+    labelEl.appendChild(txt(section.title));
+
+    var chevronWrap = el('div', 'acc-chevron');
+    var chSVG = makeChevronSVG();
+    chSVG.style.width = '16px';
+    chSVG.style.height = '16px';
+    chSVG.setAttribute('stroke-width', '2.5');
+    chevronWrap.appendChild(chSVG);
+
+    trigger.appendChild(iconBox);
+    trigger.appendChild(labelEl);
+    trigger.appendChild(chevronWrap);
+
+    var content = el('div', 'accordion-content');
+    content.appendChild(buildInfoContent(section.id));
+
+    trigger.addEventListener('click', function() {
+      var isOpen = item.classList.contains('open');
+      accordion.querySelectorAll('.accordion-item.open').forEach(function(openItem) {
+        openItem.classList.remove('open');
+        openItem.querySelector('.accordion-trigger').setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    item.appendChild(trigger);
+    item.appendChild(content);
+    accordion.appendChild(item);
+  });
+}
+
+// =============================================================
+// TAB NAVIGATION
+// =============================================================
+
+var tabs = {
+  today:    { panel: document.getElementById('tab-today'),    initialized: false },
+  schedule: { panel: document.getElementById('tab-schedule'), initialized: false },
+  explore:  { panel: document.getElementById('tab-explore'),  initialized: false },
+  info:     { panel: document.getElementById('tab-info'),     initialized: false }
+};
+
+function switchTab(tabId) {
+  Object.keys(tabs).forEach(function(id) {
+    tabs[id].panel.classList.toggle('active', id === tabId);
+  });
+  document.querySelectorAll('.nav-item').forEach(function(btn) {
+    var isActive = btn.getAttribute('data-tab') === tabId;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+  });
+  if (!tabs[tabId].initialized) {
+    tabs[tabId].initialized = true;
+    if (tabId === 'schedule') initSchedule();
+    if (tabId === 'explore') initExplore();
+    if (tabId === 'info') initInfo();
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.querySelectorAll('.nav-item').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    switchTab(btn.getAttribute('data-tab'));
+  });
+});
+
+// =============================================================
+// BOOT
+// =============================================================
+
+(function() {
+  initToday();
+  tabs.today.initialized = true;
+
+  // WhatsApp button bounce on first load
+  var helpBtn = document.getElementById('help-btn');
+  setTimeout(function() {
+    helpBtn.classList.add('bounce');
+    function onBounceEnd() {
+      helpBtn.classList.remove('bounce');
+      helpBtn.removeEventListener('animationend', onBounceEnd);
+    }
+    helpBtn.addEventListener('animationend', onBounceEnd);
+  }, 1800);
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(function() {
+      // SW unavailable when opened as file:// — app works without it
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
