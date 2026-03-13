@@ -36,6 +36,25 @@ self.addEventListener('activate', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
+  var url = event.request.url;
+
+  // Cache Google Fonts with stale-while-revalidate
+  if (url.indexOf('fonts.googleapis.com') !== -1 || url.indexOf('fonts.gstatic.com') !== -1) {
+    event.respondWith(
+      caches.open('thelifeco-fonts-v1').then(function(cache) {
+        return cache.match(event.request).then(function(cached) {
+          var fetched = fetch(event.request).then(function(response) {
+            cache.put(event.request, response.clone());
+            return response;
+          });
+          return cached || fetched;
+        });
+      })
+    );
+    return;
+  }
+
+  // Normal cache-first for other requests
   event.respondWith(
     caches.match(event.request).then(function(response) {
       if (response) return response;

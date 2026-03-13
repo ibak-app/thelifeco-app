@@ -9,8 +9,8 @@
   <meta name="description" content="TheLifeCo St. Lucia — Personalized Guest Portal" />
   <title>TheLifeCo · Guest Portal</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/png" href="images/icon-192.png" />
-  <link rel="apple-touch-icon" href="images/icon-192.png" />
+  <link rel="icon" type="image/png" href="/icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet" />
@@ -1716,6 +1716,294 @@ ul, ol {
     --text-4: #5A5A75;
   }
 }
+/* ============================================================
+   INSTALL BANNER
+   ============================================================ */
+.install-banner {
+  display: none;
+  position: fixed;
+  bottom: calc(var(--nav-height) + var(--safe-bottom) + 8px);
+  left: 12px;
+  right: 12px;
+  z-index: 90;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-lg);
+  animation: fadeInUp 0.3s ease forwards;
+  align-items: center;
+  gap: 12px;
+}
+.install-banner.show { display: flex; }
+.install-banner-text { flex: 1; }
+.install-banner-text strong { display: block; font-size: 14px; color: var(--text); }
+.install-banner-text span { font-size: 12px; color: var(--text-3); }
+.install-banner-btn {
+  padding: 10px 20px;
+  background: var(--teal);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.install-banner-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--text-4);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* ============================================================
+   FAVORITES
+   ============================================================ */
+.fav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--text-4);
+  transition: color 0.2s, transform 0.2s;
+}
+.fav-btn:active { transform: scale(1.2); }
+.fav-btn.active { color: #EF4444; }
+.fav-btn svg { width: 20px; height: 20px; }
+
+.favorites-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 8px;
+}
+.favorites-count {
+  font-size: 12px;
+  color: var(--text-3);
+  background: var(--surface-2);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+.favorites-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  color: var(--text-3);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.favorites-filter-btn.active {
+  background: #EF4444;
+  color: white;
+  border-color: #EF4444;
+}
+
+/* ============================================================
+   NEXT ACTIVITY BANNER
+   ============================================================ */
+.next-activity-banner {
+  margin: 0 20px 16px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, var(--teal-light), #E8F5E9);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.next-activity-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.next-activity-icon svg { color: white; width: 18px; height: 18px; }
+.next-activity-text strong { display: block; font-size: 13px; color: var(--text); }
+.next-activity-text span { font-size: 12px; color: var(--text-3); }
+.next-activity-countdown {
+  margin-left: auto;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--teal-dark);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   COLLAPSIBLE TIMELINE
+   ============================================================ */
+.timeline-content p {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.2s ease, margin 0.3s ease;
+  margin-top: 0;
+}
+.timeline-item.expanded .timeline-content p {
+  max-height: 200px;
+  opacity: 1;
+  margin-top: 6px;
+}
+.timeline-expand {
+  background: none;
+  border: none;
+  color: var(--text-4);
+  padding: 2px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.timeline-item.expanded .timeline-expand {
+  transform: rotate(180deg);
+}
+.timeline-expand svg { width: 14px; height: 14px; }
+
+/* ============================================================
+   SHARE BUTTON & TOAST
+   ============================================================ */
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.share-btn:active { background: var(--surface-2); }
+
+.toast {
+  position: fixed;
+  bottom: calc(var(--nav-height) + var(--safe-bottom) + 16px);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--text);
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 200;
+  pointer-events: none;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.today-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ============================================================
+   NUTRITION MEALS
+   ============================================================ */
+.nutrition-meals { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+.nutrition-meals-title { font-size: 12px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+.nutrition-meal-item { display: flex; gap: 12px; padding: 6px 0; align-items: center; }
+.nutrition-meal-time { font-size: 12px; font-weight: 600; color: var(--teal); min-width: 42px; }
+.nutrition-meal-name { font-size: 13px; color: var(--text-2); }
+
+/* ============================================================
+   EXPLORE DRILL-DOWN ANIMATION
+   ============================================================ */
+#explore-categories.hidden,
+#explore-therapies.hidden {
+  display: block !important;
+  opacity: 0;
+  pointer-events: none;
+  height: 0;
+  overflow: hidden;
+}
+#explore-categories.hidden {
+  transform: translateX(-20px);
+}
+#explore-therapies.hidden {
+  transform: translateX(20px);
+}
+#explore-categories,
+#explore-therapies {
+  transition: opacity 0.25s ease, transform 0.25s ease, height 0.25s ease;
+}
+
+/* Weather card */
+.weather-card {
+  margin: 0 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, #E0F7FA, #E8F5E9);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+[data-theme="dark"] .weather-card {
+  background: linear-gradient(135deg, #1a3a4a, #1a3a2a);
+}
+.weather-icon { font-size: 40px; line-height: 1; }
+.weather-details { flex: 1; }
+.weather-temp { font-size: 28px; font-weight: 700; color: var(--text); }
+.weather-desc { font-size: 13px; color: var(--text-2); margin-top: 2px; }
+.weather-extra { display: flex; gap: 16px; margin-top: 8px; }
+.weather-extra-item { font-size: 11px; color: var(--text-3); }
+.weather-extra-item strong { color: var(--text-2); }
+
+/* Resort map */
+.map-locations { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.map-location-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--surface-2);
+  border-radius: var(--radius);
+}
+.map-location-icon { font-size: 24px; width: 40px; text-align: center; }
+.map-location-text { flex: 1; }
+.map-location-text strong { display: block; font-size: 13px; color: var(--text); }
+.map-location-text span { font-size: 12px; color: var(--text-3); }
+
+/* Activity rating stars */
+.rating-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+.rating-star {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  color: var(--border);
+  font-size: 18px;
+  transition: color 0.15s, transform 0.15s;
+}
+.rating-star:hover { transform: scale(1.2); }
+.rating-star.active { color: #F59E0B; }
+.rating-label { font-size: 11px; color: var(--text-4); margin-left: 8px; }
   </style>
 </head>
 <body>
@@ -1773,8 +2061,13 @@ ul, ol {
       </div>
     </div>
 
+    <div id="next-activity" class="next-activity-banner" style="display:none"></div>
+
     <div class="content-section">
-      <div class="section-title" id="today-section-title"></div>
+      <div class="today-section-header">
+        <div class="section-title" id="today-section-title"></div>
+        <button class="share-btn" id="share-today-btn" type="button" style="display:none"></button>
+      </div>
       <div class="timeline" id="today-timeline"></div>
     </div>
 
@@ -1796,6 +2089,22 @@ ul, ol {
         <div class="resort-gallery-card">
           <img src="images/hero-room.jpg" alt="Your Suite" loading="lazy" />
           <div class="gallery-label">Your Suite</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <div class="section-title">St. Lucia Weather</div>
+      <div class="weather-card">
+        <div class="weather-icon" id="weather-icon"></div>
+        <div class="weather-details">
+          <div class="weather-temp" id="weather-temp"></div>
+          <div class="weather-desc" id="weather-desc"></div>
+          <div class="weather-extra">
+            <div class="weather-extra-item">Humidity: <strong>75%</strong></div>
+            <div class="weather-extra-item">UV Index: <strong>High</strong></div>
+            <div class="weather-extra-item">Water: <strong>27°C</strong></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1838,6 +2147,11 @@ ul, ol {
   <!-- ========== EXPLORE TAB ========== -->
   <div id="tab-explore" class="tab-panel">
 
+    <div class="favorites-header" id="favorites-header">
+      <button class="favorites-filter-btn" id="favorites-filter-btn" type="button"></button>
+      <span class="favorites-count" id="favorites-count"></span>
+    </div>
+
     <div class="explore-search">
       <div class="search-input-wrapper">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -1870,6 +2184,19 @@ ul, ol {
   </div>
 
 </div>
+
+<!-- ==================== INSTALL BANNER ==================== -->
+<div id="install-banner" class="install-banner">
+  <div class="install-banner-text">
+    <strong>Add to Home Screen</strong>
+    <span>Quick access to your portal</span>
+  </div>
+  <button class="install-banner-btn" id="install-btn" type="button">Install</button>
+  <button class="install-banner-close" id="install-close" type="button" aria-label="Close">&times;</button>
+</div>
+
+<!-- ==================== TOAST ==================== -->
+<div id="toast" class="toast"></div>
 
 <!-- ==================== BOTTOM NAV ==================== -->
 <nav id="bottom-nav">
@@ -1941,6 +2268,7 @@ function unlockApp() {
   inputs.forEach(function(input, i) {
     input.addEventListener('input', function() {
       input.value = input.value.replace(/[^0-9]/g, '');
+      if (navigator.vibrate) navigator.vibrate(15);
       if (input.value && i < 3) inputs[i + 1].focus();
 
       var pin = '';
@@ -1953,6 +2281,7 @@ function unlockApp() {
           } else {
             errorEl.textContent = 'Incorrect PIN. Try again.';
             var pinContainer = document.querySelector('.pin-inputs');
+            if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
             pinContainer.classList.add('pin-shake');
             inputs.forEach(function(inp) {
               inp.classList.add('error');
@@ -2197,6 +2526,7 @@ var INFO_SECTIONS = [
   { id: 'included',     title: 'Included Services' },
   { id: 'programs',     title: 'Other Programs Available' },
   { id: 'facilities',   title: 'Facilities' },
+  { id: 'map',          title: 'Resort Map' },
   { id: 'activities',   title: 'Weekly Group Activities' },
   { id: 'cancellation', title: 'Cancellation Policy' },
   { id: 'predetox',     title: 'Pre-Detox Guide' },
@@ -2423,6 +2753,286 @@ function appendTo(parent, child) {
 }
 
 // =============================================================
+// TOAST
+// =============================================================
+
+function showToast(msg) {
+  var toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(function() { toast.classList.remove('show'); }, 2500);
+}
+
+// =============================================================
+// FAVORITES
+// =============================================================
+
+var FAVORITES_KEY = 'tlc_favorites';
+
+function getFavorites() {
+  try {
+    return JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
+  } catch(e) { return []; }
+}
+
+function toggleFavorite(name) {
+  var favs = getFavorites();
+  var idx = favs.indexOf(name);
+  if (idx === -1) {
+    favs.push(name);
+    if (navigator.vibrate) navigator.vibrate(50);
+  } else {
+    favs.splice(idx, 1);
+  }
+  localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs));
+  updateFavoritesCount();
+  logEvent('explore', 'favorite', name);
+  return idx === -1;
+}
+
+function isFavorite(name) {
+  return getFavorites().indexOf(name) !== -1;
+}
+
+function updateFavoritesCount() {
+  var countEl = document.getElementById('favorites-count');
+  if (countEl) {
+    var count = getFavorites().length;
+    countEl.textContent = count + ' saved';
+  }
+}
+
+// =============================================================
+// SHARE SCHEDULE
+// =============================================================
+
+function shareSchedule(dateStr) {
+  logEvent('schedule', 'share', dateStr);
+  var activities = SCHEDULE[dateStr] || [];
+  var dayName = getDayName(dateStr);
+  var text = '\uD83C\uDF3F TheLifeCo St. Lucia \u2014 ' + dayName + '\n\n';
+  activities.forEach(function(a) {
+    text += a.time + ' \u00B7 ' + a.name + '\n';
+  });
+  text += '\n\u2728 ' + GUEST.program;
+  if (navigator.share) {
+    navigator.share({ title: 'My Schedule \u2014 ' + dayName, text: text });
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(function() {
+      showToast('Schedule copied to clipboard!');
+    });
+  }
+}
+
+// =============================================================
+// CHEVRON SVG HELPER
+// =============================================================
+
+function createChevronSvg() {
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  var polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+  polyline.setAttribute('points', '6 9 12 15 18 9');
+  svg.appendChild(polyline);
+  return svg;
+}
+
+// =============================================================
+// HEART SVG HELPER
+// =============================================================
+
+function createHeartSvg(filled) {
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', filled ? 'currentColor' : 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', 'M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z');
+  svg.appendChild(path);
+  return svg;
+}
+
+// =============================================================
+// CLOCK SVG HELPER
+// =============================================================
+
+function createClockSvg() {
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  circle.setAttribute('cx', '12'); circle.setAttribute('cy', '12'); circle.setAttribute('r', '10');
+  svg.appendChild(circle);
+  var l1 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+  l1.setAttribute('points', '12 6 12 12 16 14');
+  svg.appendChild(l1);
+  return svg;
+}
+
+// =============================================================
+// SHARE SVG HELPER
+// =============================================================
+
+function createShareSvg() {
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  svg.setAttribute('width', '14');
+  svg.setAttribute('height', '14');
+  var c1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  c1.setAttribute('cx', '18'); c1.setAttribute('cy', '5'); c1.setAttribute('r', '3');
+  svg.appendChild(c1);
+  var c2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  c2.setAttribute('cx', '6'); c2.setAttribute('cy', '12'); c2.setAttribute('r', '3');
+  svg.appendChild(c2);
+  var c3 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  c3.setAttribute('cx', '18'); c3.setAttribute('cy', '19'); c3.setAttribute('r', '3');
+  svg.appendChild(c3);
+  var l1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  l1.setAttribute('x1', '8.59'); l1.setAttribute('y1', '13.51');
+  l1.setAttribute('x2', '15.42'); l1.setAttribute('y2', '17.49');
+  svg.appendChild(l1);
+  var l2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  l2.setAttribute('x1', '15.41'); l2.setAttribute('y1', '6.51');
+  l2.setAttribute('x2', '8.59'); l2.setAttribute('y2', '10.49');
+  svg.appendChild(l2);
+  return svg;
+}
+
+// =============================================================
+// I18N
+// =============================================================
+
+var LANG = 'en';
+var STRINGS = {
+  en: {
+    goodMorning: 'Good morning',
+    goodAfternoon: 'Good afternoon',
+    goodEvening: 'Good evening',
+    stayProgress: 'Stay Progress',
+    yourResort: 'Your Resort',
+    nutritionToday: 'Nutrition Today',
+    fullSchedule: 'Full Schedule',
+    searchTherapies: 'Search therapies...',
+    backToCategories: '\u2190 Back to categories',
+    guestInfo: 'Guest Information',
+    bookViaWhatsapp: 'Book via WhatsApp',
+    readMore: 'Read more',
+    readLess: 'Read less',
+    rateThis: 'Rate this',
+    rated: 'Rated',
+    copied: 'Schedule copied to clipboard!',
+    noActivities: 'No activities scheduled for this day.',
+    offline: 'You\'re offline \u2014 showing cached content',
+    addToHomeScreen: 'Add to Home Screen',
+    quickAccess: 'Quick access to your portal',
+    install: 'Install',
+    activities: 'Activities',
+    first: 'First',
+    last: 'Last',
+    today: 'Today',
+    schedule: 'Schedule',
+    explore: 'Explore',
+    info: 'Info',
+    favorites: 'Favorites',
+    popular: 'Popular',
+    recommended: 'Recommended',
+    optional: 'Optional'
+  }
+};
+
+function t(key) {
+  return (STRINGS[LANG] && STRINGS[LANG][key]) || key;
+}
+
+// =============================================================
+// ANALYTICS
+// =============================================================
+
+var ANALYTICS_KEY = 'tlc_analytics';
+
+function logEvent(category, action, label) {
+  try {
+    var events = JSON.parse(localStorage.getItem(ANALYTICS_KEY)) || [];
+    events.push({
+      t: Date.now(),
+      c: category,
+      a: action,
+      l: label || ''
+    });
+    if (events.length > 500) events = events.slice(-500);
+    localStorage.setItem(ANALYTICS_KEY, JSON.stringify(events));
+  } catch(e) {}
+}
+
+// =============================================================
+// RATINGS
+// =============================================================
+
+var RATINGS_KEY = 'tlc_ratings';
+
+function getRatings() {
+  try { return JSON.parse(localStorage.getItem(RATINGS_KEY)) || {}; } catch(e) { return {}; }
+}
+
+function setRating(dateStr, activityName, stars) {
+  var ratings = getRatings();
+  var key = dateStr + '|' + activityName;
+  ratings[key] = stars;
+  localStorage.setItem(RATINGS_KEY, JSON.stringify(ratings));
+  if (navigator.vibrate) navigator.vibrate(30);
+}
+
+function buildRatingStars(dateStr, activityName) {
+  var container = h('div', 'rating-container');
+  var ratings = getRatings();
+  var key = dateStr + '|' + activityName;
+  var currentRating = ratings[key] || 0;
+  var label;
+
+  for (var i = 1; i <= 5; i++) {
+    var star = h('button', 'rating-star' + (i <= currentRating ? ' active' : ''));
+    star.setAttribute('type', 'button');
+    star.setAttribute('aria-label', i + ' star');
+    star.textContent = '\u2605';
+    (function(rating) {
+      star.addEventListener('click', function(e) {
+        e.stopPropagation();
+        setRating(dateStr, activityName, rating);
+        var stars = container.querySelectorAll('.rating-star');
+        stars.forEach(function(s, idx) {
+          if (idx < rating) s.classList.add('active');
+          else s.classList.remove('active');
+        });
+        label.textContent = t('rated') + ' ' + rating + '/5';
+      });
+    })(i);
+    appendTo(container, star);
+  }
+
+  label = h('span', 'rating-label', currentRating > 0 ? t('rated') + ' ' + currentRating + '/5' : t('rateThis'));
+  appendTo(container, label);
+
+  return container;
+}
+
+// =============================================================
 // UTILITIES
 // =============================================================
 
@@ -2448,9 +3058,9 @@ function getDayNum(dateStr) {
 
 function getGreeting() {
   var hr = new Date().getHours();
-  if (hr < 12) return 'Good morning';
-  if (hr < 17) return 'Good afternoon';
-  return 'Good evening';
+  if (hr < 12) return t('goodMorning');
+  if (hr < 17) return t('goodAfternoon');
+  return t('goodEvening');
 }
 
 function parseTimeMinutes(timeStr) {
@@ -2478,6 +3088,7 @@ function getDayOfMonth(dateStr) {
 // =============================================================
 
 function generateICS(name, dateStr, timeStr) {
+  logEvent('schedule', 'calendar', name);
   var d = new Date(dateStr + 'T' + timeStr + ':00');
   var end = new Date(d.getTime() + 60 * 60 * 1000);
   function pad(n) { return n < 10 ? '0' + n : '' + n; }
@@ -2540,34 +3151,134 @@ function getNowMinutes() {
   return now.getHours() * 60 + now.getMinutes();
 }
 
+function buildTimelineItem(activity, dateStr, currentMinutes, isToday, nowMarkedRef) {
+  var item = h('div', 'timeline-item');
+  var activityMinutes = parseTimeMinutes(activity.time);
+  if (isToday && activityMinutes < currentMinutes) {
+    item.className += ' completed';
+  } else if (isToday && !nowMarkedRef.value) {
+    item.className += ' now';
+    nowMarkedRef.value = true;
+  }
+  var colorBar = h('div', 'timeline-color-bar ' + activity.type);
+  appendTo(item, colorBar);
+  var timeEl = h('div', 'timeline-time', activity.time);
+  appendTo(item, timeEl);
+  var content = h('div', 'timeline-content');
+  var nameEl = h('h4', null, activity.name);
+  nameEl.style.cssText = 'display:inline;';
+  appendTo(content, nameEl);
+  var desc = DESCRIPTIONS[activity.name] || '';
+  if (desc) {
+    var expandBtn = h('button', 'timeline-expand');
+    expandBtn.setAttribute('type', 'button');
+    expandBtn.setAttribute('aria-label', 'Expand');
+    expandBtn.appendChild(createChevronSvg());
+    appendTo(content, expandBtn);
+    appendTo(content, h('p', null, desc));
+  }
+  appendTo(item, content);
+  if (desc) {
+    item.style.cursor = 'pointer';
+    item.addEventListener('click', function(e) {
+      if (e.target.closest && e.target.closest('.timeline-cal-btn')) return;
+      item.classList.toggle('expanded');
+    });
+  }
+  appendTo(item, createCalBtn(activity.name, dateStr, activity.time));
+  return item;
+}
+
+function buildNextActivityBanner(activities) {
+  var banner = document.getElementById('next-activity');
+  if (!banner) return;
+  while (banner.firstChild) banner.removeChild(banner.firstChild);
+  var currentMinutes = getNowMinutes();
+  var nextActivity = null;
+  for (var i = 0; i < activities.length; i++) {
+    if (parseTimeMinutes(activities[i].time) > currentMinutes) {
+      nextActivity = activities[i];
+      break;
+    }
+  }
+  if (!nextActivity) { banner.style.display = 'none'; return; }
+  banner.style.display = '';
+  var iconDiv = h('div', 'next-activity-icon');
+  iconDiv.appendChild(createClockSvg());
+  appendTo(banner, iconDiv);
+  var textDiv = h('div', 'next-activity-text');
+  appendTo(textDiv, h('strong', null, 'Next: ' + nextActivity.name));
+  appendTo(textDiv, h('span', null, TYPE_LABELS[nextActivity.type] || nextActivity.type));
+  appendTo(banner, textDiv);
+  var diff = parseTimeMinutes(nextActivity.time) - currentMinutes;
+  var ct = '';
+  if (diff >= 60) { var hrs = Math.floor(diff / 60); var mins = diff % 60; ct = hrs + 'h' + (mins > 0 ? ' ' + mins + 'm' : ''); } else { ct = diff + 'm'; }
+  appendTo(banner, h('div', 'next-activity-countdown', ct));
+}
+
+var _nextActivityInterval = null;
+
 function initToday() {
   var todayStr = getTodayStr();
   var dayNum = getDayNum(todayStr);
+  var dates = Object.keys(SCHEDULE);
+  var stayStart = new Date(GUEST.checkIn + 'T00:00:00');
+  var stayEnd = new Date(dates[dates.length - 1] + 'T00:00:00');
 
-  // Greeting (dynamic)
+  // Before stay
+  if (TODAY_DATE < stayStart) {
+    var daysUntil = Math.ceil((stayStart - TODAY_DATE) / 86400000);
+    var gl = document.getElementById('greeting-label');
+    if (gl) gl.textContent = getGreeting();
+    var hd = document.getElementById('header-date');
+    if (hd) hd.textContent = formatDateLong(todayStr);
+    var be = document.getElementById('program-badge-text');
+    if (be) be.textContent = 'Arriving in ' + daysUntil + ' days';
+    var pe = document.getElementById('progress-pct');
+    if (pe) pe.textContent = '0%';
+    var st = document.getElementById('today-section-title');
+    if (st) st.textContent = 'Your stay begins ' + formatDateLong(GUEST.checkIn);
+    var tc = document.getElementById('today-timeline');
+    if (tc) { while (tc.firstChild) tc.removeChild(tc.firstChild); appendTo(tc, h('div', 'empty-state', 'Your wellness journey starts on ' + formatDateLong(GUEST.checkIn) + '. We cannot wait to welcome you!')); }
+    var ue = document.getElementById('today-updated');
+    if (ue) ue.textContent = 'Last updated ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return;
+  }
+
+  // After stay
+  if (TODAY_DATE > stayEnd) {
+    var gl2 = document.getElementById('greeting-label');
+    if (gl2) gl2.textContent = getGreeting();
+    var hd2 = document.getElementById('header-date');
+    if (hd2) hd2.textContent = formatDateLong(todayStr);
+    var be2 = document.getElementById('program-badge-text');
+    if (be2) be2.textContent = GUEST.program + ' \u00B7 Completed';
+    var pe2 = document.getElementById('progress-pct');
+    if (pe2) pe2.textContent = '100%';
+    setTimeout(function() { var b = document.getElementById('progress-bar'); if (b) b.style.width = '100%'; }, 120);
+    var st2 = document.getElementById('today-section-title');
+    if (st2) st2.textContent = 'Stay Complete';
+    var tc2 = document.getElementById('today-timeline');
+    if (tc2) { while (tc2.firstChild) tc2.removeChild(tc2.firstChild); appendTo(tc2, h('div', 'empty-state', 'Your stay at TheLifeCo has ended. We hope you enjoyed your wellness journey! Contact us anytime via WhatsApp.')); }
+    var ue2 = document.getElementById('today-updated');
+    if (ue2) ue2.textContent = 'Last updated ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return;
+  }
+
+  // Within stay range
   var greetingLabel = document.getElementById('greeting-label');
   if (greetingLabel) greetingLabel.textContent = getGreeting();
-
-  // Header date
   var headerDateEl = document.getElementById('header-date');
   if (headerDateEl) headerDateEl.textContent = formatDateLong(todayStr);
-
-  // Program badge
   var badgeEl = document.getElementById('program-badge-text');
   if (badgeEl) badgeEl.textContent = GUEST.program + ' \u00B7 Day ' + dayNum + ' of ' + GUEST.totalDays;
-
-  // Progress bar
   var pct = Math.round(((dayNum - 1) / GUEST.totalDays) * 100);
   if (pct < 0) pct = 0;
   if (pct > 100) pct = 100;
   var pctEl = document.getElementById('progress-pct');
   if (pctEl) pctEl.textContent = pct + '%';
-  setTimeout(function() {
-    var barEl = document.getElementById('progress-bar');
-    if (barEl) barEl.style.width = pct + '%';
-  }, 120);
+  setTimeout(function() { var barEl = document.getElementById('progress-bar'); if (barEl) barEl.style.width = pct + '%'; }, 120);
 
-  // Today section title
   var sectionTitle = document.getElementById('today-section-title');
   if (sectionTitle) {
     if (ONBOARDING_DATES[todayStr]) {
@@ -2577,83 +3288,76 @@ function initToday() {
     }
   }
 
+  // Share button
+  var shareBtn = document.getElementById('share-today-btn');
+  if (shareBtn) {
+    while (shareBtn.firstChild) shareBtn.removeChild(shareBtn.firstChild);
+    shareBtn.appendChild(createShareSvg());
+    appendTo(shareBtn, document.createTextNode(' Share'));
+    shareBtn.style.display = '';
+    shareBtn.addEventListener('click', function() { shareSchedule(todayStr); });
+  }
+
   // Build today timeline
+  var activities = SCHEDULE[todayStr] || [];
   var timelineContainer = document.getElementById('today-timeline');
   if (timelineContainer) {
-    var activities = SCHEDULE[todayStr] || [];
     while (timelineContainer.firstChild) timelineContainer.removeChild(timelineContainer.firstChild);
-
     var currentMinutes = getNowMinutes();
-    var nowMarked = false;
-
+    var nowMarkedRef = { value: false };
     activities.forEach(function(activity) {
-      var item = h('div', 'timeline-item');
-      var activityMinutes = parseTimeMinutes(activity.time);
-      if (activityMinutes < currentMinutes) {
-        item.className += ' completed';
-      } else if (!nowMarked) {
-        item.className += ' now';
-        nowMarked = true;
-      }
-
-      var colorBar = h('div', 'timeline-color-bar ' + activity.type);
-      appendTo(item, colorBar);
-
-      var timeEl = h('div', 'timeline-time', activity.time);
-      appendTo(item, timeEl);
-
-      var content = h('div', 'timeline-content');
-      var nameEl = h('h4', null, activity.name);
-      appendTo(content, nameEl);
-      var desc = DESCRIPTIONS[activity.name] || '';
-      if (desc) {
-        var descEl = h('p', null, desc);
-        appendTo(content, descEl);
-      }
-      appendTo(item, content);
-
-      // Calendar button
-      appendTo(item, createCalBtn(activity.name, todayStr, activity.time));
-
-      appendTo(timelineContainer, item);
+      appendTo(timelineContainer, buildTimelineItem(activity, todayStr, currentMinutes, true, nowMarkedRef));
     });
+    if (activities.length === 0) {
+      appendTo(timelineContainer, h('div', 'empty-state', 'No activities scheduled for today.'));
+    }
   }
+
+  // Next activity banner
+  buildNextActivityBanner(activities);
+  if (_nextActivityInterval) clearInterval(_nextActivityInterval);
+  _nextActivityInterval = setInterval(function() { buildNextActivityBanner(activities); }, 60000);
 
   // Nutrition card
   var nutritionCard = document.getElementById('nutrition-card');
   if (nutritionCard) {
     while (nutritionCard.firstChild) nutritionCard.removeChild(nutritionCard.firstChild);
-
-    var nutTitle = h('h3', null, 'Green Salad Program');
-    appendTo(nutritionCard, nutTitle);
-
-    var nutDesc = h('p', null, '750\u2013850 calories per day \u00B7 100% plant-based whole-food meals');
-    appendTo(nutritionCard, nutDesc);
-
+    appendTo(nutritionCard, h('h3', null, 'Green Salad Program'));
+    appendTo(nutritionCard, h('p', null, '750\u2013850 calories per day \u00B7 100% plant-based whole-food meals'));
     var statsGrid = h('div', 'nutrition-stats');
-
     var stat1 = h('div', 'nutrition-stat');
     appendTo(stat1, h('div', 'nutrition-stat-value', '750-850'));
     appendTo(stat1, h('div', 'nutrition-stat-label', 'Calories'));
     appendTo(statsGrid, stat1);
-
     var stat2 = h('div', 'nutrition-stat');
     appendTo(stat2, h('div', 'nutrition-stat-value', 'Plant'));
     appendTo(stat2, h('div', 'nutrition-stat-label', 'Based'));
     appendTo(statsGrid, stat2);
-
     var stat3 = h('div', 'nutrition-stat');
     appendTo(stat3, h('div', 'nutrition-stat-value', 'Day ' + dayNum));
     appendTo(stat3, h('div', 'nutrition-stat-label', 'Progress'));
     appendTo(statsGrid, stat3);
-
     appendTo(nutritionCard, statsGrid);
+
+    // Meal list from today schedule
+    var meals = activities.filter(function(a) { return a.type === 'food'; });
+    if (meals.length > 0) {
+      var mealList = h('div', 'nutrition-meals');
+      appendTo(mealList, h('div', 'nutrition-meals-title', "Today's Meals"));
+      meals.forEach(function(meal) {
+        var mealItem = h('div', 'nutrition-meal-item');
+        appendTo(mealItem, h('span', 'nutrition-meal-time', meal.time));
+        appendTo(mealItem, h('span', 'nutrition-meal-name', meal.name));
+        appendTo(mealList, mealItem);
+      });
+      appendTo(nutritionCard, mealList);
+    }
   }
 
-  // Today updated
+  // Today updated - dynamic
   var updatedEl = document.getElementById('today-updated');
   if (updatedEl) {
-    updatedEl.textContent = 'Last updated Mar 13, 2026';
+    updatedEl.textContent = 'Last updated ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   }
 }
 
@@ -2721,17 +3425,17 @@ function loadScheduleDay(dateStr) {
 
     var s1 = h('div', 'day-stat');
     appendTo(s1, h('span', 'stat-num', String(totalCount)));
-    appendTo(s1, h('span', 'stat-label', 'Activities'));
+    appendTo(s1, h('span', 'stat-label', t('activities')));
     appendTo(statsContainer, s1);
 
     var s2 = h('div', 'day-stat');
     appendTo(s2, h('span', 'stat-num', firstTime));
-    appendTo(s2, h('span', 'stat-label', 'First'));
+    appendTo(s2, h('span', 'stat-label', t('first')));
     appendTo(statsContainer, s2);
 
     var s3 = h('div', 'day-stat');
     appendTo(s3, h('span', 'stat-num', lastTime));
-    appendTo(s3, h('span', 'stat-label', 'Last'));
+    appendTo(s3, h('span', 'stat-label', t('last')));
     appendTo(statsContainer, s3);
   }
 
@@ -2739,40 +3443,22 @@ function loadScheduleDay(dateStr) {
   var todayStr = getTodayStr();
   var isToday = dateStr === todayStr;
   var currentMinutes = getNowMinutes();
-  var nowMarked = false;
+  var nowMarkedRef = { value: false };
 
   activities.forEach(function(activity) {
-    var item = h('div', 'timeline-item');
+    var item = buildTimelineItem(activity, dateStr, currentMinutes, isToday, nowMarkedRef);
+    // Add rating stars for completed schedule items
     var activityMinutes = parseTimeMinutes(activity.time);
-    if (isToday && activityMinutes < currentMinutes) {
-      item.className += ' completed';
-    } else if (isToday && !nowMarked) {
-      item.className += ' now';
-      nowMarked = true;
+    var isCompletedSched = isToday && activityMinutes < currentMinutes;
+    if (isCompletedSched && typeof buildRatingStars === 'function') {
+      var contentEl = item.querySelector('.timeline-content');
+      if (contentEl) appendTo(contentEl, buildRatingStars(dateStr, activity.name));
     }
-
-    var colorBar = h('div', 'timeline-color-bar ' + activity.type);
-    appendTo(item, colorBar);
-
-    var timeEl = h('div', 'timeline-time', activity.time);
-    appendTo(item, timeEl);
-
-    var content = h('div', 'timeline-content');
-    appendTo(content, h('h4', null, activity.name));
-    var desc = DESCRIPTIONS[activity.name] || '';
-    if (desc) {
-      appendTo(content, h('p', null, desc));
-    }
-    appendTo(item, content);
-
-    // Calendar button
-    appendTo(item, createCalBtn(activity.name, dateStr, activity.time));
-
     appendTo(timelineContainer, item);
   });
 
   if (activities.length === 0) {
-    var empty = h('div', 'empty-state', 'No activities scheduled for this day.');
+    var empty = h('div', 'empty-state', t('noActivities'));
     appendTo(timelineContainer, empty);
   }
 }
@@ -2804,6 +3490,7 @@ function initExplore() {
     appendTo(card, cardContent);
 
     card.addEventListener('click', function() {
+      logEvent('explore', 'category', cat.title);
       categoriesContainer.classList.add('hidden');
       if (therapiesContainer) therapiesContainer.classList.remove('hidden');
       if (backBtn) backBtn.classList.remove('hidden');
@@ -2823,6 +3510,7 @@ function initExplore() {
   }
 
   // Global search across all categories
+  var _searchTimer = null;
   if (searchInput) {
     searchInput.addEventListener('input', function() {
       var q = searchInput.value.toLowerCase().trim();
@@ -2833,6 +3521,9 @@ function initExplore() {
         if (backBtn) backBtn.classList.add('hidden');
         return;
       }
+      // Debounced search analytics
+      clearTimeout(_searchTimer);
+      _searchTimer = setTimeout(function() { logEvent('explore', 'search', q); }, 800);
       // Search across all categories
       categoriesContainer.classList.add('hidden');
       if (therapiesContainer) therapiesContainer.classList.remove('hidden');
@@ -2857,9 +3548,24 @@ function initExplore() {
 function buildSingleTherapyCard(therapy) {
   var card = h('div', 'therapy-card');
   card.setAttribute('data-name', therapy.name);
+  logEvent('explore', 'therapy', therapy.name);
 
   var body = h('div', 'therapy-card-body');
-  appendTo(body, h('h4', null, therapy.name));
+  var cardHeader = h('div', 'flex items-center justify-between');
+  appendTo(cardHeader, h('h4', null, therapy.name));
+  var favBtn = h('button', 'fav-btn' + (isFavorite(therapy.name) ? ' active' : ''));
+  favBtn.setAttribute('type', 'button');
+  favBtn.setAttribute('aria-label', 'Favorite');
+  favBtn.appendChild(createHeartSvg(isFavorite(therapy.name)));
+  favBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    var nowFav = toggleFavorite(therapy.name);
+    favBtn.className = 'fav-btn' + (nowFav ? ' active' : '');
+    while (favBtn.firstChild) favBtn.removeChild(favBtn.firstChild);
+    favBtn.appendChild(createHeartSvg(nowFav));
+  });
+  appendTo(cardHeader, favBtn);
+  appendTo(body, cardHeader);
 
   // Description with read more / read less toggle
   var descP = h('p');
@@ -2870,32 +3576,35 @@ function buildSingleTherapyCard(therapy) {
 
   if (truncated) {
     var expanded = false;
-    var toggle = h('span', 'therapy-read-more', 'Read more');
+    var toggle = h('span', 'therapy-read-more', t('readMore'));
     toggle.addEventListener('click', function(e) {
       e.stopPropagation();
       expanded = !expanded;
       descP.textContent = expanded ? fullDesc : fullDesc.substring(0, 150) + '...';
-      toggle.textContent = expanded ? 'Read less' : 'Read more';
+      toggle.textContent = expanded ? t('readLess') : t('readMore');
     });
     appendTo(body, toggle);
   }
 
   var meta = h('div', 'therapy-card-meta');
   if (therapy.popular) {
-    appendTo(meta, h('span', 'badge badge-popular', 'Popular'));
+    appendTo(meta, h('span', 'badge badge-popular', t('popular')));
   } else if (therapy.recommended) {
-    appendTo(meta, h('span', 'badge badge-included', 'Recommended'));
+    appendTo(meta, h('span', 'badge badge-included', t('recommended')));
   } else {
-    appendTo(meta, h('span', 'badge badge-optional', 'Optional'));
+    appendTo(meta, h('span', 'badge badge-optional', t('optional')));
   }
   appendTo(body, meta);
 
   // WhatsApp book link
   var waMsg = encodeURIComponent('Hi, I\'d like to book ' + therapy.name + ' please.');
-  var waLink = h('a', 'btn-whatsapp-book', 'Book via WhatsApp');
+  var waLink = h('a', 'btn-whatsapp-book', t('bookViaWhatsapp'));
   waLink.href = GUEST.waBase + '?text=' + waMsg;
   waLink.target = '_blank';
   waLink.rel = 'noopener noreferrer';
+  waLink.addEventListener('click', function() {
+    logEvent('booking', 'whatsapp', therapy.name);
+  });
   appendTo(body, waLink);
 
   appendTo(card, body);
@@ -3049,6 +3758,35 @@ function buildInfoContent(id) {
     });
     appendTo(wrapper, ul5);
 
+  } else if (id === 'map') {
+    appendTo(wrapper, h('p', null, 'TheLifeCo St. Lucia \u00B7 Sugar Beach, Soufrière'));
+
+    var locations = [
+      { icon: '\uD83C\uDFCA', name: 'Swimming Pool & Lounge', area: 'Central Grounds' },
+      { icon: '\uD83E\uDDD8', name: 'Yoga Pavilion', area: 'Beach Level' },
+      { icon: '\uD83C\uDFE5', name: 'Medical Clinic', area: 'Main Building, 1st Floor' },
+      { icon: '\uD83D\uDC86', name: 'Spa & Massage Center', area: 'West Wing' },
+      { icon: '\uD83C\uDF43', name: 'Bio-Hacking Lab', area: 'East Wing' },
+      { icon: '\uD83C\uDF7D\uFE0F', name: 'Restaurant & Juice Bar', area: 'Main Building, Ground Floor' },
+      { icon: '\uD83C\uDFD6\uFE0F', name: 'Private Beach', area: 'Waterfront' },
+      { icon: '\uD83E\uDDD6', name: 'Sauna, Steam & Hammam', area: 'Spa Level' },
+      { icon: '\uD83C\uDFCB\uFE0F', name: 'Fitness Center', area: 'East Wing, Ground Floor' },
+      { icon: '\uD83D\uDECF\uFE0F', name: 'Guest Rooms', area: 'Floors 1-3' },
+      { icon: '\uD83D\uDCCB', name: 'Reception & Front Desk', area: 'Main Entrance' }
+    ];
+
+    var mapGrid = h('div', 'map-locations');
+    locations.forEach(function(loc) {
+      var item = h('div', 'map-location-item');
+      appendTo(item, h('span', 'map-location-icon', loc.icon));
+      var textDiv = h('div', 'map-location-text');
+      appendTo(textDiv, h('strong', null, loc.name));
+      appendTo(textDiv, h('span', null, loc.area));
+      appendTo(item, textDiv);
+      appendTo(mapGrid, item);
+    });
+    appendTo(wrapper, mapGrid);
+
   } else if (id === 'activities') {
     var ul6 = h('ul');
     INFO_CONTENT.activities.forEach(function(item) {
@@ -3119,6 +3857,7 @@ var tabs = {
 };
 
 function switchTab(tabId, skipHistory) {
+  logEvent('nav', 'tab', tabId);
   // Hide all tab panels
   document.querySelectorAll('.tab-panel').forEach(function(panel) {
     panel.classList.remove('active');
@@ -3168,6 +3907,7 @@ window.addEventListener('popstate', function(e) {
 // Event listeners on nav items
 document.querySelectorAll('.nav-item').forEach(function(btn) {
   btn.addEventListener('click', function() {
+    if (navigator.vibrate) navigator.vibrate(10);
     switchTab(btn.getAttribute('data-tab'));
   });
 });
@@ -3220,11 +3960,13 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
   }
 
   toggle.addEventListener('click', function() {
+    if (navigator.vibrate) navigator.vibrate(10);
     var current = document.documentElement.getAttribute('data-theme');
     var next = current === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('tlc_theme', next);
     setIcon(next === 'dark');
+    logEvent('settings', 'darkmode', next);
   });
 })();
 
@@ -3278,6 +4020,92 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
   if (splash) {
     splash.style.opacity = '0';
     setTimeout(function() { splash.style.display = 'none'; }, 500);
+  }
+
+  // Install prompt
+  var deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    var dismissed = localStorage.getItem('tlc_install_dismissed');
+    if (!dismissed) {
+      document.getElementById('install-banner').classList.add('show');
+    }
+  });
+  document.getElementById('install-btn').addEventListener('click', function() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function() { deferredPrompt = null; });
+    }
+    document.getElementById('install-banner').classList.remove('show');
+  });
+  document.getElementById('install-close').addEventListener('click', function() {
+    document.getElementById('install-banner').classList.remove('show');
+    localStorage.setItem('tlc_install_dismissed', '1');
+  });
+
+  // Swipe gestures between tabs
+  (function initSwipe() {
+    var startX = 0;
+    var startY = 0;
+    var tabOrder = ['today', 'schedule', 'explore', 'info'];
+    document.addEventListener('touchstart', function(e) {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    }, { passive: true });
+    document.addEventListener('touchend', function(e) {
+      var dx = e.changedTouches[0].clientX - startX;
+      var dy = e.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx) * 0.5) return;
+      var activeNav = document.querySelector('.nav-item.active');
+      if (!activeNav) return;
+      var currentTab = activeNav.getAttribute('data-tab');
+      var currentIdx = tabOrder.indexOf(currentTab);
+      if (currentIdx === -1) return;
+      var nextIdx = dx > 0 ? currentIdx - 1 : currentIdx + 1;
+      if (nextIdx >= 0 && nextIdx < tabOrder.length) {
+        if (navigator.vibrate) navigator.vibrate(10);
+        switchTab(tabOrder[nextIdx]);
+      }
+    }, { passive: true });
+  })();
+
+  // Favorites filter init
+  updateFavoritesCount();
+  var favFilterBtn = document.getElementById('favorites-filter-btn');
+  if (favFilterBtn) {
+    favFilterBtn.textContent = '\u2764 Favorites';
+    var favFilterActive = false;
+    favFilterBtn.addEventListener('click', function() {
+      favFilterActive = !favFilterActive;
+      favFilterBtn.classList.toggle('active', favFilterActive);
+      var categoriesContainer = document.getElementById('explore-categories');
+      var therapiesContainer = document.getElementById('explore-therapies');
+      var backBtn = document.getElementById('explore-back');
+      if (favFilterActive) {
+        var favs = getFavorites();
+        if (categoriesContainer) categoriesContainer.classList.add('hidden');
+        if (therapiesContainer) therapiesContainer.classList.remove('hidden');
+        if (backBtn) backBtn.classList.remove('hidden');
+        if (therapiesContainer) {
+          while (therapiesContainer.firstChild) therapiesContainer.removeChild(therapiesContainer.firstChild);
+          EXPLORE_CATEGORIES.forEach(function(cat) {
+            cat.therapies.forEach(function(therapy) {
+              if (favs.indexOf(therapy.name) !== -1) {
+                appendTo(therapiesContainer, buildSingleTherapyCard(therapy));
+              }
+            });
+          });
+          if (!therapiesContainer.firstChild) {
+            appendTo(therapiesContainer, h('div', 'empty-state', 'No favorites saved yet. Tap the heart icon on any therapy to save it.'));
+          }
+        }
+      } else {
+        if (categoriesContainer) categoriesContainer.classList.remove('hidden');
+        if (therapiesContainer) therapiesContainer.classList.add('hidden');
+        if (backBtn) backBtn.classList.add('hidden');
+      }
+    });
   }
 })();
 

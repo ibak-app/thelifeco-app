@@ -998,6 +998,46 @@
       .btn-lg { font-size: 15px; padding: 15px 24px; }
     }
 
+    /* ─── Tech Highlights ─────────────────────────────── */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    @media (max-width: 768px) { .tech-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .tech-grid { grid-template-columns: 1fr; } }
+
+    .tech-card {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radius-md);
+      padding: 32px 24px;
+      text-align: center;
+      transition: background .3s, border-color .3s;
+    }
+    .tech-card:hover {
+      background: rgba(255,255,255,.08);
+      border-color: rgba(0,190,214,.3);
+    }
+    .tech-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--teal);
+      margin-bottom: 4px;
+    }
+    .tech-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,.8);
+      margin-bottom: 12px;
+    }
+    .tech-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,.5);
+      line-height: 1.6;
+    }
+
     /* ─── Scrollbar ────────────────────────────────────── */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #f0f4f8; }
@@ -1026,6 +1066,7 @@
           <li><a href="#how-it-works">How It Works</a></li>
           <li><a href="#included">What's Included</a></li>
           <li><a href="#whats-new">What's New</a></li>
+          <li><a href="#tech">Tech</a></li>
           <li><a href="/guest/hasan-akkaya/" class="nav-cta">See Demo</a></li>
         </ul>
         <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
@@ -1066,20 +1107,20 @@
 
         <div class="hero-stats" aria-label="Key metrics">
           <div class="hero-stat">
-            <div class="hero-stat-num">50+</div>
-            <div class="hero-stat-label">Therapies catalogued</div>
+            <div class="hero-stat-num">40+</div>
+            <div class="hero-stat-label">Therapies across 6 categories</div>
           </div>
           <div class="hero-stat">
-            <div class="hero-stat-num">~$0</div>
-            <div class="hero-stat-label">Monthly hosting cost</div>
+            <div class="hero-stat-num">7 days</div>
+            <div class="hero-stat-label">Of programming at a glance</div>
           </div>
           <div class="hero-stat">
             <div class="hero-stat-num">1 link</div>
-            <div class="hero-stat-label">Per guest, works offline</div>
+            <div class="hero-stat-label">To everything they need</div>
           </div>
           <div class="hero-stat">
             <div class="hero-stat-num">100%</div>
-            <div class="hero-stat-label">No app store needed</div>
+            <div class="hero-stat-label">Offline capable</div>
           </div>
         </div>
       </div>
@@ -1685,6 +1726,121 @@
           <p>Activity reminders and offline status alerts. Never miss an appointment or lose connection unaware.</p>
         </div>
 
+        <div class="new-feature-card reveal reveal-delay-1">
+          <div class="new-feature-icon new-feature-icon--teal" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M6 14h16" stroke="#00BED6" stroke-width="1.8" stroke-linecap="round"/><path d="M10 14l-4-3M10 14l-4 3" stroke="#00BED6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 14l4-3M18 14l4 3" stroke="#00BED6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">New</span>
+          <h3>Swipe Navigation</h3>
+          <p>Swipe between tabs like a native app. Touch-friendly gestures for effortless browsing on any device.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-2">
+          <div class="new-feature-icon new-feature-icon--navy" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 6C14 6 8 10.5 8 15.5C8 19.09 10.69 22 14 22C17.31 22 20 19.09 20 15.5C20 10.5 14 6 14 6Z" stroke="#00609C" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 12C14 12 11.5 14 11.5 16C11.5 17.38 12.62 18.5 14 18.5C15.38 18.5 16.5 17.38 16.5 16C16.5 14 14 12 14 12Z" fill="#00609C" opacity=".2"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">New</span>
+          <h3>Favorites</h3>
+          <p>Save therapies with a single tap. Filter your picks and build a personal shortlist for easy booking.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-3">
+          <div class="new-feature-icon new-feature-icon--orange" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 5l2.47 5.01L22 10.9l-4 3.9.94 5.5L14 17.77l-4.94 2.6.94-5.5-4-3.9 5.53-.87L14 5Z" stroke="#F6A358" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">New</span>
+          <h3>Activity Ratings</h3>
+          <p>Rate completed activities with star ratings. Help the resort improve and remember what you loved.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-4">
+          <div class="new-feature-icon new-feature-icon--purple" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M16 7l4 4M10 21l-3 1 1-3L18 9l2 2L10 21Z" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity=".4"/><path d="M8 14l3-8 3 8-6 4 6 4-3-8" stroke="#7c3aed" stroke-width="0" fill="none"/><path d="M17 10v8M13 14h8" stroke="#7c3aed" stroke-width="0"/><path d="M10 8v3M10 8h3M20 18v3M20 18h-3" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round"/><rect x="8" y="12" width="12" height="8" rx="2" stroke="#7c3aed" stroke-width="1.8"/><path d="M14 12v8" stroke="#7c3aed" stroke-width="1.2" stroke-linecap="round" opacity=".4"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">New</span>
+          <h3>Share Schedule</h3>
+          <p>Share your day's schedule via WhatsApp or copy to clipboard. Keep travel companions in the loop.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-1">
+          <div class="new-feature-icon new-feature-icon--teal" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="12" r="4" fill="#00BED6" opacity=".15"/><circle cx="14" cy="12" r="4" stroke="#00BED6" stroke-width="1.8"/><path d="M14 4v1.5M14 18.5V20M4 12h1.5M22.5 12H24M6.93 6.93l1.06 1.06M20.01 20.01l1.06 1.06M6.93 17.07l1.06-1.06M20.01 3.99l1.06 1.06" stroke="#00BED6" stroke-width="1.5" stroke-linecap="round"/><path d="M8 24h12" stroke="#00BED6" stroke-width="1.5" stroke-linecap="round" opacity=".4"/><path d="M10 22h8" stroke="#00BED6" stroke-width="1.5" stroke-linecap="round" opacity=".6"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">New</span>
+          <h3>Weather Info</h3>
+          <p>Local St. Lucia weather at a glance. Know if it's a beach day or spa day before you step out.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-2">
+          <div class="new-feature-icon new-feature-icon--navy" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 5C14 5 8 12 8 17c0 3.31 2.69 6 6 6s6-2.69 6-6c0-5-6-12-6-12Z" stroke="#00609C" stroke-width="0" fill="none"/><circle cx="14" cy="14" r="3" fill="#00609C" opacity=".15"/><path d="M14 6v16M14 6l-1 2M14 6l1 2" stroke="#00609C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="14" r="8" stroke="#00609C" stroke-width="1.8"/><path d="M14 10v1M14 17v1M10 14h1M17 14h1" stroke="#00609C" stroke-width="1.5" stroke-linecap="round" opacity=".5"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">New</span>
+          <h3>Resort Map</h3>
+          <p>Interactive map to find any facility in seconds. Spa, pool, restaurant, yoga pavilion — all pinpointed.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-3">
+          <div class="new-feature-icon new-feature-icon--orange" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#F6A358" stroke-width="1.8"/><path d="M14 8v6l4 2" stroke="#F6A358" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="14" r="2" fill="#F6A358" opacity=".3"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">New</span>
+          <h3>Next Activity</h3>
+          <p>Live countdown timer to your next session. Always know exactly when and where to be.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-4">
+          <div class="new-feature-icon new-feature-icon--purple" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M9 7v14" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round"/><path d="M9 7c2 0 4 1 4 3.5S11 14 9 14" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 7v14M20 7v14" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round"/><path d="M16 14h4" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">New</span>
+          <h3>Meal Schedule</h3>
+          <p>See today's meals with exact times. Juice, broth, salad, or full meal — know what's coming and when.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════ TECH HIGHLIGHTS ═════════════════════════ -->
+  <section id="tech" class="section section--dark" aria-labelledby="tech-title">
+    <div class="container">
+      <div class="section-header section-header--center reveal">
+        <div class="label label--light">Under the Hood</div>
+        <h2 class="section-title" id="tech-title">Built for Performance</h2>
+        <p class="section-subtitle">Zero dependencies. No framework bloat. Pure vanilla JavaScript that loads instantly.</p>
+      </div>
+      <div class="tech-grid reveal">
+        <div class="tech-card">
+          <div class="tech-value">111KB</div>
+          <div class="tech-label">Total app size</div>
+          <div class="tech-desc">Single HTML file with inline CSS &amp; JS. No build step, no dependencies.</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-value">&lt;1s</div>
+          <div class="tech-label">First paint</div>
+          <div class="tech-desc">Instant load with splash screen. Service worker caches for offline use.</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-value">40+</div>
+          <div class="tech-label">Therapies cataloged</div>
+          <div class="tech-desc">Full descriptions, pricing badges, and one-tap WhatsApp booking.</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-value">100%</div>
+          <div class="tech-label">Offline capable</div>
+          <div class="tech-desc">Works without internet. Google Fonts cached. Full app in service worker.</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-value">0</div>
+          <div class="tech-label">Dependencies</div>
+          <div class="tech-desc">No React, no npm, no build tools. Vanilla JS that works everywhere.</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-value">i18n</div>
+          <div class="tech-label">Ready for translation</div>
+          <div class="tech-desc">String externalization system built in. Add Turkish, Arabic, or any language.</div>
+        </div>
       </div>
     </div>
   </section>
@@ -1711,6 +1867,16 @@
                 <div class="demo-screen-prog">Master Cleanse Programme · Day 3 of 10</div>
               </div>
               <div class="demo-screen-today">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                  <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-secondary);">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="3" fill="#F6A358"/><path d="M7 1v1.5M7 11.5V13M1 7h1.5M11.5 7H13M2.76 2.76l1.06 1.06M10.18 10.18l1.06 1.06M2.76 11.24l1.06-1.06M10.18 3.82l1.06-1.06" stroke="#F6A358" stroke-width="1" stroke-linecap="round"/></svg>
+                    29°C St. Lucia
+                  </div>
+                </div>
+                <div style="background:linear-gradient(135deg,rgba(0,190,214,.1),rgba(0,96,156,.08));border:1px solid rgba(0,190,214,.2);border-radius:8px;padding:6px 10px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><circle cx="6" cy="6" r="5" stroke="var(--teal)" stroke-width="1.2"/><path d="M6 3v3l2 1" stroke="var(--teal)" stroke-width="1.2" stroke-linecap="round"/></svg>
+                  <span style="font-size:10px;font-weight:700;color:var(--navy);">Next: Pilates in 23m</span>
+                </div>
                 <div class="demo-screen-section-label">Today's Schedule</div>
                 <div class="demo-timeline-item demo-timeline-item--done">
                   <span class="demo-timeline-time">07:30</span>
@@ -1819,7 +1985,7 @@
         lastScroll = current;
 
         /* Active nav link */
-        var sections = ['hero', 'problem', 'solution', 'upsell', 'how-it-works', 'included', 'comparison', 'whats-new', 'demo'];
+        var sections = ['hero', 'problem', 'solution', 'upsell', 'how-it-works', 'included', 'comparison', 'whats-new', 'tech', 'demo'];
         var activeId = null;
         for (var i = sections.length - 1; i >= 0; i--) {
           var el = document.getElementById(sections[i]);
