@@ -1038,6 +1038,43 @@
       line-height: 1.6;
     }
 
+    /* ─── ROI Cards ──────────────────────────────────────── */
+    .roi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    @media (max-width: 900px) { .roi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 540px) { .roi-grid { grid-template-columns: 1fr; } }
+
+    .roi-card {
+      background: #fff;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 32px 24px;
+      text-align: center;
+      transition: box-shadow .3s, transform .3s;
+    }
+    .roi-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+    }
+    .roi-icon {
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+    .roi-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .roi-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
     /* ─── Scrollbar ────────────────────────────────────── */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #f0f4f8; }
@@ -1067,6 +1104,7 @@
           <li><a href="#included">What's Included</a></li>
           <li><a href="#whats-new">What's New</a></li>
           <li><a href="#tech">Tech</a></li>
+          <li><a href="#roi">ROI</a></li>
           <li><a href="/guest/hasan-akkaya/" class="nav-cta">See Demo</a></li>
         </ul>
         <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
@@ -1841,6 +1879,43 @@
           <div class="tech-label">Ready for translation</div>
           <div class="tech-desc">String externalization system built in. Add Turkish, Arabic, or any language.</div>
         </div>
+        <div class="tech-card">
+          <div class="tech-value">WCAG</div>
+          <div class="tech-label">Accessibility ready</div>
+          <div class="tech-desc">Focus indicators, keyboard navigation, ARIA labels, and screen reader support.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════ ROI ══════════════════════════════════════ -->
+  <section id="roi" class="section section--warm" aria-labelledby="roi-title">
+    <div class="container">
+      <div class="section-header section-header--center reveal">
+        <div class="label">Why It Matters</div>
+        <h2 class="section-title" id="roi-title">The Business Case</h2>
+      </div>
+      <div class="roi-grid reveal">
+        <div class="roi-card">
+          <div class="roi-icon">💰</div>
+          <h3>Revenue Uplift</h3>
+          <p>Guests browse therapies 24/7 with one-tap WhatsApp booking. Every view is an upsell opportunity that didn't exist before.</p>
+        </div>
+        <div class="roi-card">
+          <div class="roi-icon">⏱️</div>
+          <h3>Staff Time Saved</h3>
+          <p>Self-service schedule, FAQ, and resort info eliminates repetitive front desk questions. Staff focus on guest experience.</p>
+        </div>
+        <div class="roi-card">
+          <div class="roi-icon">⭐</div>
+          <h3>Guest Satisfaction</h3>
+          <p>Star ratings on activities provide real feedback. Analytics show which therapies guests care about most.</p>
+        </div>
+        <div class="roi-card">
+          <div class="roi-icon">🔄</div>
+          <h3>Zero Maintenance</h3>
+          <p>No servers, no databases, no app store approvals. Update guest data in one HTML file. Deploy in seconds.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -1950,7 +2025,7 @@
       <p class="footer-tagline">A concept by ibak · Wellness technology for boutique retreats</p>
       <div class="footer-divider" aria-hidden="true"></div>
       <div class="footer-meta">
-        <p>Guest Portal System · Concept Proposal · 2026</p>
+        <p>Guest Portal System · 40+ Features · 2026</p>
         <p style="margin-top:6px;">
           <a href="/guest/hasan-akkaya/">Live Demo</a>
           &nbsp;·&nbsp;
@@ -1985,7 +2060,7 @@
         lastScroll = current;
 
         /* Active nav link */
-        var sections = ['hero', 'problem', 'solution', 'upsell', 'how-it-works', 'included', 'comparison', 'whats-new', 'tech', 'demo'];
+        var sections = ['hero', 'problem', 'solution', 'upsell', 'how-it-works', 'included', 'comparison', 'whats-new', 'tech', 'roi', 'demo'];
         var activeId = null;
         for (var i = sections.length - 1; i >= 0; i--) {
           var el = document.getElementById(sections[i]);
