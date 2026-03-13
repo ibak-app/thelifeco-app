@@ -371,11 +371,89 @@
       #bottom-nav { left: 50%; transform: translateX(-50%); }
       #help-btn { right: calc(50vw - 240px + 16px); }
     }
+
+    /* === AUTH GATE === */
+    #auth-gate {
+      position: fixed; inset: 0; z-index: 9999;
+      background: linear-gradient(160deg, #00609C 0%, #004F82 50%, #003A66 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Inter', sans-serif;
+    }
+    #auth-gate.authenticated { opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+    .auth-card {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 24px;
+      padding: 48px 32px 40px;
+      width: 90%; max-width: 360px;
+      text-align: center;
+    }
+    .auth-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px; font-weight: 600;
+      color: white; letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .auth-subtitle { font-size: 13px; color: rgba(255,255,255,0.55); margin-bottom: 36px; }
+    .auth-label { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 16px; font-weight: 500; }
+    .pin-inputs {
+      display: flex; gap: 12px; justify-content: center; margin-bottom: 8px;
+    }
+    .pin-input {
+      width: 56px; height: 64px;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 14px;
+      color: white; font-size: 28px; font-weight: 600;
+      text-align: center;
+      outline: none;
+      caret-color: #00BED6;
+      transition: border-color 0.2s, background 0.2s;
+      -webkit-appearance: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .pin-input:focus {
+      border-color: #00BED6;
+      background: rgba(0,190,214,0.1);
+    }
+    .pin-input.error {
+      border-color: #FF6B6B;
+      background: rgba(255,107,107,0.1);
+      animation: pinShake 0.5s ease;
+    }
+    @keyframes pinShake { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-8px);} 40%{transform:translateX(8px);} 60%{transform:translateX(-4px);} 80%{transform:translateX(4px);} }
+    .auth-error {
+      font-size: 13px; color: #FF6B6B; min-height: 20px; margin-top: 12px;
+      transition: opacity 0.2s;
+    }
+    .auth-hint {
+      font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 28px;
+      line-height: 1.5;
+    }
+    .auth-hint b { color: rgba(255,255,255,0.55); font-weight: 500; }
   </style>
 </head>
 <body>
 
-<div id="app">
+<!-- AUTH GATE -->
+<div id="auth-gate">
+  <div class="auth-card">
+    <div class="auth-logo">TheLifeCo</div>
+    <div class="auth-subtitle">Guest Portal</div>
+    <div class="auth-label">Enter your 4-digit PIN</div>
+    <div class="pin-inputs">
+      <input class="pin-input" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" aria-label="PIN digit 1" />
+      <input class="pin-input" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" aria-label="PIN digit 2" />
+      <input class="pin-input" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" aria-label="PIN digit 3" />
+      <input class="pin-input" type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" aria-label="PIN digit 4" />
+    </div>
+    <div class="auth-error" id="auth-error"></div>
+    <div class="auth-hint">Your PIN is your <b>check-in date</b><br>(e.g. March 9 → 0309)</div>
+  </div>
+</div>
+
+<div id="app" style="display:none">
 
   <!-- TODAY TAB -->
   <div id="tab-today" class="tab-panel active">
@@ -481,7 +559,7 @@
 </nav>
 
 <!-- FLOATING WHATSAPP BUTTON -->
-<a id="help-btn" href="https://wa.me/17582861869?text=Hi%2C%20I%20need%20help%20please." aria-label="Need help? WhatsApp us" target="_blank" rel="noopener noreferrer">
+<a id="help-btn" href="https://wa.me/17582861869?text=Hi%2C%20I%20need%20help%20please." aria-label="Need help? WhatsApp us" target="_blank" rel="noopener noreferrer" style="display:none">
   <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
   </svg>
@@ -489,6 +567,93 @@
 
 <script>
 'use strict';
+
+// =============================================================
+// AUTH GATE
+// =============================================================
+var PIN_HASH = '5a796fc123ab4b7a692b6c57a8d78c013c34f7f0f9339e1d16f1d8942ad8af10';
+var AUTH_KEY = 'tlc_auth_' + window.location.pathname;
+
+function sha256(str) {
+  var buf = new TextEncoder().encode(str);
+  return crypto.subtle.digest('SHA-256', buf).then(function(hash) {
+    return Array.from(new Uint8Array(hash)).map(function(b) {
+      return b.toString(16).padStart(2, '0');
+    }).join('');
+  });
+}
+
+function unlockApp() {
+  sessionStorage.setItem(AUTH_KEY, '1');
+  document.getElementById('auth-gate').classList.add('authenticated');
+  document.getElementById('app').style.display = '';
+  document.getElementById('bottom-nav').style.display = '';
+  document.getElementById('help-btn').style.display = '';
+  setTimeout(function() {
+    document.getElementById('auth-gate').style.display = 'none';
+  }, 500);
+}
+
+(function initAuth() {
+  if (sessionStorage.getItem(AUTH_KEY) === '1') {
+    document.getElementById('auth-gate').style.display = 'none';
+    document.getElementById('app').style.display = '';
+    document.getElementById('help-btn').style.display = '';
+    return;
+  }
+
+  document.getElementById('bottom-nav').style.display = 'none';
+  var inputs = document.querySelectorAll('.pin-input');
+  var errorEl = document.getElementById('auth-error');
+
+  inputs[0].focus();
+
+  inputs.forEach(function(input, i) {
+    input.addEventListener('input', function() {
+      input.value = input.value.replace(/[^0-9]/g, '');
+      if (input.value && i < 3) inputs[i + 1].focus();
+
+      var pin = '';
+      inputs.forEach(function(inp) { pin += inp.value; });
+      if (pin.length === 4) {
+        sha256(pin).then(function(hash) {
+          if (hash === PIN_HASH) {
+            inputs.forEach(function(inp) { inp.disabled = true; });
+            unlockApp();
+          } else {
+            errorEl.textContent = 'Incorrect PIN. Try again.';
+            inputs.forEach(function(inp) {
+              inp.classList.add('error');
+              inp.value = '';
+            });
+            setTimeout(function() {
+              inputs.forEach(function(inp) { inp.classList.remove('error'); });
+              inputs[0].focus();
+            }, 600);
+          }
+        });
+      }
+    });
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Backspace' && !input.value && i > 0) {
+        inputs[i - 1].focus();
+        inputs[i - 1].value = '';
+      }
+      errorEl.textContent = '';
+    });
+
+    input.addEventListener('paste', function(e) {
+      e.preventDefault();
+      var paste = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, 4);
+      for (var j = 0; j < paste.length && j < 4; j++) {
+        inputs[j].value = paste[j];
+      }
+      if (paste.length >= 4) inputs[3].focus();
+      inputs[3].dispatchEvent(new Event('input'));
+    });
+  });
+})();
 
 // =============================================================
 // GUEST DATA
