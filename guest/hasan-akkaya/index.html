@@ -324,12 +324,12 @@ ul, ol {
 
 .tab-panel.active {
   display: block;
-  animation: fadeIn 0.25s var(--ease);
+  animation: fadeInUp 0.3s ease forwards;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
 }
 
 
@@ -510,7 +510,61 @@ ul, ol {
   background: var(--teal-light);
   margin: 0 -20px;
   padding: 14px 20px;
+  border-left: 3px solid var(--teal);
   border-radius: var(--radius);
+}
+
+.timeline-item.now::before {
+  content: 'NOW';
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--teal-dark);
+  letter-spacing: 0.05em;
+  background: rgba(0, 190, 214, 0.15);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Calendar icon on timeline items */
+.timeline-cal-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s var(--ease);
+  padding: 0;
+  color: var(--text-3);
+}
+
+.timeline-cal-btn:hover {
+  background: var(--teal-light);
+  color: var(--teal-dark);
+}
+
+.timeline-cal-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Therapy read more toggle */
+.therapy-read-more {
+  color: var(--teal);
+  font-weight: 500;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  margin-top: 4px;
+  display: inline-block;
 }
 
 /* Resort gallery (horizontal scroll) */
@@ -1538,9 +1592,142 @@ ul, ol {
   color: var(--text-4);
   padding: 12px 20px 4px;
 }
+
+/* Dark mode toggle */
+.dark-mode-toggle {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  padding: 0;
+  transition: background 0.2s var(--ease);
+}
+.dark-mode-toggle:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+.dark-mode-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Offline banner */
+.offline-banner {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: #EF4444;
+  color: white;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px;
+  letter-spacing: 0.02em;
+}
+.offline-banner.show { display: block; }
+
+/* ============================================================
+   DARK MODE
+   ============================================================ */
+[data-theme="dark"] {
+  --bg: #1A1A2E;
+  --surface: #252540;
+  --surface-2: #2A2A45;
+  --border: #3A3A55;
+  --text: #E8E8F0;
+  --text-2: #A0A0B8;
+  --text-3: #7A7A95;
+  --text-4: #5A5A75;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+[data-theme="dark"] .today-hero {
+  background: linear-gradient(135deg, #1B5E7B, #134A63);
+}
+[data-theme="dark"] #bottom-nav {
+  background: #252540;
+  border-top-color: #3A3A55;
+}
+[data-theme="dark"] .therapy-card,
+[data-theme="dark"] .accordion-item,
+[data-theme="dark"] .nutrition-card,
+[data-theme="dark"] .timeline-item {
+  background: var(--surface);
+  border-color: var(--border);
+}
+[data-theme="dark"] .search-input {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+}
+[data-theme="dark"] .date-pill {
+  background: var(--surface-2);
+}
+[data-theme="dark"] .date-pill .day-name,
+[data-theme="dark"] .date-pill .day-num {
+  color: var(--text-2);
+}
+[data-theme="dark"] .date-picker {
+  background: var(--surface);
+  border-bottom-color: var(--border);
+}
+[data-theme="dark"] .day-stats {
+  background: var(--surface);
+  border-bottom-color: var(--border);
+}
+[data-theme="dark"] .page-header {
+  background: var(--surface);
+}
+[data-theme="dark"] .category-card-content h3,
+[data-theme="dark"] .category-card-content p {
+  color: #fff;
+}
+[data-theme="dark"] #auth-gate {
+  background-color: #1A1A2E;
+}
+@media (min-width: 480px) {
+  [data-theme="dark"] body {
+    background: #111122;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]):not([data-theme="dark"]) {
+    --bg: #1A1A2E;
+    --surface: #252540;
+    --surface-2: #2A2A45;
+    --border: #3A3A55;
+    --text: #E8E8F0;
+    --text-2: #A0A0B8;
+    --text-3: #7A7A95;
+    --text-4: #5A5A75;
+  }
+}
   </style>
 </head>
 <body>
+
+<!-- ==================== SPLASH SCREEN ==================== -->
+<div id="splash" style="position:fixed;inset:0;z-index:10000;background:#1B5E7B;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity 0.5s">
+  <div style="font-family:'Playfair Display',serif;font-size:28px;color:white;font-weight:600">TheLifeCo</div>
+  <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:8px;letter-spacing:0.1em;text-transform:uppercase">Loading your portal...</div>
+</div>
+
+<!-- ==================== OFFLINE BANNER ==================== -->
+<div id="offline-banner" class="offline-banner">You're offline — showing cached content</div>
 
 <!-- ==================== AUTH GATE ==================== -->
 <div id="auth-gate" style="background-image:url(images/hero-resort.jpg)">
@@ -1566,7 +1753,8 @@ ul, ol {
   <div id="tab-today" class="tab-panel active">
 
     <div class="today-hero">
-      <span class="greeting-label">Good morning</span>
+      <button class="dark-mode-toggle" id="dark-mode-toggle" type="button" aria-label="Toggle dark mode"></button>
+      <span class="greeting-label" id="greeting-label"></span>
       <span class="greeting-name" id="greeting-name">Hasan</span>
       <span class="greeting-detail" id="header-date"></span>
       <div class="program-badge">
@@ -1812,8 +2000,8 @@ var GUEST = {
   waBase: 'https://wa.me/17582861869'
 };
 
-// Demo: hardcoded today for meaningful schedule data
-var TODAY_DATE = new Date('2026-03-13T00:00:00');
+// Use current date
+var TODAY_DATE = new Date();
 
 var TYPE_LABELS = { group: 'Group', food: 'Nutrition', clinic: 'Therapy', extra: 'Treatment' };
 
@@ -1873,7 +2061,6 @@ var SCHEDULE = {
   ],
   '2026-03-12': [
     { time: '07:00', name: 'Morning Walk', type: 'group' },
-    { time: '07:30', name: 'Morning Walk', type: 'group' },
     { time: '08:00', name: 'Immune Boost', type: 'food' },
     { time: '09:30', name: 'Dynamic Yoga', type: 'group' },
     { time: '12:30', name: 'Detox Salad + 2 Digestive Enzymes', type: 'food' },
@@ -1887,7 +2074,6 @@ var SCHEDULE = {
   ],
   '2026-03-13': [
     { time: '07:00', name: 'Morning Walk', type: 'group' },
-    { time: '07:30', name: 'Morning Walk', type: 'group' },
     { time: '08:00', name: 'Immune Boost', type: 'food' },
     { time: '09:30', name: 'Pilates', type: 'group' },
     { time: '12:30', name: 'Detox Salad + 2 Digestive Enzymes', type: 'food' },
@@ -1901,7 +2087,6 @@ var SCHEDULE = {
   ],
   '2026-03-14': [
     { time: '07:00', name: 'Morning Walk', type: 'group' },
-    { time: '07:30', name: 'Morning Walk', type: 'group' },
     { time: '08:00', name: 'Immune Boost', type: 'food' },
     { time: '09:30', name: 'Dynamic Yoga', type: 'group' },
     { time: '12:30', name: 'Detox Salad + 2 Digestive Enzymes', type: 'food' },
@@ -1913,7 +2098,6 @@ var SCHEDULE = {
   ],
   '2026-03-15': [
     { time: '07:00', name: 'Morning Walk', type: 'group' },
-    { time: '07:30', name: 'Morning Walk', type: 'group' },
     { time: '08:00', name: 'Immune Boost', type: 'food' },
     { time: '09:30', name: 'Pilates', type: 'group' },
     { time: '12:30', name: 'Detox Salad + 2 Digestive Enzymes', type: 'food' },
@@ -2293,13 +2477,76 @@ function getDayOfMonth(dateStr) {
 // initToday
 // =============================================================
 
+function generateICS(name, dateStr, timeStr) {
+  var d = new Date(dateStr + 'T' + timeStr + ':00');
+  var end = new Date(d.getTime() + 60 * 60 * 1000);
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+  function icsDate(dt) {
+    return dt.getFullYear() + pad(dt.getMonth()+1) + pad(dt.getDate()) + 'T' + pad(dt.getHours()) + pad(dt.getMinutes()) + '00';
+  }
+  var ics = [
+    'BEGIN:VCALENDAR', 'VERSION:2.0', 'BEGIN:VEVENT',
+    'DTSTART:' + icsDate(d), 'DTEND:' + icsDate(end),
+    'SUMMARY:' + name, 'DESCRIPTION:TheLifeCo St. Lucia',
+    'END:VEVENT', 'END:VCALENDAR'
+  ].join('\r\n');
+  var blob = new Blob([ics], { type: 'text/calendar' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = name.replace(/[^a-zA-Z0-9]/g, '-') + '.ics';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function createCalBtn(activityName, dateStr, timeStr) {
+  var btn = h('button', 'timeline-cal-btn');
+  btn.setAttribute('type', 'button');
+  btn.setAttribute('aria-label', 'Add to calendar');
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  rect.setAttribute('x', '3'); rect.setAttribute('y', '4');
+  rect.setAttribute('width', '18'); rect.setAttribute('height', '18');
+  rect.setAttribute('rx', '2'); rect.setAttribute('ry', '2');
+  svg.appendChild(rect);
+  var l1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  l1.setAttribute('x1', '16'); l1.setAttribute('y1', '2');
+  l1.setAttribute('x2', '16'); l1.setAttribute('y2', '6');
+  svg.appendChild(l1);
+  var l2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  l2.setAttribute('x1', '8'); l2.setAttribute('y1', '2');
+  l2.setAttribute('x2', '8'); l2.setAttribute('y2', '6');
+  svg.appendChild(l2);
+  var l3 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  l3.setAttribute('x1', '3'); l3.setAttribute('y1', '10');
+  l3.setAttribute('x2', '21'); l3.setAttribute('y2', '10');
+  svg.appendChild(l3);
+  btn.appendChild(svg);
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    generateICS(activityName, dateStr, timeStr);
+  });
+  return btn;
+}
+
+function getNowMinutes() {
+  var now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
+
 function initToday() {
   var todayStr = getTodayStr();
   var dayNum = getDayNum(todayStr);
 
-  // Greeting
-  var greetingEl = document.getElementById('greeting');
-  if (greetingEl) greetingEl.textContent = getGreeting() + ', ' + GUEST.firstName;
+  // Greeting (dynamic)
+  var greetingLabel = document.getElementById('greeting-label');
+  if (greetingLabel) greetingLabel.textContent = getGreeting();
 
   // Header date
   var headerDateEl = document.getElementById('header-date');
@@ -2311,6 +2558,8 @@ function initToday() {
 
   // Progress bar
   var pct = Math.round(((dayNum - 1) / GUEST.totalDays) * 100);
+  if (pct < 0) pct = 0;
+  if (pct > 100) pct = 100;
   var pctEl = document.getElementById('progress-pct');
   if (pctEl) pctEl.textContent = pct + '%';
   setTimeout(function() {
@@ -2334,13 +2583,17 @@ function initToday() {
     var activities = SCHEDULE[todayStr] || [];
     while (timelineContainer.firstChild) timelineContainer.removeChild(timelineContainer.firstChild);
 
-    var demoMinutes = 14 * 60; // 14:00 for demo
+    var currentMinutes = getNowMinutes();
+    var nowMarked = false;
 
     activities.forEach(function(activity) {
       var item = h('div', 'timeline-item');
       var activityMinutes = parseTimeMinutes(activity.time);
-      if (activityMinutes < demoMinutes) {
+      if (activityMinutes < currentMinutes) {
         item.className += ' completed';
+      } else if (!nowMarked) {
+        item.className += ' now';
+        nowMarked = true;
       }
 
       var colorBar = h('div', 'timeline-color-bar ' + activity.type);
@@ -2358,6 +2611,9 @@ function initToday() {
         appendTo(content, descEl);
       }
       appendTo(item, content);
+
+      // Calendar button
+      appendTo(item, createCalBtn(activity.name, todayStr, activity.time));
 
       appendTo(timelineContainer, item);
     });
@@ -2410,7 +2666,7 @@ function initSchedule() {
   if (!dateScroll) return;
   var todayStr = getTodayStr();
   var dates = Object.keys(SCHEDULE);
-  var activeDate = dates.length > 3 ? dates[3] : dates[0]; // first full day (day 4 = index 3)
+  var activeDate = dates.indexOf(todayStr) !== -1 ? todayStr : dates[0];
 
   dates.forEach(function(dateStr) {
     var d = new Date(dateStr + 'T00:00:00');
@@ -2434,6 +2690,14 @@ function initSchedule() {
 
     appendTo(dateScroll, pill);
   });
+
+  // Auto-scroll to active pill
+  var activePill = dateScroll.querySelector('.date-pill.active');
+  if (activePill) {
+    setTimeout(function() {
+      activePill.scrollIntoView({ inline: 'center', behavior: 'smooth' });
+    }, 100);
+  }
 
   loadScheduleDay(activeDate);
 }
@@ -2474,12 +2738,17 @@ function loadScheduleDay(dateStr) {
   // Build timeline items
   var todayStr = getTodayStr();
   var isToday = dateStr === todayStr;
-  var demoMinutes = 14 * 60;
+  var currentMinutes = getNowMinutes();
+  var nowMarked = false;
 
   activities.forEach(function(activity) {
     var item = h('div', 'timeline-item');
-    if (isToday && parseTimeMinutes(activity.time) < demoMinutes) {
+    var activityMinutes = parseTimeMinutes(activity.time);
+    if (isToday && activityMinutes < currentMinutes) {
       item.className += ' completed';
+    } else if (isToday && !nowMarked) {
+      item.className += ' now';
+      nowMarked = true;
     }
 
     var colorBar = h('div', 'timeline-color-bar ' + activity.type);
@@ -2495,6 +2764,9 @@ function loadScheduleDay(dateStr) {
       appendTo(content, h('p', null, desc));
     }
     appendTo(item, content);
+
+    // Calendar button
+    appendTo(item, createCalBtn(activity.name, dateStr, activity.time));
 
     appendTo(timelineContainer, item);
   });
@@ -2550,19 +2822,84 @@ function initExplore() {
     });
   }
 
-  // Search
+  // Global search across all categories
   if (searchInput) {
     searchInput.addEventListener('input', function() {
       var q = searchInput.value.toLowerCase().trim();
-      if (!therapiesContainer) return;
-      var cards = therapiesContainer.querySelectorAll('.therapy-card');
-      cards.forEach(function(card) {
-        var name = card.getAttribute('data-name') || '';
-        var match = q.length === 0 || name.toLowerCase().indexOf(q) !== -1;
-        card.style.display = match ? '' : 'none';
+      if (q.length === 0) {
+        // Show categories, hide therapies
+        categoriesContainer.classList.remove('hidden');
+        if (therapiesContainer) therapiesContainer.classList.add('hidden');
+        if (backBtn) backBtn.classList.add('hidden');
+        return;
+      }
+      // Search across all categories
+      categoriesContainer.classList.add('hidden');
+      if (therapiesContainer) therapiesContainer.classList.remove('hidden');
+      if (backBtn) backBtn.classList.remove('hidden');
+      // Build filtered results
+      while (therapiesContainer.firstChild) therapiesContainer.removeChild(therapiesContainer.firstChild);
+      EXPLORE_CATEGORIES.forEach(function(cat) {
+        cat.therapies.forEach(function(therapy) {
+          if (therapy.name.toLowerCase().indexOf(q) !== -1 || therapy.desc.toLowerCase().indexOf(q) !== -1) {
+            var card = buildSingleTherapyCard(therapy);
+            appendTo(therapiesContainer, card);
+          }
+        });
       });
+      if (!therapiesContainer.firstChild) {
+        appendTo(therapiesContainer, h('div', 'empty-state', 'No therapies found for "' + searchInput.value + '"'));
+      }
     });
   }
+}
+
+function buildSingleTherapyCard(therapy) {
+  var card = h('div', 'therapy-card');
+  card.setAttribute('data-name', therapy.name);
+
+  var body = h('div', 'therapy-card-body');
+  appendTo(body, h('h4', null, therapy.name));
+
+  // Description with read more / read less toggle
+  var descP = h('p');
+  var fullDesc = therapy.desc;
+  var truncated = fullDesc.length > 150;
+  descP.textContent = truncated ? fullDesc.substring(0, 150) + '...' : fullDesc;
+  appendTo(body, descP);
+
+  if (truncated) {
+    var expanded = false;
+    var toggle = h('span', 'therapy-read-more', 'Read more');
+    toggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      expanded = !expanded;
+      descP.textContent = expanded ? fullDesc : fullDesc.substring(0, 150) + '...';
+      toggle.textContent = expanded ? 'Read less' : 'Read more';
+    });
+    appendTo(body, toggle);
+  }
+
+  var meta = h('div', 'therapy-card-meta');
+  if (therapy.popular) {
+    appendTo(meta, h('span', 'badge badge-popular', 'Popular'));
+  } else if (therapy.recommended) {
+    appendTo(meta, h('span', 'badge badge-included', 'Recommended'));
+  } else {
+    appendTo(meta, h('span', 'badge badge-optional', 'Optional'));
+  }
+  appendTo(body, meta);
+
+  // WhatsApp book link
+  var waMsg = encodeURIComponent('Hi, I\'d like to book ' + therapy.name + ' please.');
+  var waLink = h('a', 'btn-whatsapp-book', 'Book via WhatsApp');
+  waLink.href = GUEST.waBase + '?text=' + waMsg;
+  waLink.target = '_blank';
+  waLink.rel = 'noopener noreferrer';
+  appendTo(body, waLink);
+
+  appendTo(card, body);
+  return card;
 }
 
 function buildTherapyCards(cat) {
@@ -2571,36 +2908,7 @@ function buildTherapyCards(cat) {
   while (therapiesContainer.firstChild) therapiesContainer.removeChild(therapiesContainer.firstChild);
 
   cat.therapies.forEach(function(therapy) {
-    var card = h('div', 'therapy-card');
-    card.setAttribute('data-name', therapy.name);
-
-    var body = h('div', 'therapy-card-body');
-    appendTo(body, h('h4', null, therapy.name));
-
-    var descText = therapy.desc.length > 150 ? therapy.desc.substring(0, 150) + '...' : therapy.desc;
-    appendTo(body, h('p', null, descText));
-
-    var meta = h('div', 'therapy-card-meta');
-    if (therapy.popular) {
-      appendTo(meta, h('span', 'badge badge-popular', 'Popular'));
-    } else if (therapy.recommended) {
-      appendTo(meta, h('span', 'badge badge-included', 'Recommended'));
-    } else {
-      appendTo(meta, h('span', 'badge badge-optional', 'Optional'));
-    }
-    appendTo(body, meta);
-
-    appendTo(card, body);
-
-    // WhatsApp book link
-    var waMsg = encodeURIComponent('Hi, I\'d like to book ' + therapy.name + ' please.');
-    var waLink = h('a', 'btn-whatsapp-book', 'Book via WhatsApp');
-    waLink.href = GUEST.waBase + '?text=' + waMsg;
-    waLink.target = '_blank';
-    waLink.rel = 'noopener noreferrer';
-    appendTo(body, waLink);
-
-    appendTo(therapiesContainer, card);
+    appendTo(therapiesContainer, buildSingleTherapyCard(therapy));
   });
 }
 
@@ -2774,7 +3082,24 @@ function buildInfoContent(id) {
     appendTo(wrapper, h('p', null, INFO_CONTENT.contact.intro));
     var contactList = h('ul');
     INFO_CONTENT.contact.items.forEach(function(item) {
-      appendTo(contactList, h('li', null, item.label + ': ' + item.value));
+      var li = h('li');
+      var labelEl = h('strong', null, item.label + ': ');
+      appendTo(li, labelEl);
+      if (item.phone) {
+        var phoneLink = h('a', null, item.value + ' (' + item.phone + ')');
+        phoneLink.href = 'tel:' + item.phone;
+        phoneLink.style.color = 'var(--teal)';
+        appendTo(li, phoneLink);
+      } else if (item.label === 'WhatsApp Group') {
+        var waLink = h('a', null, item.value);
+        waLink.href = GUEST.waBase;
+        waLink.target = '_blank';
+        waLink.style.color = 'var(--whatsapp-green)';
+        appendTo(li, waLink);
+      } else {
+        appendTo(li, document.createTextNode(item.value));
+      }
+      appendTo(contactList, li);
     });
     appendTo(wrapper, contactList);
   }
@@ -2793,7 +3118,7 @@ var tabs = {
   info:     { initialized: false }
 };
 
-function switchTab(tabId) {
+function switchTab(tabId, skipHistory) {
   // Hide all tab panels
   document.querySelectorAll('.tab-panel').forEach(function(panel) {
     panel.classList.remove('active');
@@ -2818,8 +3143,27 @@ function switchTab(tabId) {
     if (tabId === 'info') initInfo();
   }
 
+  // Push history state (change #9)
+  if (!skipHistory) {
+    history.pushState({ tab: tabId }, '', '#' + tabId);
+  }
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// Browser back/forward support (change #9)
+window.addEventListener('popstate', function(e) {
+  if (e.state && e.state.tab) {
+    switchTab(e.state.tab, true);
+  } else {
+    var hash = location.hash.replace('#', '');
+    if (hash && tabs[hash]) {
+      switchTab(hash, true);
+    } else {
+      switchTab('today', true);
+    }
+  }
+});
 
 // Event listeners on nav items
 document.querySelectorAll('.nav-item').forEach(function(btn) {
@@ -2829,12 +3173,74 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
 });
 
 // =============================================================
+// DARK MODE (change #14)
+// =============================================================
+
+(function initDarkMode() {
+  var toggle = document.getElementById('dark-mode-toggle');
+  if (!toggle) return;
+
+  // Moon SVG (default icon)
+  function setIcon(isDark) {
+    while (toggle.firstChild) toggle.removeChild(toggle.firstChild);
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '2');
+    svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round');
+    if (isDark) {
+      // Sun icon
+      var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', '12'); circle.setAttribute('cy', '12'); circle.setAttribute('r', '5');
+      svg.appendChild(circle);
+      var rays = [[12,1,12,3],[12,21,12,23],[4.22,4.22,5.64,5.64],[18.36,18.36,19.78,19.78],[1,12,3,12],[21,12,23,12],[4.22,19.78,5.64,18.36],[18.36,5.64,19.78,4.22]];
+      rays.forEach(function(r) {
+        var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', String(r[0])); line.setAttribute('y1', String(r[1]));
+        line.setAttribute('x2', String(r[2])); line.setAttribute('y2', String(r[3]));
+        svg.appendChild(line);
+      });
+    } else {
+      // Moon icon
+      var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z');
+      svg.appendChild(path);
+    }
+    toggle.appendChild(svg);
+  }
+
+  var saved = localStorage.getItem('tlc_theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    setIcon(saved === 'dark');
+  } else {
+    setIcon(false);
+  }
+
+  toggle.addEventListener('click', function() {
+    var current = document.documentElement.getAttribute('data-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('tlc_theme', next);
+    setIcon(next === 'dark');
+  });
+})();
+
+// =============================================================
 // BOOT
 // =============================================================
 
 (function() {
   initToday();
   tabs.today.initialized = true;
+
+  // Check hash for initial tab (change #9)
+  var hash = location.hash.replace('#', '');
+  if (hash && tabs[hash]) {
+    switchTab(hash, true);
+  }
 
   // WhatsApp bounce animation
   var helpBtn = document.getElementById('help-btn');
@@ -2849,11 +3255,29 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
     }, 1800);
   }
 
-  // Service worker registration
+  // Service worker registration (change #12)
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(function() {
+    navigator.serviceWorker.register('sw.js').catch(function() {
       // SW unavailable when opened as file:// - app works without it
     });
+  }
+
+  // Offline indicator (change #13)
+  window.addEventListener('online', function() {
+    document.getElementById('offline-banner').classList.remove('show');
+  });
+  window.addEventListener('offline', function() {
+    document.getElementById('offline-banner').classList.add('show');
+  });
+  if (!navigator.onLine) {
+    document.getElementById('offline-banner').classList.add('show');
+  }
+
+  // Splash screen fadeout (change #17)
+  var splash = document.getElementById('splash');
+  if (splash) {
+    splash.style.opacity = '0';
+    setTimeout(function() { splash.style.display = 'none'; }, 500);
   }
 })();
 

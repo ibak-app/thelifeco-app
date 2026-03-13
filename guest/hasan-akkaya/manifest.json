@@ -1,0 +1,14 @@
+{
+  "name": "TheLifeCo \u00b7 Guest Portal",
+  "short_name": "TheLifeCo",
+  "description": "Your personalized wellness retreat companion",
+  "start_url": "/guest/hasan-akkaya/",
+  "display": "standalone",
+  "background_color": "#FAF9F6",
+  "theme_color": "#1B5E7B",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "images/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "images/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
