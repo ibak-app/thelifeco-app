@@ -449,32 +449,33 @@ ul, ol {
 
 /* Timeline */
 .timeline {
-  padding: 0 20px;
+  padding: 0;
 }
 
 .timeline-item {
   display: flex;
-  gap: 14px;
-  padding: 14px 16px;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 20px;
+  background: var(--surface);
   border-bottom: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
   position: relative;
+  transition: background .15s var(--ease);
 }
 
 .timeline-item:last-child {
   border-bottom: none;
 }
 
-.timeline-color-bar {
-  width: 3px;
-  min-height: 100%;
-  border-radius: var(--radius-full);
-  flex-shrink: 0;
-}
+.timeline-item[data-type="group"] { border-left-color: var(--teal); }
+.timeline-item[data-type="food"] { border-left-color: var(--warm); }
+.timeline-item[data-type="clinic"] { border-left-color: var(--blue); }
+.timeline-item[data-type="extra"] { border-left-color: #9F7AEA; }
 
-.timeline-color-bar.group { background: var(--text-4); }
-.timeline-color-bar.food { background: #48BB78; }
-.timeline-color-bar.clinic { background: #ECC94B; }
-.timeline-color-bar.extra { background: #F687B3; }
+.timeline-color-bar {
+  display: none;
+}
 
 .timeline-time {
   font-size: 0.8125rem;
@@ -514,10 +515,6 @@ ul, ol {
 
 .timeline-item.now {
   background: var(--teal-light);
-  margin: 0 -20px;
-  padding: 14px 20px;
-  border-left: 3px solid var(--teal);
-  border-radius: var(--radius);
 }
 
 .timeline-item.now::before {
@@ -562,6 +559,74 @@ ul, ol {
   width: 14px;
   height: 14px;
 }
+
+/* Hydration timeline items */
+.timeline-item.hydration {
+  background: rgba(0, 190, 214, 0.04);
+  border-left-color: #B2EBF2;
+  padding: 10px 20px;
+}
+.timeline-item.hydration .timeline-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+.timeline-item.hydration .timeline-time {
+  font-size: 11px;
+}
+.hydration-icon {
+  font-size: 16px;
+  margin-right: 4px;
+}
+.hydration-note {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+/* Hydration tracker */
+.hydration-tracker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.hydration-tracker-icon { font-size: 20px; }
+.hydration-tracker-info { flex: 1; }
+.hydration-tracker-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.hydration-tracker-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-top: 4px;
+  overflow: hidden;
+}
+.hydration-tracker-fill {
+  height: 100%;
+  background: var(--teal);
+  border-radius: 2px;
+  transition: width .3s var(--ease);
+}
+.hydration-tracker-count {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--teal);
+  cursor: pointer;
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--teal-light);
+}
+.hydration-tracker-count:active { transform: scale(1.15); }
 
 /* Therapy read more toggle — removed (detail page now) */
 
@@ -775,36 +840,6 @@ ul, ol {
 .legend-dot.clinic { background: #ECC94B; }
 .legend-dot.extra { background: #F687B3; }
 
-/* Schedule header actions */
-.schedule-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 20px 12px;
-}
-.cal-export-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 14px;
-  background: transparent;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-2);
-  cursor: pointer;
-  transition: all 0.2s var(--ease);
-}
-.cal-export-btn:active {
-  background: var(--surface-2);
-  transform: scale(0.97);
-}
-.cal-export-btn svg {
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-}
 /* Integrations list */
 .integrations-list {
   display: flex;
@@ -849,10 +884,6 @@ ul, ol {
 }
 .integration-action {
   flex-shrink: 0;
-}
-.integration-action .cal-export-btn {
-  font-size: 0.6875rem;
-  padding: 5px 12px;
 }
 .integration-badge {
   display: inline-block;
@@ -1804,79 +1835,6 @@ ul, ol {
   transform-origin: 50% 50%;
 }
 
-/* Activity notes */
-.note-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: var(--text-4);
-  padding: 0;
-  flex-shrink: 0;
-  transition: color 0.2s var(--ease), background 0.2s var(--ease);
-}
-
-.note-btn:hover,
-.note-btn:active {
-  background: var(--surface-2);
-  color: var(--text-2);
-}
-
-.note-btn.has-note {
-  color: var(--warm);
-}
-
-.note-btn svg {
-  width: 16px;
-  height: 16px;
-}
-
-.note-area {
-  display: none;
-  margin-top: 8px;
-  width: 100%;
-}
-
-.note-area.open {
-  display: block;
-}
-
-.note-area textarea {
-  width: 100%;
-  min-height: 60px;
-  padding: 8px 10px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-family: inherit;
-  font-size: 12px;
-  color: var(--text);
-  background: var(--surface);
-  resize: vertical;
-  line-height: 1.5;
-  outline: none;
-  transition: border-color 0.2s var(--ease);
-}
-
-.note-area textarea:focus {
-  border-color: var(--teal);
-}
-
-.note-saved-indicator {
-  font-size: 11px;
-  color: var(--teal);
-  margin-top: 4px;
-  opacity: 0;
-  transition: opacity 0.3s var(--ease);
-}
-
-.note-saved-indicator.show {
-  opacity: 1;
-}
 
 /* Transitions */
 .transition-all {
@@ -2662,19 +2620,6 @@ ul, ol {
 }
 
 
-/* Photo Journal */
-.photo-btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px; border-radius: 50%;
-  background: transparent; border: none; cursor: pointer;
-  color: var(--text-4); padding: 0; flex-shrink: 0;
-  transition: color 0.2s var(--ease), background 0.2s var(--ease);
-}
-.photo-btn:hover, .photo-btn:active { background: var(--surface-2); color: var(--text-2); }
-.photo-btn.has-photo { color: var(--teal); }
-.photo-btn svg { width: 16px; height: 16px; }
-.photo-thumb { margin-top: 6px; display: inline-block; }
-.photo-thumb img { width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border); }
 
 
 
@@ -2700,8 +2645,8 @@ ul, ol {
   #bottom-nav, #help-btn, .scroll-top-btn,
   #auth-gate, #splash, .offline-banner, .install-banner,
   .pull-indicator, .emergency-bar,
-  .note-btn, .timeline-cal-btn,
-  .photo-btn, .data-actions { display: none !important; }
+  .timeline-cal-btn,
+  .data-actions { display: none !important; }
   #app { max-width: 100%; padding-bottom: 0; box-shadow: none; border: none; }
   .tab-panel { display: block !important; page-break-after: always; }
   body { background: #fff !important; color: #000 !important; }
@@ -2833,10 +2778,6 @@ ul, ol {
       <div class="legend-item"><span class="legend-dot food"></span> Nutrition</div>
       <div class="legend-item"><span class="legend-dot clinic"></span> Therapy</div>
       <div class="legend-item"><span class="legend-dot extra"></span> Treatment</div>
-    </div>
-
-    <div class="schedule-header-actions">
-      <button class="cal-export-btn" id="cal-export-btn" type="button"></button>
     </div>
 
     <div class="timeline" id="schedule-timeline"></div>
@@ -3160,6 +3101,20 @@ var SCHEDULE = {
   ]
 };
 
+var HYDRATION_SCHEDULE = [
+  { time: '07:00', name: 'Warm Water with Lemon', icon: '\uD83D\uDCA7', note: 'Start your day hydrated \u2014 500ml warm water with fresh lemon' },
+  { time: '08:30', name: 'Alkaline Water', icon: '\uD83D\uDCA7', note: '250ml alkaline water between activities' },
+  { time: '10:00', name: 'Herbal Tea', icon: '\uD83C\uDF75', note: 'Choose from chamomile, mint, ginger, or turmeric' },
+  { time: '11:00', name: 'Alkaline Water', icon: '\uD83D\uDCA7', note: 'Stay hydrated \u2014 500ml before lunch' },
+  { time: '13:00', name: 'Detox Soup (Fresh Vegetables)', icon: '\uD83E\uDD63', note: 'Light vegetable broth made from fresh seasonal vegetables' },
+  { time: '14:30', name: 'Alkaline Water', icon: '\uD83D\uDCA7', note: '250ml \u2014 keep sipping throughout the afternoon' },
+  { time: '15:30', name: 'Herbal Iced Tea', icon: '\uD83E\uDDCA', note: 'Refreshing cold-brewed herbal tea \u2014 sugar-free' },
+  { time: '16:30', name: 'Alkaline Water', icon: '\uD83D\uDCA7', note: '500ml before your evening activities' },
+  { time: '17:30', name: 'Detox Soup (Dried Vegetables)', icon: '\uD83E\uDD63', note: 'Warming broth made from dried herbs and vegetables' },
+  { time: '19:30', name: 'Herbal Tea', icon: '\uD83C\uDF75', note: 'Calming evening tea \u2014 chamomile or valerian root' },
+  { time: '21:00', name: 'Warm Water', icon: '\uD83D\uDCA7', note: 'Final hydration \u2014 250ml warm water before sleep' }
+];
+
 var EXPLORE_CATEGORIES = [
   {
     id: 'biohacking',
@@ -3433,12 +3388,12 @@ var INFO_CONTENT = {
 // =============================================================
 
 var CATEGORY_IMAGES = {
-  biohacking: 'https://www.thelifeco.com/wp-content/uploads/2024/10/supporting-therapies.webp',
-  iv: 'https://www.thelifeco.com/wp-content/uploads/2024/10/health-protocols.webp',
-  massage: 'https://www.thelifeco.com/wp-content/uploads/2024/10/spa-and-beauty.jpg',
-  beauty: 'https://www.thelifeco.com/wp-content/uploads/2021/09/lipoliz.jpg',
-  clinical: 'https://www.thelifeco.com/wp-content/uploads/2024/10/well-aging-therapies.webp',
-  mind: 'https://www.thelifeco.com/wp-content/uploads/2019/10/flexibility-and-mind.jpg'
+  biohacking: 'images/iv-therapy.jpg',
+  iv: 'images/wellness-method.jpg',
+  massage: 'images/stretching.jpg',
+  beauty: 'images/mindfulness.jpg',
+  clinical: 'images/ozone-therapy.jpg',
+  mind: 'images/meditation-zen.jpg'
 };
 
 // =============================================================
@@ -3637,82 +3592,6 @@ function addRecent(therapyName) {
   } catch(e) {}
 }
 
-// =============================================================
-// ACTIVITY NOTES
-// =============================================================
-
-var NOTES_KEY = 'tlc_notes';
-
-function getNotes() {
-  try {
-    return JSON.parse(localStorage.getItem(NOTES_KEY)) || {};
-  } catch(e) { return {}; }
-}
-
-function setNote(key, text) {
-  try {
-    var notes = getNotes();
-    if (text && text.trim()) {
-      notes[key] = text.trim();
-    } else {
-      delete notes[key];
-    }
-    localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
-    // Badge: journaler — 5+ notes
-    var noteCount = 0;
-    var nk;
-    for (nk in notes) { if (notes[nk] && notes[nk].trim()) noteCount++; }
-  } catch(e) {}
-}
-
-// =============================================================
-// PHOTO JOURNAL
-// =============================================================
-
-var PHOTOS_KEY = 'tlc_photos';
-var MAX_PHOTOS = 10;
-
-function getPhotos() {
-  try { return JSON.parse(localStorage.getItem(PHOTOS_KEY)) || {}; } catch(e) { return {}; }
-}
-
-function setPhoto(key, dataUrl) {
-  try {
-    var photos = getPhotos();
-    photos[key] = dataUrl;
-    // Enforce FIFO limit
-    var keys = Object.keys(photos);
-    while (keys.length > MAX_PHOTOS) {
-      delete photos[keys.shift()];
-    }
-    localStorage.setItem(PHOTOS_KEY, JSON.stringify(photos));
-  } catch(e) {
-    showToast('Storage full. Remove some photos.');
-  }
-}
-
-function resizeImageToDataUrl(file, maxWidth, callback) {
-  var reader = new FileReader();
-  reader.onload = function(ev) {
-    var img = new Image();
-    img.onload = function() {
-      var w = img.width;
-      var ht = img.height;
-      if (w > maxWidth) {
-        ht = Math.round(ht * (maxWidth / w));
-        w = maxWidth;
-      }
-      var canvas = document.createElement('canvas');
-      canvas.width = w;
-      canvas.height = ht;
-      var ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, w, ht);
-      callback(canvas.toDataURL('image/jpeg', 0.7));
-    };
-    img.src = ev.target.result;
-  };
-  reader.readAsDataURL(file);
-}
 
 // =============================================================
 // ANIMATED COUNTER
@@ -3765,79 +3644,6 @@ function exportAllData() {
   } catch(e) {
     showToast('Export failed');
   }
-}
-
-function exportScheduleToCalendar() {
-  try {
-    var lines = [];
-    lines.push('BEGIN:VCALENDAR');
-    lines.push('VERSION:2.0');
-    lines.push('PRODID:-//TheLifeCo//Guest Portal//EN');
-    lines.push('CALSCALE:GREGORIAN');
-    lines.push('METHOD:PUBLISH');
-    lines.push('X-WR-CALNAME:TheLifeCo St. Lucia - ' + GUEST.firstName);
-
-    var dates = Object.keys(SCHEDULE);
-    dates.forEach(function(dateStr) {
-      var items = SCHEDULE[dateStr];
-      var dateParts = dateStr.split('-');
-      var ymd = dateParts[0] + dateParts[1] + dateParts[2];
-
-      items.forEach(function(item, idx) {
-        var timeParts = item.time.split(':');
-        var startH = timeParts[0];
-        var startM = timeParts[1];
-        var dtStart = ymd + 'T' + startH + startM + '00';
-
-        // Calculate end time: next item start or +1 hour
-        var endMinutes;
-        var startMinutes = parseInt(startH, 10) * 60 + parseInt(startM, 10);
-        if (idx < items.length - 1) {
-          var nextParts = items[idx + 1].time.split(':');
-          endMinutes = parseInt(nextParts[0], 10) * 60 + parseInt(nextParts[1], 10);
-          if (endMinutes <= startMinutes) endMinutes = startMinutes + 60;
-        } else {
-          endMinutes = startMinutes + 60;
-        }
-        var endH = String(Math.floor(endMinutes / 60)).padStart(2, '0');
-        var endM = String(endMinutes % 60).padStart(2, '0');
-        var dtEnd = ymd + 'T' + endH + endM + '00';
-
-        var desc = DESCRIPTIONS[item.name] || '';
-        var uid = dateStr + '-' + idx + '@thelifeco-stlucia';
-
-        lines.push('BEGIN:VEVENT');
-        lines.push('UID:' + uid);
-        lines.push('DTSTART;TZID=America/St_Lucia:' + dtStart);
-        lines.push('DTEND;TZID=America/St_Lucia:' + dtEnd);
-        lines.push('SUMMARY:' + icsEscape(item.name));
-        if (desc) lines.push('DESCRIPTION:' + icsEscape(desc));
-        lines.push('LOCATION:TheLifeCo St. Lucia');
-        lines.push('STATUS:CONFIRMED');
-        lines.push('END:VEVENT');
-      });
-    });
-
-    lines.push('END:VCALENDAR');
-
-    var icsContent = lines.join('\r\n');
-    var blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = 'thelifeco-schedule-' + GUEST.checkIn + '.ics';
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast('Calendar file downloaded');
-    logEvent('schedule', 'export', 'ics');
-  } catch(e) {
-    showToast('Calendar export failed');
-  }
-}
-
-function icsEscape(str) {
-  if (!str) return '';
-  return str.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
 }
 
 function clearAllData() {
@@ -4223,8 +4029,30 @@ function getNowMinutes() {
   return now.getHours() * 60 + now.getMinutes();
 }
 
+function mergeHydrationItems(activities) {
+  var merged = [];
+  var all = activities.slice();
+  HYDRATION_SCHEDULE.forEach(function(hItem) {
+    var hMin = parseTimeMinutes(hItem.time);
+    var tooClose = false;
+    for (var i = 0; i < activities.length; i++) {
+      var aMin = parseTimeMinutes(activities[i].time);
+      if (Math.abs(hMin - aMin) < 30 && (activities[i].type === 'food')) {
+        tooClose = true;
+        break;
+      }
+    }
+    if (!tooClose) {
+      all.push({ time: hItem.time, name: hItem.name, type: 'hydration', icon: hItem.icon, note: hItem.note, _isHydration: true });
+    }
+  });
+  all.sort(function(a, b) { return parseTimeMinutes(a.time) - parseTimeMinutes(b.time); });
+  return all;
+}
+
 function buildTimelineItem(activity, dateStr, currentMinutes, isToday, nowMarkedRef, allActivities) {
   var item = h('div', 'timeline-item');
+  item.setAttribute('data-type', activity.type);
   var activityMinutes = parseTimeMinutes(activity.time);
   if (isToday && activityMinutes < currentMinutes) {
     item.className += ' completed';
@@ -4266,135 +4094,33 @@ function buildTimelineItem(activity, dateStr, currentMinutes, isToday, nowMarked
     appendTo(content, expandBtn);
     appendTo(content, h('p', null, desc));
   }
-  // Note button
-  var noteKey = dateStr + '_' + activity.time + '_' + activity.name;
-  var noteBtn = h('button', 'note-btn');
-  noteBtn.setAttribute('type', 'button');
-  noteBtn.setAttribute('aria-label', 'Add note');
-  var noteSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  noteSvg.setAttribute('viewBox', '0 0 24 24');
-  noteSvg.setAttribute('fill', 'none');
-  noteSvg.setAttribute('stroke', 'currentColor');
-  noteSvg.setAttribute('stroke-width', '2');
-  noteSvg.setAttribute('stroke-linecap', 'round');
-  noteSvg.setAttribute('stroke-linejoin', 'round');
-  var notePath1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  notePath1.setAttribute('d', 'M12 20h9');
-  noteSvg.appendChild(notePath1);
-  var notePath2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  notePath2.setAttribute('d', 'M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z');
-  noteSvg.appendChild(notePath2);
-  noteBtn.appendChild(noteSvg);
-  var existingNote = getNotes()[noteKey];
-  if (existingNote) noteBtn.classList.add('has-note');
-
-  var noteArea = h('div', 'note-area');
-  var noteTextarea = document.createElement('textarea');
-  noteTextarea.placeholder = 'Add a personal note...';
-  noteTextarea.value = existingNote || '';
-  noteArea.appendChild(noteTextarea);
-  var noteSavedMsg = h('div', 'note-saved-indicator', 'Saved');
-  noteArea.appendChild(noteSavedMsg);
-
-  var noteSaveTimer = null;
-  noteTextarea.addEventListener('input', function() {
-    clearTimeout(noteSaveTimer);
-    noteSaveTimer = setTimeout(function() {
-      setNote(noteKey, noteTextarea.value);
-      noteBtn.classList.toggle('has-note', !!noteTextarea.value.trim());
-      noteSavedMsg.classList.add('show');
-      setTimeout(function() { noteSavedMsg.classList.remove('show'); }, 1500);
-    }, 400);
-  });
-
-  noteBtn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    noteArea.classList.toggle('open');
-    if (noteArea.classList.contains('open')) {
-      noteTextarea.focus();
-    }
-  });
-
-  noteTextarea.addEventListener('click', function(e) { e.stopPropagation(); });
-
-  appendTo(content, noteArea);
   appendTo(item, content);
   if (desc) {
     item.style.cursor = 'pointer';
     item.addEventListener('click', function(e) {
-      if (e.target.closest && (e.target.closest('.timeline-cal-btn') || e.target.closest('.note-btn') || e.target.closest('.note-area') || e.target.closest('.photo-btn'))) return;
+      if (e.target.closest && e.target.closest('.timeline-cal-btn')) return;
       item.classList.toggle('expanded');
     });
   }
-  appendTo(item, noteBtn);
-
-  // Photo button
-  var photoKey = dateStr + '_' + activity.time + '_' + activity.name;
-  var photoBtn = h('button', 'photo-btn');
-  photoBtn.setAttribute('type', 'button');
-  photoBtn.setAttribute('aria-label', 'Add photo');
-  var camSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  camSvg.setAttribute('viewBox', '0 0 24 24');
-  camSvg.setAttribute('fill', 'none');
-  camSvg.setAttribute('stroke', 'currentColor');
-  camSvg.setAttribute('stroke-width', '2');
-  camSvg.setAttribute('stroke-linecap', 'round');
-  camSvg.setAttribute('stroke-linejoin', 'round');
-  var camPath1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  camPath1.setAttribute('d', 'M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z');
-  camSvg.appendChild(camPath1);
-  var camCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-  camCircle.setAttribute('cx', '12'); camCircle.setAttribute('cy', '13'); camCircle.setAttribute('r', '4');
-  camSvg.appendChild(camCircle);
-  photoBtn.appendChild(camSvg);
-
-  var existingPhoto = getPhotos()[photoKey];
-  if (existingPhoto) photoBtn.classList.add('has-photo');
-
-  // Photo thumbnail display
-  var photoThumbEl = null;
-  if (existingPhoto) {
-    photoThumbEl = h('div', 'photo-thumb');
-    var thumbImg = document.createElement('img');
-    thumbImg.src = existingPhoto;
-    thumbImg.alt = 'Photo';
-    photoThumbEl.appendChild(thumbImg);
-    appendTo(content, photoThumbEl);
-  }
-
-  // Hidden file input
-  var fileInput = document.createElement('input');
-  fileInput.type = 'file';
-  fileInput.accept = 'image/*';
-  fileInput.style.display = 'none';
-  fileInput.addEventListener('change', function() {
-    if (fileInput.files && fileInput.files[0]) {
-      resizeImageToDataUrl(fileInput.files[0], 200, function(dataUrl) {
-        setPhoto(photoKey, dataUrl);
-        photoBtn.classList.add('has-photo');
-        // Add or replace thumbnail
-        var existing = content.querySelector('.photo-thumb');
-        if (existing) existing.parentNode.removeChild(existing);
-        var newThumb = h('div', 'photo-thumb');
-        var newImg = document.createElement('img');
-        newImg.src = dataUrl;
-        newImg.alt = 'Photo';
-        newThumb.appendChild(newImg);
-        appendTo(content, newThumb);
-        showToast('Photo saved');
-        logEvent('photo', 'capture', activity.name);
-      });
-    }
-  });
-  item.appendChild(fileInput);
-
-  photoBtn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    fileInput.click();
-  });
-
-  appendTo(item, photoBtn);
   appendTo(item, createCalBtn(activity.name, dateStr, activity.time));
+  return item;
+}
+
+function buildHydrationTimelineItem(hydrationItem) {
+  var item = h('div', 'timeline-item hydration');
+  item.setAttribute('data-type', 'food');
+  var timeEl = h('div', 'timeline-time', hydrationItem.time);
+  appendTo(item, timeEl);
+  var content = h('div', 'timeline-content');
+  var nameRow = h('h4', 'timeline-name');
+  var iconSpan = h('span', 'hydration-icon', hydrationItem.icon);
+  appendTo(nameRow, iconSpan);
+  appendTo(nameRow, document.createTextNode(' ' + hydrationItem.name));
+  appendTo(content, nameRow);
+  if (hydrationItem.note) {
+    appendTo(content, h('div', 'hydration-note', hydrationItem.note));
+  }
+  appendTo(item, content);
   return item;
 }
 
@@ -4556,15 +4282,66 @@ function initToday() {
     shareBtn.addEventListener('click', function() { shareSchedule(todayStr); });
   }
 
+  // Build hydration tracker
+  var hydrationTrackerEl = document.getElementById('hydration-tracker');
+  if (!hydrationTrackerEl) {
+    hydrationTrackerEl = h('div', 'hydration-tracker');
+    hydrationTrackerEl.id = 'hydration-tracker';
+    var htIcon = h('div', 'hydration-tracker-icon', '\uD83D\uDCA7');
+    appendTo(hydrationTrackerEl, htIcon);
+    var htInfo = h('div', 'hydration-tracker-info');
+    appendTo(htInfo, h('div', 'hydration-tracker-label', 'Stay Hydrated'));
+    var htBar = h('div', 'hydration-tracker-bar');
+    var htFill = h('div', 'hydration-tracker-fill');
+    htFill.id = 'hydration-fill';
+    appendTo(htBar, htFill);
+    appendTo(htInfo, htBar);
+    appendTo(hydrationTrackerEl, htInfo);
+    var htCountBtn = h('div', 'hydration-tracker-count');
+    htCountBtn.id = 'hydration-count';
+    appendTo(hydrationTrackerEl, htCountBtn);
+    // Insert after progress section
+    var progressSection = document.querySelector('.progress-section');
+    if (progressSection && progressSection.nextSibling) {
+      progressSection.parentNode.insertBefore(hydrationTrackerEl, progressSection.nextSibling);
+    }
+  }
+  // Hydration tracker state
+  var htDayKey = 'tlc_hydration_' + todayStr;
+  var htCount = parseInt(sessionStorage.getItem(htDayKey) || '0', 10);
+  var htMax = 8;
+  function updateHydrationTracker() {
+    var countEl = document.getElementById('hydration-count');
+    var fillEl = document.getElementById('hydration-fill');
+    if (countEl) countEl.textContent = htCount + '/' + htMax;
+    if (fillEl) fillEl.style.width = Math.min(100, Math.round((htCount / htMax) * 100)) + '%';
+  }
+  updateHydrationTracker();
+  var htCountEl = document.getElementById('hydration-count');
+  if (htCountEl) {
+    htCountEl.addEventListener('click', function() {
+      htCount++;
+      if (htCount > htMax) htCount = 0;
+      try { sessionStorage.setItem(htDayKey, String(htCount)); } catch(e) {}
+      updateHydrationTracker();
+      if (navigator.vibrate) navigator.vibrate(15);
+    });
+  }
+
   // Build today timeline
   var activities = SCHEDULE[todayStr] || [];
+  var mergedActivities = mergeHydrationItems(activities);
   var timelineContainer = document.getElementById('today-timeline');
   if (timelineContainer) {
     while (timelineContainer.firstChild) timelineContainer.removeChild(timelineContainer.firstChild);
     var currentMinutes = getNowMinutes();
     var nowMarkedRef = { value: false };
-    activities.forEach(function(activity) {
-      appendTo(timelineContainer, buildTimelineItem(activity, todayStr, currentMinutes, true, nowMarkedRef, activities));
+    mergedActivities.forEach(function(activity) {
+      if (activity._isHydration) {
+        appendTo(timelineContainer, buildHydrationTimelineItem(activity));
+      } else {
+        appendTo(timelineContainer, buildTimelineItem(activity, todayStr, currentMinutes, true, nowMarkedRef, activities));
+      }
     });
     if (activities.length === 0) {
       appendTo(timelineContainer, h('div', 'empty-state', 'No activities scheduled for today.'));
@@ -4763,42 +4540,6 @@ function initSchedule() {
   }
 
   loadScheduleDay(activeDate);
-
-  // Init calendar export button
-  var calExportBtn = document.getElementById('cal-export-btn');
-  if (calExportBtn) {
-    var calSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    calSvg.setAttribute('viewBox', '0 0 24 24');
-    calSvg.setAttribute('fill', 'none');
-    calSvg.setAttribute('stroke', 'currentColor');
-    calSvg.setAttribute('stroke-width', '2');
-    calSvg.setAttribute('stroke-linecap', 'round');
-    calSvg.setAttribute('stroke-linejoin', 'round');
-    var calRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    calRect.setAttribute('x', '3');
-    calRect.setAttribute('y', '4');
-    calRect.setAttribute('width', '18');
-    calRect.setAttribute('height', '18');
-    calRect.setAttribute('rx', '2');
-    calSvg.appendChild(calRect);
-    var calLine1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    calLine1.setAttribute('x1', '16'); calLine1.setAttribute('y1', '2');
-    calLine1.setAttribute('x2', '16'); calLine1.setAttribute('y2', '6');
-    calSvg.appendChild(calLine1);
-    var calLine2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    calLine2.setAttribute('x1', '8'); calLine2.setAttribute('y1', '2');
-    calLine2.setAttribute('x2', '8'); calLine2.setAttribute('y2', '6');
-    calSvg.appendChild(calLine2);
-    var calLine3 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    calLine3.setAttribute('x1', '3'); calLine3.setAttribute('y1', '10');
-    calLine3.setAttribute('x2', '21'); calLine3.setAttribute('y2', '10');
-    calSvg.appendChild(calLine3);
-    calExportBtn.appendChild(calSvg);
-    appendTo(calExportBtn, h('span', null, 'Export to Calendar'));
-    calExportBtn.addEventListener('click', function() {
-      exportScheduleToCalendar();
-    });
-  }
 }
 
 function loadScheduleDay(dateStr) {
@@ -4839,17 +4580,22 @@ function loadScheduleDay(dateStr) {
   var isToday = dateStr === todayStr;
   var currentMinutes = getNowMinutes();
   var nowMarkedRef = { value: false };
+  var mergedActivities = mergeHydrationItems(activities);
 
-  activities.forEach(function(activity) {
-    var item = buildTimelineItem(activity, dateStr, currentMinutes, isToday, nowMarkedRef, activities);
-    // Add rating stars for completed schedule items
-    var activityMinutes = parseTimeMinutes(activity.time);
-    var isCompletedSched = isToday && activityMinutes < currentMinutes;
-    if (isCompletedSched && typeof buildRatingStars === 'function') {
-      var contentEl = item.querySelector('.timeline-content');
-      if (contentEl) appendTo(contentEl, buildRatingStars(dateStr, activity.name));
+  mergedActivities.forEach(function(activity) {
+    if (activity._isHydration) {
+      appendTo(timelineContainer, buildHydrationTimelineItem(activity));
+    } else {
+      var item = buildTimelineItem(activity, dateStr, currentMinutes, isToday, nowMarkedRef, activities);
+      // Add rating stars for completed schedule items
+      var activityMinutes = parseTimeMinutes(activity.time);
+      var isCompletedSched = isToday && activityMinutes < currentMinutes;
+      if (isCompletedSched && typeof buildRatingStars === 'function') {
+        var contentEl = item.querySelector('.timeline-content');
+        if (contentEl) appendTo(contentEl, buildRatingStars(dateStr, activity.name));
+      }
+      appendTo(timelineContainer, item);
     }
-    appendTo(timelineContainer, item);
   });
 
   if (activities.length === 0) {
@@ -5381,11 +5127,10 @@ function initInfo() {
     var intBody = h('div', 'accordion-body');
     var intList = h('div', 'integrations-list');
     var integrations = [
-      { icon: '📅', name: 'Calendar Sync', desc: 'Export your full 7-day schedule as an .ics file for Apple Calendar, Google Calendar, or Outlook.', action: 'export' },
-      { icon: '❤️', name: 'Apple Health', desc: 'Track wellness metrics like sleep, heart rate, and activity during your stay.', action: 'soon' },
-      { icon: '🏃', name: 'Google Fit', desc: 'Sync your resort activities and wellness data with Google Fit.', action: 'soon' },
-      { icon: '🚴', name: 'Strava', desc: 'Log resort walks, yoga sessions, and functional training as Strava activities.', action: 'soon' },
-      { icon: '🎵', name: 'Spotify', desc: 'Curated wellness playlists for meditation, yoga, and relaxation sessions.', action: 'soon' }
+      { icon: '\u2764\uFE0F', name: 'Apple Health', desc: 'Track wellness metrics like sleep, heart rate, and activity during your stay.', action: 'soon' },
+      { icon: '\uD83C\uDFC3', name: 'Google Fit', desc: 'Sync your resort activities and wellness data with Google Fit.', action: 'soon' },
+      { icon: '\uD83D\uDEB4', name: 'Strava', desc: 'Log resort walks, yoga sessions, and functional training as Strava activities.', action: 'soon' },
+      { icon: '\uD83C\uDFB5', name: 'Spotify', desc: 'Curated wellness playlists for meditation, yoga, and relaxation sessions.', action: 'soon' }
     ];
     integrations.forEach(function(integ) {
       var row = h('div', 'integration-item');
@@ -5395,14 +5140,7 @@ function initInfo() {
       appendTo(info, h('div', 'integration-desc', integ.desc));
       appendTo(row, info);
       var actionWrap = h('div', 'integration-action');
-      if (integ.action === 'export') {
-        var syncBtn = h('button', 'cal-export-btn', 'Export .ics');
-        syncBtn.setAttribute('type', 'button');
-        syncBtn.addEventListener('click', function() { exportScheduleToCalendar(); });
-        appendTo(actionWrap, syncBtn);
-      } else {
-        appendTo(actionWrap, h('span', 'integration-badge', 'Coming Soon'));
-      }
+      appendTo(actionWrap, h('span', 'integration-badge', 'Coming Soon'));
       appendTo(row, actionWrap);
       appendTo(intList, row);
     });
@@ -5423,7 +5161,7 @@ function initInfo() {
   var clearBtn = h('button', 'data-btn clear-btn', 'Clear My Data');
   clearBtn.setAttribute('type', 'button');
   clearBtn.addEventListener('click', function() {
-    if (confirm('Are you sure you want to clear all your data? This includes notes, photos, favorites, and preferences.')) {
+    if (confirm('Are you sure you want to clear all your data? This includes favorites, ratings, and preferences.')) {
       clearAllData();
     }
   });
