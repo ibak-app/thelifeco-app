@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TheLifeCo Admin Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #00609C;
+  --navy-dark: #004d7a;
+  --teal: #00BED6;
+  --teal-light: rgba(0,190,214,0.12);
+  --orange: #F6A358;
+  --orange-light: rgba(246,163,88,0.12);
+  --bg: #F7F8FA;
+  --white: #ffffff;
+  --text: #1a2332;
+  --text-secondary: #5b6e82;
+  --text-muted: #8fa3b8;
+  --border: #e3eaf1;
+  --green: #22c55e;
+  --green-light: rgba(34,197,94,0.10);
+  --blue: #3b82f6;
+  --blue-light: rgba(59,130,246,0.10);
+  --gray: #94a3b8;
+  --gray-light: rgba(148,163,184,0.10);
+  --red: #ef4444;
+  --red-light: rgba(239,68,68,0.10);
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 12px rgba(0,0,0,0.08);
+  --radius: 10px;
+  --sidebar-w: 260px;
+  --transition: 0.2s ease;
+}
+html { font-size: 14px; }
+body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; }
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-w); min-height: 100vh; background: var(--navy); color: #fff;
+  display: flex; flex-direction: column; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100;
+  transition: transform 0.3s ease;
+}
+.sidebar-brand { padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-brand h1 { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em; }
+.sidebar-brand span { font-size: 0.75rem; color: rgba(255,255,255,0.55); font-weight: 400; display: block; margin-top: 2px; }
+.sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+.nav-section { padding: 0 20px; margin-bottom: 8px; }
+.nav-section-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.35); font-weight: 600; margin-bottom: 6px; padding: 0 12px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px;
+  color: rgba(255,255,255,0.7); cursor: pointer; transition: var(--transition); font-size: 0.9rem; font-weight: 500;
+  margin-bottom: 2px; text-decoration: none;
+}
+.nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.nav-item.active { background: var(--teal); color: #fff; }
+.nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+.sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.72rem; color: rgba(255,255,255,0.35); }
+
+/* Main content */
+.main { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; }
+.topbar {
+  background: var(--white); border-bottom: 1px solid var(--border); padding: 16px 32px;
+  display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50;
+}
+.topbar-title { font-size: 1.25rem; font-weight: 700; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.topbar-date { font-size: 0.85rem; color: var(--text-secondary); }
+.hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; color: var(--text); }
+.hamburger svg { width: 24px; height: 24px; }
+.content { padding: 28px 32px; }
+
+/* Page containers */
+.page { display: none; }
+.page.active { display: block; }
+
+/* Cards */
+.card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); }
+.card-header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.card-header h2 { font-size: 1rem; font-weight: 600; }
+.card-body { padding: 22px; }
+
+/* Stats row */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 28px; }
+.stat-card {
+  background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 22px; border: 1px solid var(--border); border-left: 4px solid var(--navy);
+  display: flex; flex-direction: column; gap: 6px;
+}
+.stat-card.teal { border-left-color: var(--teal); }
+.stat-card.orange { border-left-color: var(--orange); }
+.stat-card.green { border-left-color: var(--green); }
+.stat-label { font-size: 0.78rem; color: var(--text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+.stat-value { font-size: 2rem; font-weight: 700; color: var(--text); }
+
+/* Tables */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; padding: 10px 16px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); background: var(--bg); border-bottom: 1px solid var(--border); }
+td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 0.88rem; vertical-align: middle; }
+tr:hover td { background: rgba(0,96,156,0.02); }
+
+/* Badges */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px;
+  border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+}
+.badge-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+.badge-active { background: var(--green-light); color: #15803d; }
+.badge-active .badge-dot { background: var(--green); }
+.badge-upcoming { background: var(--blue-light); color: #1d4ed8; }
+.badge-upcoming .badge-dot { background: var(--blue); }
+.badge-completed { background: var(--gray-light); color: #475569; }
+.badge-completed .badge-dot { background: var(--gray); }
+.badge-draft { background: var(--orange-light); color: #c2410c; }
+.badge-draft .badge-dot { background: var(--orange); }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+  border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+  border: 1px solid transparent; transition: var(--transition); font-family: inherit;
+}
+.btn-primary { background: var(--navy); color: #fff; }
+.btn-primary:hover { background: var(--navy-dark); }
+.btn-teal { background: var(--teal); color: #fff; }
+.btn-teal:hover { background: #00a8be; }
+.btn-outline { background: transparent; border-color: var(--border); color: var(--text-secondary); }
+.btn-outline:hover { border-color: var(--navy); color: var(--navy); }
+.btn-sm { padding: 5px 10px; font-size: 0.78rem; }
+.btn-danger { background: var(--red); color: #fff; }
+.btn-danger:hover { background: #dc2626; }
+.btn-link { background: none; border: none; color: var(--navy); padding: 4px 8px; font-size: 0.82rem; text-decoration: underline; cursor: pointer; }
+
+/* Forms */
+.form-group { margin-bottom: 18px; }
+.form-label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px;
+  font-size: 0.88rem; font-family: inherit; color: var(--text); background: var(--white);
+  transition: var(--transition); outline: none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(0,96,156,0.1); }
+.form-textarea { resize: vertical; min-height: 80px; }
+
+/* Grid layouts */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.grid-dashboard { display: grid; grid-template-columns: 1fr 340px; gap: 28px; }
+
+/* Tabs */
+.tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 18px; }
+.tab {
+  padding: 10px 20px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted);
+  cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: var(--transition);
+  background: none; border-top: none; border-left: none; border-right: none; font-family: inherit;
+}
+.tab.active { color: var(--navy); border-bottom-color: var(--navy); }
+.tab:hover { color: var(--text); }
+
+/* Search */
+.search-bar {
+  display: flex; align-items: center; gap: 8px; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 14px; max-width: 320px;
+}
+.search-bar input { border: none; background: none; outline: none; font-size: 0.88rem; font-family: inherit; flex: 1; color: var(--text); }
+.search-bar svg { width: 16px; height: 16px; color: var(--text-muted); flex-shrink: 0; }
+
+/* Upload zone */
+.upload-zone {
+  border: 2px dashed var(--border); border-radius: var(--radius); padding: 40px 20px;
+  text-align: center; cursor: pointer; transition: var(--transition);
+}
+.upload-zone:hover, .upload-zone.drag-over { border-color: var(--teal); background: var(--teal-light); }
+.upload-zone-icon { font-size: 2.5rem; color: var(--text-muted); margin-bottom: 10px; }
+.upload-zone-text { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
+.upload-zone-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+
+/* Toggle switch */
+.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.toggle-row:last-child { border-bottom: none; }
+.toggle-label { font-size: 0.88rem; font-weight: 500; }
+.toggle-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+.toggle {
+  width: 44px; height: 24px; background: #cbd5e1; border-radius: 12px; position: relative;
+  cursor: pointer; transition: var(--transition); flex-shrink: 0;
+}
+.toggle.on { background: var(--teal); }
+.toggle-knob {
+  width: 20px; height: 20px; background: #fff; border-radius: 50%; position: absolute;
+  top: 2px; left: 2px; transition: var(--transition); box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.toggle.on .toggle-knob { left: 22px; }
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none;
+  align-items: center; justify-content: center; z-index: 200;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+  width: 90%; max-width: 520px; max-height: 85vh; overflow-y: auto;
+}
+.modal-header {
+  padding: 18px 22px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.modal-header h3 { font-size: 1.05rem; font-weight: 600; }
+.modal-close { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 1.2rem; padding: 4px; }
+.modal-body { padding: 22px; }
+.modal-footer { padding: 14px 22px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+
+/* Activity list */
+.activity-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.activity-item:last-child { border-bottom: none; }
+.activity-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+.activity-text { font-size: 0.85rem; color: var(--text); line-height: 1.4; }
+.activity-time { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+
+/* Guest avatar */
+.guest-cell { display: flex; align-items: center; gap: 10px; }
+.avatar {
+  width: 34px; height: 34px; border-radius: 50%; background: var(--teal-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.82rem; font-weight: 700; color: var(--navy); flex-shrink: 0;
+}
+.guest-name { font-weight: 600; font-size: 0.88rem; }
+.guest-email { font-size: 0.75rem; color: var(--text-muted); }
+
+/* Parsed schedule preview */
+.schedule-preview { margin-top: 16px; }
+.schedule-day { background: var(--bg); border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; }
+.schedule-day-title { font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; color: var(--navy); }
+.schedule-item { font-size: 0.82rem; color: var(--text-secondary); padding: 2px 0; }
+
+/* Success banner */
+.success-banner {
+  background: var(--green-light); border: 1px solid var(--green); border-radius: var(--radius);
+  padding: 20px; margin-top: 20px; display: none;
+}
+.success-banner.visible { display: block; }
+.success-url { background: var(--bg); padding: 10px 14px; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin: 10px 0; word-break: break-all; }
+.success-pin { font-size: 1.5rem; font-weight: 700; color: var(--navy); letter-spacing: 0.1em; }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .grid-dashboard { grid-template-columns: 1fr; }
+  .grid-2 { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .hamburger { display: block; }
+  .content { padding: 20px 16px; }
+  .topbar { padding: 12px 16px; }
+  .stats-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main">
+  <div class="topbar" id="topbar"></div>
+  <div class="content" id="content"></div>
+</div>
+<div class="modal-overlay" id="modalOverlay"></div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ── Helpers ──────────────────────────────────────────
+  function el(tag, attrs, children) {
+    var e = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function(k) {
+        if (k === 'className') e.className = attrs[k];
+        else if (k === 'textContent') e.textContent = attrs[k];
+        else if (k.slice(0,2) === 'on') e.addEventListener(k.slice(2).toLowerCase(), attrs[k]);
+        else e.setAttribute(k, attrs[k]);
+      });
+    }
+    if (children) {
+      (Array.isArray(children) ? children : [children]).forEach(function(c) {
+        if (c == null) return;
+        if (typeof c === 'string') { e.appendChild(document.createTextNode(c)); }
+        else e.appendChild(c);
+      });
+    }
+    return e;
+  }
+
+  function svgIcon(pathD, size) {
+    size = size || 18;
+    var ns = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('width', size);
+    svg.setAttribute('height', size);
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '2');
+    svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round');
+    var paths = Array.isArray(pathD) ? pathD : [pathD];
+    paths.forEach(function(d) {
+      var p = document.createElementNS(ns, 'path');
+      p.setAttribute('d', d);
+      svg.appendChild(p);
+    });
+    return svg;
+  }
+
+  function clearEl(e) { while (e.firstChild) e.removeChild(e.firstChild); }
+
+  function formatDate(d) {
+    if (!d) return '';
+    var dt = new Date(d);
+    return dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  function generateId() { return '_' + Math.random().toString(36).slice(2, 10); }
+
+  // ── SVG paths (Feather icons) ────────────────────
+  var ICONS = {
+    home: ['M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z', 'M9 22V12h6v10'],
+    users: ['M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2', 'M23 21v-2a4 4 0 0 0-3-3.87', 'M16 3.13a4 4 0 0 1 0 7.75'],
+    userPlus: ['M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2', 'M20 8v6', 'M23 11h-6'],
+    grid: ['M3 3h7v7H3z', 'M14 3h7v7h-7z', 'M14 14h7v7h-7z', 'M3 14h7v7H3z'],
+    settings: ['M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z', 'M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z'],
+    list: ['M8 6h13', 'M8 12h13', 'M8 18h13', 'M3 6h.01', 'M3 12h.01', 'M3 18h.01'],
+    search: ['M11 17.25a6.25 6.25 0 1 1 0-12.5 6.25 6.25 0 0 1 0 12.5z', 'M21 21l-4.35-4.35'],
+    menu: ['M3 12h18', 'M3 6h18', 'M3 18h18'],
+    x: ['M18 6L6 18', 'M6 6l12 12'],
+    externalLink: ['M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6', 'M15 3h6v6', 'M10 14L21 3'],
+    upload: ['M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4', 'M17 8l-5-5-5 5', 'M12 3v12'],
+    edit: ['M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7'],
+    file: ['M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z', 'M13 2v7h7'],
+    download: ['M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4', 'M7 10l5 5 5-5', 'M12 15V3'],
+    trash: ['M3 6h18', 'M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'],
+    calendar: ['M16 2v4', 'M8 2v4', 'M3 10h18', 'M21 8v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'],
+  };
+
+  // ── Data Store ──────────────────────────────────────
+  var STORAGE_KEY = 'tlc_admin';
+
+  function defaultStore() {
+    return {
+      guests: [
+        { id: 'g1', firstName: 'Hasan', lastName: 'Akkaya', email: 'hasan@example.com', whatsapp: '+90 555 123 4567', checkin: '2026-03-09', duration: 7, programme: 'Green Salad', room: '204', notes: 'Vegan preferences', status: 'active', pin: '0309', createdAt: '2026-03-08T10:00:00Z' },
+        { id: 'g2', firstName: 'Sarah', lastName: 'Johnson', email: 'sarah.j@example.com', whatsapp: '+1 555 987 6543', checkin: '2026-03-12', duration: 14, programme: 'Master Detox', room: '112', notes: '', status: 'active', pin: '0312', createdAt: '2026-03-11T09:00:00Z' },
+        { id: 'g3', firstName: 'Marco', lastName: 'Rossi', email: 'marco.r@example.com', whatsapp: '+39 333 456 7890', checkin: '2026-03-20', duration: 7, programme: 'Green Juice Cleanse', room: '301', notes: 'First visit', status: 'upcoming', pin: '0320', createdAt: '2026-03-14T08:00:00Z' }
+      ],
+      templates: [
+        { id: 't1', name: '7-Day Green Salad Standard', programme: 'Green Salad', duration: 7, createdAt: '2026-02-15T12:00:00Z' },
+        { id: 't2', name: '14-Day Master Detox', programme: 'Master Detox', duration: 14, createdAt: '2026-02-20T12:00:00Z' },
+        { id: 't3', name: '7-Day Water Fasting', programme: 'Water Fasting', duration: 7, createdAt: '2026-03-01T12:00:00Z' }
+      ],
+      pdfHistory: [
+        { id: 'p1', filename: 'Mr. Hasan Program.pdf', guest: 'Hasan Akkaya', uploadedAt: '2026-03-08T10:05:00Z', status: 'parsed' },
+        { id: 'p2', filename: 'Sarah Johnson Detox Plan.pdf', guest: 'Sarah Johnson', uploadedAt: '2026-03-11T09:15:00Z', status: 'parsed' }
+      ],
+      activityLog: [
+        { id: 'a1', time: '2026-03-14T08:30:00Z', action: 'Guest Created', user: 'Admin', details: 'Created portal for Marco Rossi' },
+        { id: 'a2', time: '2026-03-12T11:00:00Z', action: 'PDF Uploaded', user: 'Admin', details: 'Uploaded schedule for Sarah Johnson' },
+        { id: 'a3', time: '2026-03-11T09:00:00Z', action: 'Guest Created', user: 'Admin', details: 'Created portal for Sarah Johnson' },
+        { id: 'a4', time: '2026-03-09T14:20:00Z', action: 'Settings Updated', user: 'Admin', details: 'Updated portal base URL' },
+        { id: 'a5', time: '2026-03-08T10:00:00Z', action: 'Guest Created', user: 'Admin', details: 'Created portal for Hasan Akkaya' }
+      ],
+      settings: {
+        autoPin: true, welcomeMsg: true, guestFeedback: false, calendarExport: true, sessionTimeout: true,
+        resortName: 'TheLifeCo Well-Being', whatsappNumber: '+1 758 XXX XXXX',
+        portalBaseUrl: 'https://ibak-app.github.io/thelifeco-design-review/portal.html',
+        defaultDuration: 7
+      }
+    };
+  }
+
+  function loadStore() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch(e) {}
+    var s = defaultStore();
+    saveStore(s);
+    return s;
+  }
+  function saveStore(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+  function addLog(action, details) {
+    store.activityLog.unshift({ id: generateId(), time: new Date().toISOString(), action: action, user: 'Admin', details: details });
+    saveStore(store);
+  }
+
+  var store = loadStore();
+  var currentPage = 'dashboard';
+
+  // ── Programmes list ─────────────────────────────────
+  var PROGRAMMES = ['Master Detox','Green Juice Cleanse','Green Salad','Water Fasting','Low Calorie','Intermittent Fasting','Ketogenic','Mental Wellness','Get Fit & Healthy'];
+
+  // ── Sidebar ─────────────────────────────────────────
+  function buildSidebar() {
+    var sb = document.getElementById('sidebar');
+    clearEl(sb);
+
+    var brand = el('div', { className: 'sidebar-brand' });
+    brand.appendChild(el('h1', { textContent: 'TheLifeCo' }));
+    brand.appendChild(el('span', { textContent: 'Admin Dashboard' }));
+    sb.appendChild(brand);
+
+    var nav = el('div', { className: 'sidebar-nav' });
+    var sections = [
+      { label: 'Overview', items: [{ id: 'dashboard', icon: 'home', text: 'Dashboard' }] },
+      { label: 'Guest Management', items: [
+        { id: 'guests', icon: 'users', text: 'Guests' },
+        { id: 'create', icon: 'userPlus', text: 'Create Guest' },
+        { id: 'programmes', icon: 'grid', text: 'Programmes' }
+      ]},
+      { label: 'System', items: [
+        { id: 'settings', icon: 'settings', text: 'Settings' },
+        { id: 'activity', icon: 'list', text: 'Activity Log' }
+      ]}
+    ];
+
+    sections.forEach(function(sec) {
+      var s = el('div', { className: 'nav-section' });
+      s.appendChild(el('div', { className: 'nav-section-label', textContent: sec.label }));
+      sec.items.forEach(function(item) {
+        var ni = el('div', { className: 'nav-item' + (currentPage === item.id ? ' active' : '') });
+        ni.appendChild(svgIcon(ICONS[item.icon]));
+        ni.appendChild(el('span', { textContent: item.text }));
+        ni.addEventListener('click', function() {
+          currentPage = item.id;
+          render();
+          // close mobile sidebar
+          document.getElementById('sidebar').classList.remove('open');
+        });
+        s.appendChild(ni);
+      });
+      nav.appendChild(s);
+    });
+    sb.appendChild(nav);
+
+    var footer = el('div', { className: 'sidebar-footer', textContent: 'v1.0 MVP \u2014 localStorage' });
+    sb.appendChild(footer);
+  }
+
+  // ── Topbar ──────────────────────────────────────────
+  function buildTopbar() {
+    var tb = document.getElementById('topbar');
+    clearEl(tb);
+
+    var left = el('div', { style: 'display:flex;align-items:center;gap:12px' });
+    var ham = el('button', { className: 'hamburger' });
+    ham.appendChild(svgIcon(ICONS.menu, 24));
+    ham.addEventListener('click', function() {
+      document.getElementById('sidebar').classList.toggle('open');
+    });
+    left.appendChild(ham);
+
+    var titles = { dashboard: 'Dashboard', guests: 'Guests', create: 'Create Guest', programmes: 'Programmes', settings: 'Settings', activity: 'Activity Log' };
+    left.appendChild(el('div', { className: 'topbar-title', textContent: titles[currentPage] || 'Dashboard' }));
+    tb.appendChild(left);
+
+    var right = el('div', { className: 'topbar-right' });
+    right.appendChild(el('span', { className: 'topbar-date', textContent: new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }));
+    tb.appendChild(right);
+  }
+
+  // ── Badge helper ────────────────────────────────────
+  function statusBadge(status) {
+    var b = el('span', { className: 'badge badge-' + status });
+    b.appendChild(el('span', { className: 'badge-dot' }));
+    b.appendChild(document.createTextNode(status.charAt(0).toUpperCase() + status.slice(1)));
+    return b;
+  }
+
+  // ── Avatar helper ───────────────────────────────────
+  function avatarEl(name) {
+    var initials = name.split(' ').map(function(w) { return w.charAt(0); }).join('').slice(0,2);
+    return el('div', { className: 'avatar', textContent: initials });
+  }
+
+  function guestCheckout(g) {
+    var d = new Date(g.checkin);
+    d.setDate(d.getDate() + g.duration);
+    return d.toISOString().slice(0,10);
+  }
+
+  function guestDaysLeft(g) {
+    var checkout = new Date(guestCheckout(g));
+    var now = new Date('2026-03-14');
+    var diff = Math.ceil((checkout - now) / 86400000);
+    return diff > 0 ? diff : 0;
+  }
+
+  // ── Dashboard Page ──────────────────────────────────
+  function renderDashboard() {
+    var page = el('div', { className: 'page active', id: 'page-dashboard' });
+
+    // Stats
+    var stats = el('div', { className: 'stats-row' });
+    var activeCount = store.guests.filter(function(g) { return g.status === 'active'; }).length;
+    var upcomingCount = store.guests.filter(function(g) { return g.status === 'upcoming'; }).length;
+    var templateCount = store.templates.length;
+    var totalCount = store.guests.length;
+
+    var statData = [
+      { label: 'Active Guests', value: activeCount, cls: 'green' },
+      { label: 'Upcoming', value: upcomingCount, cls: 'teal' },
+      { label: 'Templates', value: templateCount, cls: 'orange' },
+      { label: 'Total Guests', value: totalCount, cls: '' }
+    ];
+    statData.forEach(function(s) {
+      var sc = el('div', { className: 'stat-card' + (s.cls ? ' ' + s.cls : '') });
+      sc.appendChild(el('div', { className: 'stat-label', textContent: s.label }));
+      sc.appendChild(el('div', { className: 'stat-value', textContent: String(s.value) }));
+      stats.appendChild(sc);
+    });
+    page.appendChild(stats);
+
+    // Grid: table + activity
+    var grid = el('div', { className: 'grid-dashboard' });
+
+    // Guests table card
+    var card = el('div', { className: 'card' });
+    var ch = el('div', { className: 'card-header' });
+    ch.appendChild(el('h2', { textContent: 'Current Guests' }));
+    var viewAll = el('button', { className: 'btn btn-outline btn-sm', textContent: 'View All' });
+    viewAll.addEventListener('click', function() { currentPage = 'guests'; render(); });
+    ch.appendChild(viewAll);
+    card.appendChild(ch);
+
+    var tbody = el('div', { className: 'card-body' });
+    var tw = el('div', { className: 'table-wrap' });
+    var table = el('table');
+    var thead = el('thead');
+    var hr = el('tr');
+    ['Guest', 'Programme', 'Check-in', 'Status', 'Portal'].forEach(function(h) {
+      hr.appendChild(el('th', { textContent: h }));
+    });
+    thead.appendChild(hr);
+    table.appendChild(thead);
+
+    var tb = el('tbody');
+    var activeGuests = store.guests.filter(function(g) { return g.status === 'active' || g.status === 'upcoming'; });
+    activeGuests.forEach(function(g) {
+      var tr = el('tr');
+      var nameCell = el('td');
+      var gc = el('div', { className: 'guest-cell' });
+      gc.appendChild(avatarEl(g.firstName + ' ' + g.lastName));
+      var nameDiv = el('div');
+      nameDiv.appendChild(el('div', { className: 'guest-name', textContent: g.firstName + ' ' + g.lastName }));
+      gc.appendChild(nameDiv);
+      nameCell.appendChild(gc);
+      tr.appendChild(nameCell);
+      tr.appendChild(el('td', { textContent: g.programme }));
+      tr.appendChild(el('td', { textContent: formatDate(g.checkin) }));
+      var statusTd = el('td');
+      statusTd.appendChild(statusBadge(g.status));
+      tr.appendChild(statusTd);
+      var actionTd = el('td');
+      var link = el('button', { className: 'btn btn-teal btn-sm', textContent: 'Open Portal' });
+      link.addEventListener('click', function() {
+        var url = store.settings.portalBaseUrl + '?guest=' + g.id;
+        window.open(url, '_blank');
+      });
+      actionTd.appendChild(link);
+      tr.appendChild(actionTd);
+      tb.appendChild(tr);
+    });
+    table.appendChild(tb);
+    tw.appendChild(table);
+    tbody.appendChild(tw);
+    card.appendChild(tbody);
+    grid.appendChild(card);
+
+    // Activity sidebar
+    var actCard = el('div', { className: 'card' });
+    var ach = el('div', { className: 'card-header' });
+    ach.appendChild(el('h2', { textContent: 'Recent Activity' }));
+    actCard.appendChild(ach);
+    var acb = el('div', { className: 'card-body' });
+    var colors = { 'Guest Created': 'var(--green)', 'PDF Uploaded': 'var(--teal)', 'Settings Updated': 'var(--orange)' };
+    store.activityLog.slice(0, 5).forEach(function(a) {
+      var ai = el('div', { className: 'activity-item' });
+      var dot = el('div', { className: 'activity-dot' });
+      dot.style.background = colors[a.action] || 'var(--navy)';
+      ai.appendChild(dot);
+      var info = el('div');
+      info.appendChild(el('div', { className: 'activity-text', textContent: a.details }));
+      info.appendChild(el('div', { className: 'activity-time', textContent: formatDate(a.time) }));
+      ai.appendChild(info);
+      acb.appendChild(ai);
+    });
+    actCard.appendChild(acb);
+    grid.appendChild(actCard);
+
+    page.appendChild(grid);
+    return page;
+  }
+
+  // ── Guests Page ─────────────────────────────────────
+  function renderGuests() {
+    var page = el('div', { className: 'page active', id: 'page-guests' });
+
+    // Search + Tabs
+    var toolbar = el('div', { style: 'display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:12px' });
+    var sb = el('div', { className: 'search-bar' });
+    sb.appendChild(svgIcon(ICONS.search, 16));
+    var searchInput = el('input', { type: 'text', placeholder: 'Search guests...' });
+    sb.appendChild(searchInput);
+    toolbar.appendChild(sb);
+    var addBtn = el('button', { className: 'btn btn-primary' });
+    addBtn.appendChild(document.createTextNode('+ New Guest'));
+    addBtn.addEventListener('click', function() { currentPage = 'create'; render(); });
+    toolbar.appendChild(addBtn);
+    page.appendChild(toolbar);
+
+    var filterState = { tab: 'all' };
+
+    var tabs = el('div', { className: 'tabs' });
+    ['All', 'Active', 'Upcoming', 'Completed'].forEach(function(t) {
+      var key = t.toLowerCase();
+      var tab = el('button', { className: 'tab' + (key === 'all' ? ' active' : ''), textContent: t });
+      tab.addEventListener('click', function() {
+        filterState.tab = key;
+        tabs.querySelectorAll('.tab').forEach(function(tt) { tt.classList.remove('active'); });
+        tab.classList.add('active');
+        rebuildTable();
+      });
+      tabs.appendChild(tab);
+    });
+    page.appendChild(tabs);
+
+    var card = el('div', { className: 'card' });
+    var cardBody = el('div', { className: 'card-body' });
+    var tableWrap = el('div', { className: 'table-wrap' });
+    cardBody.appendChild(tableWrap);
+    card.appendChild(cardBody);
+    page.appendChild(card);
+
+    function rebuildTable() {
+      clearEl(tableWrap);
+      var query = searchInput.value.toLowerCase();
+      var filtered = store.guests.filter(function(g) {
+        var matchTab = filterState.tab === 'all' || g.status === filterState.tab;
+        var matchSearch = !query || (g.firstName + ' ' + g.lastName + ' ' + g.email + ' ' + g.programme).toLowerCase().indexOf(query) !== -1;
+        return matchTab && matchSearch;
+      });
+
+      var table = el('table');
+      var thead = el('thead');
+      var hr = el('tr');
+      ['Guest', 'Programme', 'Check-in', 'Check-out', 'Days', 'Status', 'Actions'].forEach(function(h) {
+        hr.appendChild(el('th', { textContent: h }));
+      });
+      thead.appendChild(hr);
+      table.appendChild(thead);
+
+      var tbody = el('tbody');
+      filtered.forEach(function(g) {
+        var tr = el('tr');
+        // Guest cell
+        var nameTd = el('td');
+        var gc = el('div', { className: 'guest-cell' });
+        gc.appendChild(avatarEl(g.firstName + ' ' + g.lastName));
+        var nd = el('div');
+        nd.appendChild(el('div', { className: 'guest-name', textContent: g.firstName + ' ' + g.lastName }));
+        nd.appendChild(el('div', { className: 'guest-email', textContent: g.email }));
+        gc.appendChild(nd);
+        nameTd.appendChild(gc);
+        tr.appendChild(nameTd);
+
+        tr.appendChild(el('td', { textContent: g.programme }));
+        tr.appendChild(el('td', { textContent: formatDate(g.checkin) }));
+        tr.appendChild(el('td', { textContent: formatDate(guestCheckout(g)) }));
+        tr.appendChild(el('td', { textContent: g.duration + ' days' }));
+
+        var statusTd = el('td');
+        statusTd.appendChild(statusBadge(g.status));
+        tr.appendChild(statusTd);
+
+        // Actions
+        var actionTd = el('td');
+        var actionWrap = el('div', { style: 'display:flex;gap:6px' });
+        var portalBtn = el('button', { className: 'btn btn-teal btn-sm', textContent: 'Portal' });
+        portalBtn.addEventListener('click', function() {
+          window.open(store.settings.portalBaseUrl + '?guest=' + g.id, '_blank');
+        });
+        actionWrap.appendChild(portalBtn);
+        var editBtn = el('button', { className: 'btn btn-outline btn-sm', textContent: 'Edit' });
+        editBtn.addEventListener('click', function() {
+          currentPage = 'create';
+          editingGuest = g.id;
+          render();
+        });
+        actionWrap.appendChild(editBtn);
+        actionTd.appendChild(actionWrap);
+        tr.appendChild(actionTd);
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      tableWrap.appendChild(table);
+    }
+
+    searchInput.addEventListener('input', rebuildTable);
+    rebuildTable();
+    return page;
+  }
+
+  // ── Create Guest Page ───────────────────────────────
+  var editingGuest = null;
+
+  function renderCreateGuest() {
+    var page = el('div', { className: 'page active', id: 'page-create' });
+    var existing = editingGuest ? store.guests.find(function(g) { return g.id === editingGuest; }) : null;
+
+    var title = el('h2', { textContent: existing ? 'Edit Guest' : 'Create New Guest Portal', style: 'margin-bottom:20px;font-size:1.15rem;font-weight:700' });
+    page.appendChild(title);
+
+    var grid = el('div', { className: 'grid-2' });
+
+    // Left: Guest details
+    var leftCard = el('div', { className: 'card' });
+    var lch = el('div', { className: 'card-header' });
+    lch.appendChild(el('h2', { textContent: 'Guest Details' }));
+    leftCard.appendChild(lch);
+    var lcb = el('div', { className: 'card-body' });
+
+    var fields = [
+      { id: 'firstName', label: 'First Name', type: 'text', value: existing ? existing.firstName : '' },
+      { id: 'lastName', label: 'Last Name', type: 'text', value: existing ? existing.lastName : '' },
+      { id: 'email', label: 'Email', type: 'email', value: existing ? existing.email : '' },
+      { id: 'whatsapp', label: 'WhatsApp Number', type: 'tel', value: existing ? existing.whatsapp : '' },
+      { id: 'checkin', label: 'Check-in Date', type: 'date', value: existing ? existing.checkin : '' },
+      { id: 'duration', label: 'Duration (days)', type: 'number', value: existing ? existing.duration : 7 },
+      { id: 'programme', label: 'Nutrition Programme', type: 'select', value: existing ? existing.programme : '' },
+      { id: 'room', label: 'Room Number', type: 'text', value: existing ? existing.room : '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: existing ? existing.notes : '' }
+    ];
+
+    var inputs = {};
+    fields.forEach(function(f) {
+      var fg = el('div', { className: 'form-group' });
+      fg.appendChild(el('label', { className: 'form-label', textContent: f.label, 'for': 'field-' + f.id }));
+      var inp;
+      if (f.type === 'select') {
+        inp = el('select', { className: 'form-select', id: 'field-' + f.id });
+        var emptyOpt = el('option', { value: '', textContent: 'Select programme...' });
+        inp.appendChild(emptyOpt);
+        PROGRAMMES.forEach(function(p) {
+          var opt = el('option', { value: p, textContent: p });
+          if (f.value === p) opt.selected = true;
+          inp.appendChild(opt);
+        });
+      } else if (f.type === 'textarea') {
+        inp = el('textarea', { className: 'form-textarea', id: 'field-' + f.id });
+        inp.textContent = f.value;
+      } else {
+        inp = el('input', { className: 'form-input', type: f.type, id: 'field-' + f.id, value: String(f.value) });
+      }
+      fg.appendChild(inp);
+      lcb.appendChild(fg);
+      inputs[f.id] = inp;
+    });
+    leftCard.appendChild(lcb);
+    grid.appendChild(leftCard);
+
+    // Right: Programme schedule
+    var rightCard = el('div', { className: 'card' });
+    var rch = el('div', { className: 'card-header' });
+    rch.appendChild(el('h2', { textContent: 'Programme Schedule' }));
+    rightCard.appendChild(rch);
+    var rcb = el('div', { className: 'card-body' });
+
+    // Tabs
+    var uploadTabs = el('div', { className: 'tabs' });
+    var uploadTabBtn = el('button', { className: 'tab active', textContent: 'Upload PDF' });
+    var manualTabBtn = el('button', { className: 'tab', textContent: 'Build Manually' });
+    uploadTabs.appendChild(uploadTabBtn);
+    uploadTabs.appendChild(manualTabBtn);
+    rcb.appendChild(uploadTabs);
+
+    var uploadPane = el('div', { id: 'upload-pane' });
+    var manualPane = el('div', { id: 'manual-pane', style: 'display:none' });
+
+    uploadTabBtn.addEventListener('click', function() {
+      uploadTabBtn.classList.add('active');
+      manualTabBtn.classList.remove('active');
+      uploadPane.style.display = 'block';
+      manualPane.style.display = 'none';
+    });
+    manualTabBtn.addEventListener('click', function() {
+      manualTabBtn.classList.add('active');
+      uploadTabBtn.classList.remove('active');
+      manualPane.style.display = 'block';
+      uploadPane.style.display = 'none';
+    });
+
+    // Upload zone
+    var zone = el('div', { className: 'upload-zone' });
+    zone.appendChild(el('div', { className: 'upload-zone-icon', textContent: '\u2B06' }));
+    zone.appendChild(el('div', { className: 'upload-zone-text', textContent: 'Drop PDF here or click to upload' }));
+    zone.appendChild(el('div', { className: 'upload-zone-sub', textContent: 'Supports .pdf files up to 10MB' }));
+
+    var fileInput = el('input', { type: 'file', accept: '.pdf', style: 'display:none' });
+    zone.addEventListener('click', function() { fileInput.click(); });
+    zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', function() { zone.classList.remove('drag-over'); });
+    zone.addEventListener('drop', function(e) { e.preventDefault(); zone.classList.remove('drag-over'); simulatePdfParse(uploadPane); });
+    fileInput.addEventListener('change', function() { if (fileInput.files.length) simulatePdfParse(uploadPane); });
+
+    uploadPane.appendChild(zone);
+    uploadPane.appendChild(fileInput);
+
+    // Schedule preview area
+    var previewArea = el('div', { className: 'schedule-preview', id: 'schedule-preview' });
+    uploadPane.appendChild(previewArea);
+
+    rcb.appendChild(uploadPane);
+
+    // Manual tab placeholder
+    var manualMsg = el('div', { style: 'padding:30px;text-align:center' });
+    manualMsg.appendChild(el('div', { style: 'font-size:2rem;margin-bottom:10px', textContent: '\uD83D\uDEE0' }));
+    manualMsg.appendChild(el('div', { style: 'color:var(--text-secondary);font-size:0.9rem', textContent: 'Manual schedule builder coming soon. Use PDF upload for now.' }));
+    manualPane.appendChild(manualMsg);
+    rcb.appendChild(manualPane);
+
+    rightCard.appendChild(rcb);
+    grid.appendChild(rightCard);
+    page.appendChild(grid);
+
+    // Success banner
+    var banner = el('div', { className: 'success-banner', id: 'create-success' });
+    page.appendChild(banner);
+
+    // Submit button
+    var submitRow = el('div', { style: 'margin-top:24px;display:flex;gap:12px' });
+    var submitBtn = el('button', { className: 'btn btn-primary' });
+    submitBtn.appendChild(document.createTextNode(existing ? 'Update Guest' : 'Create Guest Portal'));
+    submitBtn.addEventListener('click', function() {
+      var guestData = {
+        id: existing ? existing.id : generateId(),
+        firstName: inputs.firstName.value.trim(),
+        lastName: inputs.lastName.value.trim(),
+        email: inputs.email.value.trim(),
+        whatsapp: inputs.whatsapp.value.trim(),
+        checkin: inputs.checkin.value,
+        duration: parseInt(inputs.duration.value, 10) || 7,
+        programme: inputs.programme.value,
+        room: inputs.room.value.trim(),
+        notes: inputs.notes.value.trim(),
+        status: inputs.checkin.value <= '2026-03-14' ? 'active' : 'upcoming',
+        pin: inputs.checkin.value ? inputs.checkin.value.slice(5).replace('-', '') : '0000',
+        createdAt: existing ? existing.createdAt : new Date().toISOString()
+      };
+
+      if (!guestData.firstName || !guestData.lastName) {
+        alert('Please enter guest name.');
+        return;
+      }
+
+      if (existing) {
+        store.guests = store.guests.map(function(g) { return g.id === existing.id ? guestData : g; });
+        addLog('Guest Updated', 'Updated portal for ' + guestData.firstName + ' ' + guestData.lastName);
+      } else {
+        store.guests.push(guestData);
+        addLog('Guest Created', 'Created portal for ' + guestData.firstName + ' ' + guestData.lastName);
+      }
+      saveStore(store);
+
+      // Show success
+      var sb2 = document.getElementById('create-success');
+      clearEl(sb2);
+      sb2.classList.add('visible');
+      sb2.appendChild(el('div', { style: 'font-weight:700;font-size:1rem;margin-bottom:8px;color:#15803d', textContent: (existing ? 'Guest Updated!' : 'Guest Portal Created!') }));
+      sb2.appendChild(el('div', { style: 'font-size:0.88rem;margin-bottom:6px', textContent: 'Portal URL:' }));
+      sb2.appendChild(el('div', { className: 'success-url', textContent: store.settings.portalBaseUrl + '?guest=' + guestData.id }));
+      sb2.appendChild(el('div', { style: 'font-size:0.88rem;margin-bottom:4px', textContent: 'Guest PIN:' }));
+      sb2.appendChild(el('div', { className: 'success-pin', textContent: guestData.pin }));
+
+      editingGuest = null;
+    });
+    submitRow.appendChild(submitBtn);
+
+    if (existing) {
+      var cancelBtn = el('button', { className: 'btn btn-outline', textContent: 'Cancel' });
+      cancelBtn.addEventListener('click', function() { editingGuest = null; currentPage = 'guests'; render(); });
+      submitRow.appendChild(cancelBtn);
+    }
+    page.appendChild(submitRow);
+
+    return page;
+  }
+
+  function simulatePdfParse(container) {
+    var preview = container.querySelector('#schedule-preview');
+    if (!preview) return;
+    clearEl(preview);
+
+    preview.appendChild(el('div', { style: 'font-weight:600;margin-bottom:12px;font-size:0.92rem', textContent: 'Parsed Schedule Preview' }));
+
+    var sampleDays = [
+      { day: 'Day 1', items: ['07:00 - Morning tea', '09:00 - Colon hydrotherapy', '12:00 - Green juice', '15:00 - Infrared sauna', '18:00 - Vegetable broth'] },
+      { day: 'Day 2', items: ['07:00 - Morning tea', '09:30 - Lymph drainage massage', '12:00 - Green juice', '14:00 - Ozone therapy', '18:00 - Raw salad'] },
+      { day: 'Day 3', items: ['07:00 - Morning tea', '10:00 - Yoga session', '12:00 - Green juice', '15:00 - Meditation', '18:00 - Vegetable broth'] }
+    ];
+
+    sampleDays.forEach(function(d) {
+      var dayEl = el('div', { className: 'schedule-day' });
+      dayEl.appendChild(el('div', { className: 'schedule-day-title', textContent: d.day }));
+      d.items.forEach(function(item) {
+        dayEl.appendChild(el('div', { className: 'schedule-item', textContent: item }));
+      });
+      preview.appendChild(dayEl);
+    });
+  }
+
+  // ── Programmes Page ─────────────────────────────────
+  function renderProgrammes() {
+    var page = el('div', { className: 'page active', id: 'page-programmes' });
+
+    // Templates card
+    var card1 = el('div', { className: 'card', style: 'margin-bottom:24px' });
+    var ch1 = el('div', { className: 'card-header' });
+    ch1.appendChild(el('h2', { textContent: 'Programme Templates' }));
+    var newTplBtn = el('button', { className: 'btn btn-primary btn-sm', textContent: '+ New Template' });
+    newTplBtn.addEventListener('click', openTemplateModal);
+    ch1.appendChild(newTplBtn);
+    card1.appendChild(ch1);
+
+    var cb1 = el('div', { className: 'card-body' });
+    var tw1 = el('div', { className: 'table-wrap' });
+    var t1 = el('table');
+    var th1 = el('thead');
+    var hr1 = el('tr');
+    ['Template Name', 'Programme', 'Duration', 'Created', 'Actions'].forEach(function(h) {
+      hr1.appendChild(el('th', { textContent: h }));
+    });
+    th1.appendChild(hr1);
+    t1.appendChild(th1);
+    var tb1 = el('tbody');
+    store.templates.forEach(function(t) {
+      var tr = el('tr');
+      tr.appendChild(el('td', { textContent: t.name, style: 'font-weight:600' }));
+      tr.appendChild(el('td', { textContent: t.programme }));
+      tr.appendChild(el('td', { textContent: t.duration + ' days' }));
+      tr.appendChild(el('td', { textContent: formatDate(t.createdAt) }));
+      var actTd = el('td');
+      var delBtn = el('button', { className: 'btn btn-outline btn-sm', textContent: 'Delete' });
+      delBtn.addEventListener('click', function() {
+        store.templates = store.templates.filter(function(tt) { return tt.id !== t.id; });
+        addLog('Template Deleted', 'Deleted template: ' + t.name);
+        render();
+      });
+      actTd.appendChild(delBtn);
+      tr.appendChild(actTd);
+      tb1.appendChild(tr);
+    });
+    t1.appendChild(tb1);
+    tw1.appendChild(t1);
+    cb1.appendChild(tw1);
+    card1.appendChild(cb1);
+    page.appendChild(card1);
+
+    // PDF History card
+    var card2 = el('div', { className: 'card' });
+    var ch2 = el('div', { className: 'card-header' });
+    ch2.appendChild(el('h2', { textContent: 'PDF Ingestion History' }));
+    card2.appendChild(ch2);
+    var cb2 = el('div', { className: 'card-body' });
+    var tw2 = el('div', { className: 'table-wrap' });
+    var t2 = el('table');
+    var th2 = el('thead');
+    var hr2 = el('tr');
+    ['Filename', 'Guest', 'Uploaded', 'Status'].forEach(function(h) {
+      hr2.appendChild(el('th', { textContent: h }));
+    });
+    th2.appendChild(hr2);
+    t2.appendChild(th2);
+    var tb2 = el('tbody');
+    store.pdfHistory.forEach(function(p) {
+      var tr = el('tr');
+      var fileTd = el('td');
+      var fileWrap = el('div', { style: 'display:flex;align-items:center;gap:8px' });
+      fileWrap.appendChild(svgIcon(ICONS.file, 16));
+      fileWrap.appendChild(el('span', { textContent: p.filename }));
+      fileTd.appendChild(fileWrap);
+      tr.appendChild(fileTd);
+      tr.appendChild(el('td', { textContent: p.guest }));
+      tr.appendChild(el('td', { textContent: formatDate(p.uploadedAt) }));
+      var sTd = el('td');
+      sTd.appendChild(statusBadge(p.status === 'parsed' ? 'active' : 'draft'));
+      tr.appendChild(sTd);
+      tb2.appendChild(tr);
+    });
+    t2.appendChild(tb2);
+    tw2.appendChild(t2);
+    cb2.appendChild(tw2);
+    card2.appendChild(cb2);
+    page.appendChild(card2);
+
+    return page;
+  }
+
+  // Template modal
+  function openTemplateModal() {
+    var overlay = document.getElementById('modalOverlay');
+    clearEl(overlay);
+    overlay.classList.add('open');
+
+    var modal = el('div', { className: 'modal' });
+    var mh = el('div', { className: 'modal-header' });
+    mh.appendChild(el('h3', { textContent: 'New Programme Template' }));
+    var closeBtn = el('button', { className: 'modal-close', textContent: '\u2715' });
+    closeBtn.addEventListener('click', function() { overlay.classList.remove('open'); });
+    mh.appendChild(closeBtn);
+    modal.appendChild(mh);
+
+    var mb = el('div', { className: 'modal-body' });
+    var fields = [
+      { id: 'tpl-name', label: 'Template Name', type: 'text' },
+      { id: 'tpl-programme', label: 'Programme', type: 'select' },
+      { id: 'tpl-duration', label: 'Duration (days)', type: 'number', value: '7' }
+    ];
+    var tplInputs = {};
+    fields.forEach(function(f) {
+      var fg = el('div', { className: 'form-group' });
+      fg.appendChild(el('label', { className: 'form-label', textContent: f.label }));
+      var inp;
+      if (f.type === 'select') {
+        inp = el('select', { className: 'form-select' });
+        PROGRAMMES.forEach(function(p) { inp.appendChild(el('option', { value: p, textContent: p })); });
+      } else {
+        inp = el('input', { className: 'form-input', type: f.type });
+        if (f.value) inp.value = f.value;
+      }
+      fg.appendChild(inp);
+      mb.appendChild(fg);
+      tplInputs[f.id] = inp;
+    });
+    modal.appendChild(mb);
+
+    var mf = el('div', { className: 'modal-footer' });
+    var cancelBtn = el('button', { className: 'btn btn-outline', textContent: 'Cancel' });
+    cancelBtn.addEventListener('click', function() { overlay.classList.remove('open'); });
+    mf.appendChild(cancelBtn);
+    var saveBtn = el('button', { className: 'btn btn-primary', textContent: 'Create Template' });
+    saveBtn.addEventListener('click', function() {
+      var name = tplInputs['tpl-name'].value.trim();
+      if (!name) { alert('Enter template name'); return; }
+      store.templates.push({
+        id: generateId(),
+        name: name,
+        programme: tplInputs['tpl-programme'].value,
+        duration: parseInt(tplInputs['tpl-duration'].value, 10) || 7,
+        createdAt: new Date().toISOString()
+      });
+      addLog('Template Created', 'Created template: ' + name);
+      overlay.classList.remove('open');
+      render();
+    });
+    mf.appendChild(saveBtn);
+    modal.appendChild(mf);
+
+    overlay.appendChild(modal);
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) overlay.classList.remove('open');
+    });
+  }
+
+  // ── Settings Page ───────────────────────────────────
+  function renderSettings() {
+    var page = el('div', { className: 'page active', id: 'page-settings' });
+    var grid = el('div', { className: 'grid-2' });
+
+    // Portal settings
+    var card1 = el('div', { className: 'card' });
+    var ch1 = el('div', { className: 'card-header' });
+    ch1.appendChild(el('h2', { textContent: 'Portal Settings' }));
+    card1.appendChild(ch1);
+    var cb1 = el('div', { className: 'card-body' });
+
+    var toggles = [
+      { key: 'autoPin', label: 'Auto-generate PIN', desc: 'Generate PIN from check-in date (MMDD)' },
+      { key: 'welcomeMsg', label: 'Send Welcome Message', desc: 'Auto-send WhatsApp welcome on portal creation' },
+      { key: 'guestFeedback', label: 'Enable Guest Feedback', desc: 'Allow guests to submit feedback via portal' },
+      { key: 'calendarExport', label: 'Calendar Export', desc: 'Enable iCal/Google Calendar export' },
+      { key: 'sessionTimeout', label: 'Session Timeout', desc: 'Auto-logout after 30 minutes of inactivity' }
+    ];
+
+    toggles.forEach(function(t) {
+      var row = el('div', { className: 'toggle-row' });
+      var info = el('div');
+      info.appendChild(el('div', { className: 'toggle-label', textContent: t.label }));
+      info.appendChild(el('div', { className: 'toggle-desc', textContent: t.desc }));
+      row.appendChild(info);
+      var toggle = el('div', { className: 'toggle' + (store.settings[t.key] ? ' on' : '') });
+      var knob = el('div', { className: 'toggle-knob' });
+      toggle.appendChild(knob);
+      toggle.addEventListener('click', function() {
+        store.settings[t.key] = !store.settings[t.key];
+        toggle.classList.toggle('on');
+        saveStore(store);
+      });
+      row.appendChild(toggle);
+      cb1.appendChild(row);
+    });
+    card1.appendChild(cb1);
+    grid.appendChild(card1);
+
+    // Resort config
+    var card2 = el('div', { className: 'card' });
+    var ch2 = el('div', { className: 'card-header' });
+    ch2.appendChild(el('h2', { textContent: 'Resort Configuration' }));
+    card2.appendChild(ch2);
+    var cb2 = el('div', { className: 'card-body' });
+
+    var configFields = [
+      { key: 'resortName', label: 'Resort Name', type: 'text' },
+      { key: 'whatsappNumber', label: 'WhatsApp Number', type: 'tel' },
+      { key: 'portalBaseUrl', label: 'Portal Base URL', type: 'url' },
+      { key: 'defaultDuration', label: 'Default Duration (days)', type: 'number' }
+    ];
+    var configInputs = {};
+    configFields.forEach(function(f) {
+      var fg = el('div', { className: 'form-group' });
+      fg.appendChild(el('label', { className: 'form-label', textContent: f.label }));
+      var inp = el('input', { className: 'form-input', type: f.type, value: String(store.settings[f.key] || '') });
+      fg.appendChild(inp);
+      cb2.appendChild(fg);
+      configInputs[f.key] = inp;
+    });
+
+    var saveSettingsBtn = el('button', { className: 'btn btn-primary', textContent: 'Save Configuration', style: 'margin-top:8px' });
+    saveSettingsBtn.addEventListener('click', function() {
+      configFields.forEach(function(f) {
+        store.settings[f.key] = f.type === 'number' ? parseInt(configInputs[f.key].value, 10) : configInputs[f.key].value.trim();
+      });
+      addLog('Settings Updated', 'Resort configuration updated');
+      saveStore(store);
+      alert('Settings saved.');
+    });
+    cb2.appendChild(saveSettingsBtn);
+    card2.appendChild(cb2);
+    grid.appendChild(card2);
+
+    page.appendChild(grid);
+
+    // Data management
+    var card3 = el('div', { className: 'card', style: 'margin-top:24px' });
+    var ch3 = el('div', { className: 'card-header' });
+    ch3.appendChild(el('h2', { textContent: 'Data Management' }));
+    card3.appendChild(ch3);
+    var cb3 = el('div', { className: 'card-body' });
+    var btnRow = el('div', { style: 'display:flex;gap:12px;flex-wrap:wrap' });
+
+    var exportBtn = el('button', { className: 'btn btn-outline' });
+    exportBtn.appendChild(svgIcon(ICONS.download, 16));
+    exportBtn.appendChild(document.createTextNode(' Export JSON'));
+    exportBtn.addEventListener('click', function() {
+      var blob = new Blob([JSON.stringify(store, null, 2)], { type: 'application/json' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'tlc-admin-data.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+    btnRow.appendChild(exportBtn);
+
+    var importBtn = el('button', { className: 'btn btn-outline' });
+    importBtn.appendChild(svgIcon(ICONS.upload, 16));
+    importBtn.appendChild(document.createTextNode(' Import'));
+    var importFile = el('input', { type: 'file', accept: '.json', style: 'display:none' });
+    importBtn.addEventListener('click', function() { importFile.click(); });
+    importFile.addEventListener('change', function() {
+      var f = importFile.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          var data = JSON.parse(e.target.result);
+          store = data;
+          saveStore(store);
+          addLog('Data Imported', 'Imported data from JSON file');
+          render();
+        } catch(err) { alert('Invalid JSON file.'); }
+      };
+      reader.readAsText(f);
+    });
+    btnRow.appendChild(importBtn);
+    btnRow.appendChild(importFile);
+
+    var clearBtn = el('button', { className: 'btn btn-danger' });
+    clearBtn.appendChild(svgIcon(ICONS.trash, 16));
+    clearBtn.appendChild(document.createTextNode(' Clear All Data'));
+    clearBtn.addEventListener('click', function() {
+      if (confirm('This will delete all data and reset to defaults. Continue?')) {
+        store = defaultStore();
+        saveStore(store);
+        addLog('Data Cleared', 'All data reset to defaults');
+        render();
+      }
+    });
+    btnRow.appendChild(clearBtn);
+
+    cb3.appendChild(btnRow);
+    card3.appendChild(cb3);
+    page.appendChild(card3);
+
+    return page;
+  }
+
+  // ── Activity Log Page ───────────────────────────────
+  function renderActivity() {
+    var page = el('div', { className: 'page active', id: 'page-activity' });
+    var card = el('div', { className: 'card' });
+    var ch = el('div', { className: 'card-header' });
+    ch.appendChild(el('h2', { textContent: 'Activity Log' }));
+    card.appendChild(ch);
+    var cb = el('div', { className: 'card-body' });
+    var tw = el('div', { className: 'table-wrap' });
+    var table = el('table');
+    var thead = el('thead');
+    var hr = el('tr');
+    ['Time', 'Action', 'User', 'Details'].forEach(function(h) {
+      hr.appendChild(el('th', { textContent: h }));
+    });
+    thead.appendChild(hr);
+    table.appendChild(thead);
+
+    var tbody = el('tbody');
+    store.activityLog.forEach(function(a) {
+      var tr = el('tr');
+      var timeTd = el('td');
+      var dt = new Date(a.time);
+      timeTd.appendChild(el('div', { textContent: formatDate(a.time), style: 'font-weight:500' }));
+      timeTd.appendChild(el('div', { textContent: dt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }), style: 'font-size:0.75rem;color:var(--text-muted)' }));
+      tr.appendChild(timeTd);
+
+      var actionTd = el('td');
+      var ab = el('span', { className: 'badge' });
+      var actionColors = { 'Guest Created': 'badge-active', 'Guest Updated': 'badge-active', 'PDF Uploaded': 'badge-upcoming', 'Settings Updated': 'badge-draft', 'Template Created': 'badge-upcoming', 'Template Deleted': 'badge-completed', 'Data Cleared': 'badge-completed', 'Data Imported': 'badge-upcoming' };
+      ab.classList.add(actionColors[a.action] || 'badge-completed');
+      ab.textContent = a.action;
+      actionTd.appendChild(ab);
+      tr.appendChild(actionTd);
+
+      tr.appendChild(el('td', { textContent: a.user }));
+      tr.appendChild(el('td', { textContent: a.details }));
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    tw.appendChild(table);
+    cb.appendChild(tw);
+    card.appendChild(cb);
+    page.appendChild(card);
+    return page;
+  }
+
+  // ── Main render ─────────────────────────────────────
+  function render() {
+    buildSidebar();
+    buildTopbar();
+    var content = document.getElementById('content');
+    clearEl(content);
+
+    var renderers = {
+      dashboard: renderDashboard,
+      guests: renderGuests,
+      create: renderCreateGuest,
+      programmes: renderProgrammes,
+      settings: renderSettings,
+      activity: renderActivity
+    };
+
+    var fn = renderers[currentPage] || renderDashboard;
+    content.appendChild(fn());
+  }
+
+  // Initial render
+  render();
+
+})();
+</script>
+</body>
+</html>

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#1B5E7B" />
+  <meta name="theme-color" content="#00609C" />
   <meta name="description" content="TheLifeCo St. Lucia — Personalized Guest Portal" />
   <title>TheLifeCo · Guest Portal</title>
   <link rel="manifest" href="manifest.json" />
@@ -22,14 +22,14 @@
 
 /* --- Custom Properties --- */
 :root {
-  --blue: #1B5E7B;
-  --blue-dark: #134A63;
-  --blue-light: #E8F2F7;
+  --blue: #00609C;
+  --blue-dark: #004D7D;
+  --blue-light: #E8F4FA;
   --teal: #00BED6;
   --teal-dark: #00A5BB;
   --teal-light: #E0F7FA;
-  --warm: #D4956A;
-  --warm-dark: #B87A52;
+  --warm: #F6A358;
+  --warm-dark: #E8923F;
   --warm-light: #FFF5ED;
   --bg: #FAF9F6;
   --surface: #FFFFFF;
@@ -295,7 +295,7 @@ ul, ol {
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 20px;
+  padding: 20px 20px 16px;
   z-index: 1;
   color: #fff;
 }
@@ -376,7 +376,7 @@ ul, ol {
 /* Hero greeting */
 .today-hero {
   position: relative;
-  padding: 28px 20px 24px;
+  padding: 20px 20px 16px;
   background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
   color: #fff;
   overflow: hidden;
@@ -455,7 +455,7 @@ ul, ol {
 .timeline-item {
   display: flex;
   gap: 14px;
-  padding: 14px 0;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--border);
   position: relative;
 }
@@ -782,6 +782,96 @@ ul, ol {
 .legend-dot.food { background: #48BB78; }
 .legend-dot.clinic { background: #ECC94B; }
 .legend-dot.extra { background: #F687B3; }
+
+/* Schedule header actions */
+.schedule-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 20px 12px;
+}
+.cal-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+}
+.cal-export-btn:active {
+  background: var(--surface-2);
+  transform: scale(0.97);
+}
+.cal-export-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+/* Integrations list */
+.integrations-list {
+  display: flex;
+  flex-direction: column;
+}
+.integration-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.integration-item:last-child {
+  border-bottom: none;
+}
+.integration-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+.integration-info {
+  flex: 1;
+  min-width: 0;
+}
+.integration-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+.integration-desc {
+  font-size: 0.75rem;
+  color: var(--text-3);
+  line-height: 1.4;
+  margin-top: 2px;
+}
+.integration-action {
+  flex-shrink: 0;
+}
+.integration-action .cal-export-btn {
+  font-size: 0.6875rem;
+  padding: 5px 12px;
+}
+.integration-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: var(--surface-2);
+  border-radius: var(--radius-full);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--text-4);
+  white-space: nowrap;
+}
 
 
 /* ============================================================
@@ -1273,7 +1363,6 @@ ul, ol {
   z-index: 800;
   cursor: pointer;
   transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
-  animation: helpBounce 3s infinite;
 }
 
 #help-btn:active {
@@ -1283,14 +1372,6 @@ ul, ol {
 #help-btn svg {
   width: 28px;
   height: 28px;
-}
-
-@keyframes helpBounce {
-  0%, 100% { transform: translateY(0); }
-  5% { transform: translateY(-8px); }
-  10% { transform: translateY(0); }
-  15% { transform: translateY(-5px); }
-  20% { transform: translateY(0); }
 }
 
 /* Constrain to app width on larger screens */
@@ -1734,7 +1815,7 @@ ul, ol {
 /* Taller hero on slightly larger phones */
 @media (min-height: 740px) {
   .today-hero {
-    padding: 36px 20px 28px;
+    padding: 24px 20px 20px;
   }
 
   .page-header {
@@ -1813,34 +1894,6 @@ ul, ol {
   padding: 12px 20px 4px;
 }
 
-/* Dark mode toggle */
-.dark-mode-toggle {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 2;
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  min-height: 44px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #fff;
-  padding: 0;
-  transition: background 0.2s var(--ease);
-}
-.dark-mode-toggle:hover {
-  background: rgba(255, 255, 255, 0.25);
-}
-.dark-mode-toggle svg {
-  width: 18px;
-  height: 18px;
-}
 
 /* Offline banner */
 .offline-banner {
@@ -1860,163 +1913,6 @@ ul, ol {
 }
 .offline-banner.show { display: block; }
 
-/* ============================================================
-   DARK MODE
-   ============================================================ */
-[data-theme="dark"] {
-  --bg: #1A1A2E;
-  --surface: #252540;
-  --surface-2: #2A2A45;
-  --border: #3A3A55;
-  --text: #E8E8F0;
-  --text-2: #A0A0B8;
-  --text-3: #7A7A95;
-  --text-4: #5A5A75;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
-}
-[data-theme="dark"] .today-hero {
-  background: linear-gradient(135deg, #1B5E7B, #134A63);
-}
-[data-theme="dark"] #bottom-nav {
-  background: #252540;
-  border-top-color: #3A3A55;
-}
-[data-theme="dark"] .therapy-card,
-[data-theme="dark"] .accordion-item,
-[data-theme="dark"] .nutrition-card,
-[data-theme="dark"] .timeline-item {
-  background: var(--surface);
-  border-color: var(--border);
-}
-[data-theme="dark"] .search-input {
-  background: var(--surface);
-  border-color: var(--border);
-  color: var(--text);
-}
-[data-theme="dark"] .date-pill {
-  background: var(--surface-2);
-}
-[data-theme="dark"] .date-pill .day-name,
-[data-theme="dark"] .date-pill .day-num {
-  color: var(--text-2);
-}
-[data-theme="dark"] .date-picker {
-  background: var(--surface);
-  border-bottom-color: var(--border);
-}
-[data-theme="dark"] .day-stats {
-  background: var(--surface);
-  border-bottom-color: var(--border);
-}
-[data-theme="dark"] .page-header {
-  background: var(--surface);
-}
-[data-theme="dark"] .category-card-content h3,
-[data-theme="dark"] .category-card-content p {
-  color: #fff;
-}
-[data-theme="dark"] #auth-gate {
-  background-color: #1A1A2E;
-}
-@media (min-width: 480px) {
-  [data-theme="dark"] body {
-    background: #111122;
-  }
-}
-[data-theme="dark"] .next-activity-banner {
-  background: linear-gradient(135deg, #1a3a4a, #1a3a2a);
-}
-[data-theme="dark"] .next-activity-countdown { color: var(--teal); }
-[data-theme="dark"] .map-location-item {
-  background: var(--surface);
-}
-[data-theme="dark"] .rating-star { color: var(--text-3); }
-[data-theme="dark"] .install-banner {
-  background: var(--surface);
-  border-color: var(--border);
-}
-[data-theme="dark"] .toast {
-  background: var(--surface);
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-[data-theme="dark"] .share-btn {
-  background: var(--surface);
-  border-color: var(--border);
-  color: var(--text-2);
-}
-[data-theme="dark"] .favorites-header {
-  color: var(--text);
-}
-[data-theme="dark"] .favorites-count {
-  background: var(--surface);
-  color: var(--text-2);
-}
-[data-theme="dark"] .nutrition-meals {
-  border-top-color: var(--border);
-}
-[data-theme="dark"] .empty-state {
-  color: var(--text-3);
-}
-[data-theme="dark"] .explore-search .search-input-wrapper {
-  background: var(--surface);
-  border-color: var(--border);
-}
-[data-theme="dark"] .search-input {
-  color: var(--text);
-}
-[data-theme="dark"] .category-card::after {
-  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-}
-[data-theme="dark"] .page-header::after {
-  background: linear-gradient(to top, var(--bg), transparent);
-}
-[data-theme="dark"] .info-header::after {
-  background: linear-gradient(to top, var(--bg), transparent);
-}
-[data-theme="dark"] .date-pill {
-  background: var(--surface);
-  color: var(--text-2);
-}
-[data-theme="dark"] .schedule-legend .legend-item {
-  color: var(--text-2);
-}
-[data-theme="dark"] #pull-indicator {
-  background: var(--surface);
-}
-[data-theme="dark"] .scroll-top-btn {
-  background: var(--teal-dark);
-}
-[data-theme="dark"] .note-area textarea {
-  background: var(--surface-2);
-  border-color: var(--border);
-  color: var(--text);
-}
-[data-theme="dark"] .note-btn {
-  color: var(--text-3);
-}
-[data-theme="dark"] .note-btn.has-note {
-  color: var(--warm);
-}
-[data-theme="dark"] .skeleton-card {
-  background: var(--surface);
-  border-color: var(--border);
-}
-@media (prefers-color-scheme: dark) {
-  html:not([data-theme="light"]):not([data-theme="dark"]) {
-    --bg: #1A1A2E;
-    --surface: #252540;
-    --surface-2: #2A2A45;
-    --border: #3A3A55;
-    --text: #E8E8F0;
-    --text-2: #A0A0B8;
-    --text-3: #7A7A95;
-    --text-4: #5A5A75;
-  }
-}
 /* ============================================================
    FOCUS INDICATORS
    ============================================================ */
@@ -2287,9 +2183,6 @@ ul, ol {
   display: flex;
   align-items: center;
   gap: 16px;
-}
-[data-theme="dark"] .weather-card {
-  background: linear-gradient(135deg, #1a3a4a, #1a3a2a);
 }
 .weather-icon { font-size: 40px; line-height: 1; }
 .weather-details { flex: 1; }
@@ -2588,7 +2481,6 @@ ul, ol {
   color: var(--text-3);
   margin-top: 4px;
 }
-[data-theme="dark"] .wellness-score { background: var(--surface); }
 
 /* ============================================================
    ACHIEVEMENT BADGES
@@ -2635,8 +2527,6 @@ ul, ol {
   color: var(--text-3);
   margin-top: 4px;
 }
-[data-theme="dark"] .badge-item { background: #1e2a3a; }
-[data-theme="dark"] .badge-item.unlocked { background: linear-gradient(135deg, #1a3a4a, #2a2a1a); }
 
 /* ============================================================
    DAILY WELLNESS TIP
@@ -2646,8 +2536,7 @@ ul, ol {
   padding: 16px 16px 16px 20px;
   background: var(--surface);
   border-radius: var(--radius);
-  border-left: 4px solid transparent;
-  border-image: linear-gradient(180deg, var(--teal), var(--warm)) 1;
+  border-left: 4px solid var(--teal);
   box-shadow: var(--shadow-sm);
   position: relative;
 }
@@ -2669,7 +2558,6 @@ ul, ol {
   color: var(--text-2);
   line-height: 1.5;
 }
-[data-theme="dark"] .wellness-tip-card { background: #1e2a3a; }
 
 /* ============================================================
    GUEST FEEDBACK FORM
@@ -2752,10 +2640,6 @@ ul, ol {
   color: var(--teal);
   font-weight: 500;
 }
-[data-theme="dark"] .feedback-card { background: var(--surface); }
-[data-theme="dark"] .feedback-card textarea { background: #1e2a3a; border-color: #2a3a4a; }
-[data-theme="dark"] .feedback-emoji { background: #1e2a3a; border-color: #2a3a4a; }
-[data-theme="dark"] .feedback-emoji.selected { background: #1a3a4a; border-color: var(--teal); }
 
 /* ============================================================
    WHATSAPP QUICK MESSAGES
@@ -2816,7 +2700,6 @@ ul, ol {
 @media (min-width: 480px) {
   .quick-msg-menu { right: calc(50% - 240px + 20px); }
 }
-[data-theme="dark"] .quick-msg-item { background: #1e2a3a; }
 
 /* ============================================================
    ACTIVITY DURATION BADGE
@@ -2832,7 +2715,6 @@ ul, ol {
   margin-left: 6px;
   vertical-align: middle;
 }
-[data-theme="dark"] .duration-badge { background: #1e2a3a; }
 
 /* ============================================================
    DAILY SUMMARY CARD
@@ -2861,8 +2743,6 @@ ul, ol {
   color: var(--text-3);
   margin-top: 2px;
 }
-[data-theme="dark"] .day-summary { background: linear-gradient(135deg, #1a3a4a, #1a3a3a); }
-[data-theme="dark"] .day-summary-stat .summary-value { color: var(--teal); }
 
 
 /* Photo Journal */
@@ -2890,21 +2770,6 @@ ul, ol {
   letter-spacing: 0.04em; margin-left: 6px; vertical-align: middle;
 }
 
-/* Confetti */
-.confetti-particle {
-  position: fixed; top: -10px; width: 8px; height: 8px;
-  border-radius: 2px; z-index: 9999; pointer-events: none;
-  animation: confettiFall 3s ease-in forwards;
-}
-@keyframes confettiFall {
-  0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 1; }
-  20% { opacity: 1; }
-  50% { transform: translateY(50vh) rotate(360deg) translateX(30px); }
-  100% { transform: translateY(100vh) rotate(720deg) translateX(-20px); opacity: 0; }
-}
-
-/* Parallax targets */
-.today-hero, .page-header, .info-header { will-change: transform; }
 
 /* Data export/clear buttons */
 .data-actions { display: flex; flex-direction: column; gap: 10px; padding: 16px 20px; }
@@ -2918,50 +2783,30 @@ ul, ol {
 .data-btn.export-btn { background: var(--blue); color: #fff; border: none; }
 .data-btn.clear-btn { background: transparent; color: #E53E3E; border: 1.5px solid #E53E3E; }
 
-/* Sound toggle */
-.sound-toggle {
-  position: absolute; top: 16px; right: 66px; z-index: 2;
-  width: 44px; height: 44px; min-width: 44px; min-height: 44px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: #fff; padding: 0;
-  transition: background 0.2s var(--ease);
-}
-.sound-toggle:hover { background: rgba(255, 255, 255, 0.25); }
-.sound-toggle svg { width: 18px; height: 18px; }
-.sound-toggle.sound-on { background: rgba(0, 190, 214, 0.3); border-color: rgba(0, 190, 214, 0.5); }
-
 @media (prefers-reduced-motion: reduce) {
   .today-hero, .page-header, .info-header { will-change: auto; }
-  .confetti-particle { animation: none; display: none; }
 }
 
-[data-theme="dark"] .photo-btn { color: var(--text-3); }
-[data-theme="dark"] .photo-btn.has-photo { color: var(--teal); }
-[data-theme="dark"] .timeline-item.conflict { background: rgba(246, 163, 88, 0.1); }
-[data-theme="dark"] .data-btn.export-btn { background: var(--blue-dark); }
-[data-theme="dark"] .data-btn.clear-btn { color: #FC8181; border-color: #FC8181; }
 
 /* Print stylesheet */
 @media print {
   #bottom-nav, #help-btn, .scroll-top-btn, .compare-bar,
   #auth-gate, #splash, .offline-banner, .install-banner,
-  .dark-mode-toggle, .pull-indicator, .emergency-bar,
+  .pull-indicator, .emergency-bar,
   .note-btn, .timeline-cal-btn, .compare-overlay,
-  .photo-btn, .sound-toggle, .data-actions { display: none !important; }
+  .photo-btn, .data-actions { display: none !important; }
   #app { max-width: 100%; padding-bottom: 0; box-shadow: none; border: none; }
   .tab-panel { display: block !important; page-break-after: always; }
   body { background: #fff !important; color: #000 !important; }
   .timeline-item { break-inside: avoid; }
-  .today-hero { background: #1B5E7B !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .today-hero { background: #00609C !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
   </style>
 </head>
 <body>
 
 <!-- ==================== SPLASH SCREEN ==================== -->
-<div id="splash" style="position:fixed;inset:0;z-index:10000;background:#1B5E7B;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity 0.5s">
+<div id="splash" style="position:fixed;inset:0;z-index:10000;background:#00609C;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity 0.5s">
   <div style="font-family:'Playfair Display',serif;font-size:28px;color:white;font-weight:600">TheLifeCo</div>
   <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:8px;letter-spacing:0.1em;text-transform:uppercase">Loading your portal...</div>
 </div>
@@ -2995,8 +2840,6 @@ ul, ol {
   <div id="tab-today" class="tab-panel active">
 
     <div class="today-hero">
-      <button class="sound-toggle" id="sound-toggle" type="button" aria-label="Toggle sound"></button>
-      <button class="dark-mode-toggle" id="dark-mode-toggle" type="button" aria-label="Toggle dark mode"></button>
       <span class="greeting-label" id="greeting-label"></span>
       <span class="greeting-name" id="greeting-name"></span>
       <span class="greeting-detail" id="header-date"></span>
@@ -3099,6 +2942,10 @@ ul, ol {
       <div class="legend-item"><span class="legend-dot food"></span> Nutrition</div>
       <div class="legend-item"><span class="legend-dot clinic"></span> Therapy</div>
       <div class="legend-item"><span class="legend-dot extra"></span> Treatment</div>
+    </div>
+
+    <div class="schedule-header-actions">
+      <button class="cal-export-btn" id="cal-export-btn" type="button"></button>
     </div>
 
     <div class="timeline" id="schedule-timeline"></div>
@@ -3310,7 +3157,7 @@ var GUEST = {
   program: 'Green Salad Program',
   checkIn: '2026-03-09',
   totalDays: 7,
-  waBase: 'https://wa.me/17582861869'
+  waBase: 'https://api.whatsapp.com/send?phone=17582861869'
 };
 
 // Use current date
@@ -3615,7 +3462,7 @@ var INFO_CONTENT = {
   },
 
   programs: {
-    intro: 'TheLifeCo offers specialized programs for a wide range of health goals. If any of these align with your needs, speak to your wellness coach or ask via WhatsApp.',
+    intro: 'TheLifeCo offers specialized programs for a wide range of health goals. If any of these align with your needs, speak to your wellness coach.',
     list: [
       ['Weight Loss & Management', 'Medically supervised, sustainable fat loss combining nutrition, movement, and metabolic therapies.'],
       ['Mental Wellness Program', 'Holistic support for anxiety, depression, burnout, and nervous system dysregulation.'],
@@ -4021,64 +3868,6 @@ function animateCountUp(element, target, duration, suffix) {
   requestAnimationFrame(step);
 }
 
-// =============================================================
-// CONFETTI
-// =============================================================
-
-function triggerConfetti() {
-  try {
-    if (sessionStorage.getItem('tlc_confetti_shown') === '1') return;
-    sessionStorage.setItem('tlc_confetti_shown', '1');
-  } catch(e) {}
-  var colors = ['#00BED6', '#1B5E7B', '#D4956A', '#48BB78', '#ECC94B', '#F687B3'];
-  for (var i = 0; i < 30; i++) {
-    var particle = document.createElement('div');
-    particle.className = 'confetti-particle';
-    particle.style.left = (Math.random() * 100) + 'vw';
-    particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-    particle.style.animationDelay = (Math.random() * 0.8) + 's';
-    particle.style.animationDuration = (2 + Math.random() * 2) + 's';
-    var size = 6 + Math.round(Math.random() * 6);
-    particle.style.width = size + 'px';
-    particle.style.height = size + 'px';
-    document.body.appendChild(particle);
-  }
-  setTimeout(function() {
-    var particles = document.querySelectorAll('.confetti-particle');
-    for (var j = 0; j < particles.length; j++) {
-      if (particles[j].parentNode) particles[j].parentNode.removeChild(particles[j]);
-    }
-  }, 3500);
-}
-
-// =============================================================
-// NOTIFICATION SOUND (Web Audio API)
-// =============================================================
-
-var SOUND_KEY = 'tlc_sound';
-
-function getSoundPref() {
-  try { return localStorage.getItem(SOUND_KEY) === 'on'; } catch(e) { return false; }
-}
-
-function playChime() {
-  if (!getSoundPref()) return;
-  try {
-    var AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-    var ctx = new AudioCtx();
-    var osc = ctx.createOscillator();
-    var gain = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.value = 440;
-    gain.gain.setValueAtTime(0.3, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.2);
-  } catch(e) {}
-}
 
 // =============================================================
 // EXPORT / CLEAR DATA
@@ -4107,6 +3896,79 @@ function exportAllData() {
   } catch(e) {
     showToast('Export failed');
   }
+}
+
+function exportScheduleToCalendar() {
+  try {
+    var lines = [];
+    lines.push('BEGIN:VCALENDAR');
+    lines.push('VERSION:2.0');
+    lines.push('PRODID:-//TheLifeCo//Guest Portal//EN');
+    lines.push('CALSCALE:GREGORIAN');
+    lines.push('METHOD:PUBLISH');
+    lines.push('X-WR-CALNAME:TheLifeCo St. Lucia - ' + GUEST.firstName);
+
+    var dates = Object.keys(SCHEDULE);
+    dates.forEach(function(dateStr) {
+      var items = SCHEDULE[dateStr];
+      var dateParts = dateStr.split('-');
+      var ymd = dateParts[0] + dateParts[1] + dateParts[2];
+
+      items.forEach(function(item, idx) {
+        var timeParts = item.time.split(':');
+        var startH = timeParts[0];
+        var startM = timeParts[1];
+        var dtStart = ymd + 'T' + startH + startM + '00';
+
+        // Calculate end time: next item start or +1 hour
+        var endMinutes;
+        var startMinutes = parseInt(startH, 10) * 60 + parseInt(startM, 10);
+        if (idx < items.length - 1) {
+          var nextParts = items[idx + 1].time.split(':');
+          endMinutes = parseInt(nextParts[0], 10) * 60 + parseInt(nextParts[1], 10);
+          if (endMinutes <= startMinutes) endMinutes = startMinutes + 60;
+        } else {
+          endMinutes = startMinutes + 60;
+        }
+        var endH = String(Math.floor(endMinutes / 60)).padStart(2, '0');
+        var endM = String(endMinutes % 60).padStart(2, '0');
+        var dtEnd = ymd + 'T' + endH + endM + '00';
+
+        var desc = DESCRIPTIONS[item.name] || '';
+        var uid = dateStr + '-' + idx + '@thelifeco-stlucia';
+
+        lines.push('BEGIN:VEVENT');
+        lines.push('UID:' + uid);
+        lines.push('DTSTART;TZID=America/St_Lucia:' + dtStart);
+        lines.push('DTEND;TZID=America/St_Lucia:' + dtEnd);
+        lines.push('SUMMARY:' + icsEscape(item.name));
+        if (desc) lines.push('DESCRIPTION:' + icsEscape(desc));
+        lines.push('LOCATION:TheLifeCo St. Lucia');
+        lines.push('STATUS:CONFIRMED');
+        lines.push('END:VEVENT');
+      });
+    });
+
+    lines.push('END:VCALENDAR');
+
+    var icsContent = lines.join('\r\n');
+    var blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'thelifeco-schedule-' + GUEST.checkIn + '.ics';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Calendar file downloaded');
+    logEvent('schedule', 'export', 'ics');
+  } catch(e) {
+    showToast('Calendar export failed');
+  }
+}
+
+function icsEscape(str) {
+  if (!str) return '';
+  return str.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
 }
 
 function clearAllData() {
@@ -4253,7 +4115,7 @@ var STRINGS = {
     searchTherapies: 'Search therapies...',
     backToCategories: '\u2190 Back to categories',
     guestInfo: 'Guest Information',
-    bookViaWhatsapp: 'Book via WhatsApp',
+    bookViaWhatsapp: 'Book',
     readMore: 'Read more',
     readLess: 'Read less',
     rateThis: 'Rate this',
@@ -4755,7 +4617,6 @@ function buildNextActivityBanner(activities) {
   if (diff <= 15 && diff > 0 && _lastRemindedActivity !== reminderKey) {
     _lastRemindedActivity = reminderKey;
     showToast('Starting in ' + diff + ' min: ' + nextActivity.name);
-    playChime();
     logEvent('reminder', 'toast', nextActivity.name);
   }
 }
@@ -4926,7 +4787,6 @@ function initToday() {
     }
     if (allCompleted) {
       unlockBadge('dedicated');
-      triggerConfetti();
     }
   }
 
@@ -5196,7 +5056,7 @@ function initToday() {
       var eLbl = fbEmojiData[fbSelEmoji - 1] ? fbEmojiData[fbSelEmoji - 1].icon + ' ' + fbEmojiData[fbSelEmoji - 1].label : '';
       var fbMsg = 'Day ' + dayNum + ' Feedback: ' + eLbl;
       if (fbTxt.value.trim()) fbMsg += '\n' + fbTxt.value.trim();
-      window.open(GUEST.waBase + '?text=' + encodeURIComponent(fbMsg), '_blank');
+      window.open(GUEST.waBase + '&text=' + encodeURIComponent(fbMsg), '_blank');
       logEvent('feedback', 'whatsapp', String(fbSelEmoji));
     });
     appendTo(fbActs, fbWaBtn);
@@ -5259,6 +5119,42 @@ function initSchedule() {
   }
 
   loadScheduleDay(activeDate);
+
+  // Init calendar export button
+  var calExportBtn = document.getElementById('cal-export-btn');
+  if (calExportBtn) {
+    var calSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    calSvg.setAttribute('viewBox', '0 0 24 24');
+    calSvg.setAttribute('fill', 'none');
+    calSvg.setAttribute('stroke', 'currentColor');
+    calSvg.setAttribute('stroke-width', '2');
+    calSvg.setAttribute('stroke-linecap', 'round');
+    calSvg.setAttribute('stroke-linejoin', 'round');
+    var calRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    calRect.setAttribute('x', '3');
+    calRect.setAttribute('y', '4');
+    calRect.setAttribute('width', '18');
+    calRect.setAttribute('height', '18');
+    calRect.setAttribute('rx', '2');
+    calSvg.appendChild(calRect);
+    var calLine1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    calLine1.setAttribute('x1', '16'); calLine1.setAttribute('y1', '2');
+    calLine1.setAttribute('x2', '16'); calLine1.setAttribute('y2', '6');
+    calSvg.appendChild(calLine1);
+    var calLine2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    calLine2.setAttribute('x1', '8'); calLine2.setAttribute('y1', '2');
+    calLine2.setAttribute('x2', '8'); calLine2.setAttribute('y2', '6');
+    calSvg.appendChild(calLine2);
+    var calLine3 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    calLine3.setAttribute('x1', '3'); calLine3.setAttribute('y1', '10');
+    calLine3.setAttribute('x2', '21'); calLine3.setAttribute('y2', '10');
+    calSvg.appendChild(calLine3);
+    calExportBtn.appendChild(calSvg);
+    appendTo(calExportBtn, h('span', null, 'Export to Calendar'));
+    calExportBtn.addEventListener('click', function() {
+      exportScheduleToCalendar();
+    });
+  }
 }
 
 function loadScheduleDay(dateStr) {
@@ -5628,8 +5524,16 @@ function buildSingleTherapyCard(therapy) {
 
   // WhatsApp book link
   var waMsg = encodeURIComponent('Hi, I\'d like to book ' + therapy.name + ' please.');
-  var waLink = h('a', 'btn-whatsapp-book', t('bookViaWhatsapp'));
-  waLink.href = GUEST.waBase + '?text=' + waMsg;
+  var waLink = h('a', 'btn-whatsapp-book');
+  var waSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  waSvg.setAttribute('viewBox', '0 0 24 24');
+  waSvg.setAttribute('fill', 'currentColor');
+  var waPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  waPath.setAttribute('d', 'M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z');
+  waSvg.appendChild(waPath);
+  waLink.appendChild(waSvg);
+  waLink.appendChild(document.createTextNode(t('bookViaWhatsapp')));
+  waLink.href = GUEST.waBase + '&text=' + waMsg;
   waLink.target = '_blank';
   waLink.rel = 'noopener noreferrer';
   waLink.addEventListener('click', function() {
@@ -5758,6 +5662,60 @@ function initInfo() {
     appendTo(item, content);
     appendTo(accordion, item);
   });
+
+  // Integrations accordion section
+  (function buildIntegrationsSection() {
+    var intItem = h('div', 'accordion-item');
+    var intTrigger = h('button', 'accordion-trigger');
+    intTrigger.setAttribute('type', 'button');
+    appendTo(intTrigger, h('span', null, 'Integrations'));
+    var intArrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    intArrow.setAttribute('viewBox', '0 0 24 24');
+    intArrow.setAttribute('fill', 'none');
+    intArrow.setAttribute('stroke', 'currentColor');
+    intArrow.setAttribute('stroke-width', '2');
+    intArrow.setAttribute('width', '16');
+    intArrow.setAttribute('height', '16');
+    var intPoly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    intPoly.setAttribute('points', '6 9 12 15 18 9');
+    intArrow.appendChild(intPoly);
+    appendTo(intTrigger, intArrow);
+    var intContent = h('div', 'accordion-content');
+    var intBody = h('div', 'accordion-body');
+    var intList = h('div', 'integrations-list');
+    var integrations = [
+      { icon: '📅', name: 'Calendar Sync', desc: 'Export your full 7-day schedule as an .ics file for Apple Calendar, Google Calendar, or Outlook.', action: 'export' },
+      { icon: '❤️', name: 'Apple Health', desc: 'Track wellness metrics like sleep, heart rate, and activity during your stay.', action: 'soon' },
+      { icon: '🏃', name: 'Google Fit', desc: 'Sync your resort activities and wellness data with Google Fit.', action: 'soon' },
+      { icon: '🚴', name: 'Strava', desc: 'Log resort walks, yoga sessions, and functional training as Strava activities.', action: 'soon' },
+      { icon: '🎵', name: 'Spotify', desc: 'Curated wellness playlists for meditation, yoga, and relaxation sessions.', action: 'soon' }
+    ];
+    integrations.forEach(function(integ) {
+      var row = h('div', 'integration-item');
+      appendTo(row, h('div', 'integration-icon', integ.icon));
+      var info = h('div', 'integration-info');
+      appendTo(info, h('div', 'integration-name', integ.name));
+      appendTo(info, h('div', 'integration-desc', integ.desc));
+      appendTo(row, info);
+      var actionWrap = h('div', 'integration-action');
+      if (integ.action === 'export') {
+        var syncBtn = h('button', 'cal-export-btn', 'Export .ics');
+        syncBtn.setAttribute('type', 'button');
+        syncBtn.addEventListener('click', function() { exportScheduleToCalendar(); });
+        appendTo(actionWrap, syncBtn);
+      } else {
+        appendTo(actionWrap, h('span', 'integration-badge', 'Coming Soon'));
+      }
+      appendTo(row, actionWrap);
+      appendTo(intList, row);
+    });
+    appendTo(intBody, intList);
+    appendTo(intContent, intBody);
+    intTrigger.addEventListener('click', function() { intItem.classList.toggle('open'); });
+    appendTo(intItem, intTrigger);
+    appendTo(intItem, intContent);
+    appendTo(accordion, intItem);
+  })();
 
   // Export/Clear data buttons
   var dataSection = h('div', 'data-actions');
@@ -6100,68 +6058,6 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
   });
 });
 
-// =============================================================
-// DARK MODE (change #14)
-// =============================================================
-
-(function initDarkMode() {
-  var toggle = document.getElementById('dark-mode-toggle');
-  if (!toggle) return;
-
-  // Moon SVG (default icon)
-  function setIcon(isDark) {
-    while (toggle.firstChild) toggle.removeChild(toggle.firstChild);
-    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.setAttribute('fill', 'none');
-    svg.setAttribute('stroke', 'currentColor');
-    svg.setAttribute('stroke-width', '2');
-    svg.setAttribute('stroke-linecap', 'round');
-    svg.setAttribute('stroke-linejoin', 'round');
-    if (isDark) {
-      // Sun icon
-      var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      circle.setAttribute('cx', '12'); circle.setAttribute('cy', '12'); circle.setAttribute('r', '5');
-      svg.appendChild(circle);
-      var rays = [[12,1,12,3],[12,21,12,23],[4.22,4.22,5.64,5.64],[18.36,18.36,19.78,19.78],[1,12,3,12],[21,12,23,12],[4.22,19.78,5.64,18.36],[18.36,5.64,19.78,4.22]];
-      rays.forEach(function(r) {
-        var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', String(r[0])); line.setAttribute('y1', String(r[1]));
-        line.setAttribute('x2', String(r[2])); line.setAttribute('y2', String(r[3]));
-        svg.appendChild(line);
-      });
-    } else {
-      // Moon icon
-      var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      path.setAttribute('d', 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z');
-      svg.appendChild(path);
-    }
-    toggle.appendChild(svg);
-  }
-
-  var saved;
-  try { saved = localStorage.getItem('tlc_theme'); } catch(e) { saved = null; }
-  if (saved) {
-    document.documentElement.setAttribute('data-theme', saved);
-    setIcon(saved === 'dark');
-    var metaThemeInit = document.querySelector('meta[name="theme-color"]');
-    if (metaThemeInit) metaThemeInit.setAttribute('content', saved === 'dark' ? '#1A1A2E' : '#1B5E7B');
-  } else {
-    setIcon(false);
-  }
-
-  toggle.addEventListener('click', function() {
-    if (navigator.vibrate) navigator.vibrate(10);
-    var current = document.documentElement.getAttribute('data-theme');
-    var next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    try { localStorage.setItem('tlc_theme', next); } catch(e) {}
-    setIcon(next === 'dark');
-    var metaTheme = document.querySelector('meta[name="theme-color"]');
-    if (metaTheme) metaTheme.setAttribute('content', next === 'dark' ? '#1A1A2E' : '#1B5E7B');
-    logEvent('settings', 'darkmode', next);
-  });
-})();
 
 // =============================================================
 // SESSION TIMEOUT
@@ -6191,99 +6087,6 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
   });
 })();
 
-// =============================================================
-// SOUND TOGGLE
-// =============================================================
-
-(function initSoundToggle() {
-  var btn = document.getElementById('sound-toggle');
-  if (!btn) return;
-
-  function setSoundIcon(isOn) {
-    while (btn.firstChild) btn.removeChild(btn.firstChild);
-    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.setAttribute('fill', 'none');
-    svg.setAttribute('stroke', 'currentColor');
-    svg.setAttribute('stroke-width', '2');
-    svg.setAttribute('stroke-linecap', 'round');
-    svg.setAttribute('stroke-linejoin', 'round');
-    if (isOn) {
-      var p1 = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-      p1.setAttribute('points', '11 5 6 9 2 9 2 15 6 15 11 19 11 5');
-      svg.appendChild(p1);
-      var p2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      p2.setAttribute('d', 'M19.07 4.93a10 10 0 0 1 0 14.14');
-      svg.appendChild(p2);
-      var p3 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      p3.setAttribute('d', 'M15.54 8.46a5 5 0 0 1 0 7.07');
-      svg.appendChild(p3);
-    } else {
-      var p4 = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-      p4.setAttribute('points', '11 5 6 9 2 9 2 15 6 15 11 19 11 5');
-      svg.appendChild(p4);
-      var l1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      l1.setAttribute('x1', '23'); l1.setAttribute('y1', '9');
-      l1.setAttribute('x2', '17'); l1.setAttribute('y2', '15');
-      svg.appendChild(l1);
-      var l2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      l2.setAttribute('x1', '17'); l2.setAttribute('y1', '9');
-      l2.setAttribute('x2', '23'); l2.setAttribute('y2', '15');
-      svg.appendChild(l2);
-    }
-    btn.appendChild(svg);
-    btn.classList.toggle('sound-on', isOn);
-  }
-
-  var isOn = getSoundPref();
-  setSoundIcon(isOn);
-
-  btn.addEventListener('click', function() {
-    var current = getSoundPref();
-    var next = !current;
-    try { localStorage.setItem(SOUND_KEY, next ? 'on' : 'off'); } catch(e) {}
-    setSoundIcon(next);
-    if (next) playChime();
-    logEvent('settings', 'sound', next ? 'on' : 'off');
-  });
-})();
-
-// =============================================================
-// PARALLAX SCROLL
-// =============================================================
-
-(function initParallax() {
-  var mql = window.matchMedia('(prefers-reduced-motion: reduce)');
-  if (mql.matches) return;
-
-  var parallaxEls = [];
-  var selectors = ['.today-hero', '.page-header', '.info-header'];
-  selectors.forEach(function(sel) {
-    var els = document.querySelectorAll(sel);
-    for (var i = 0; i < els.length; i++) parallaxEls.push(els[i]);
-  });
-
-  if (parallaxEls.length === 0) return;
-  var ticking = false;
-
-  function onScroll() {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(function() {
-      var scrollY = window.scrollY || window.pageYOffset;
-      parallaxEls.forEach(function(el) {
-        var rect = el.getBoundingClientRect();
-        if (rect.bottom > 0 && rect.top < window.innerHeight) {
-          var offset = scrollY * 0.4;
-          el.style.transform = 'translateY(' + (offset * 0.3) + 'px)';
-        }
-      });
-      ticking = false;
-    });
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-})();
 
 // =============================================================
 // ANIMATED COUNTER (IntersectionObserver)
@@ -6357,7 +6160,7 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
   if (helpBtn && quickMenu) {
     // Build quick message items
     var quickMsgs = [
-      { icon: '\uD83D\uDCAC', label: 'Chat on WhatsApp', msg: '' },
+      { icon: '\uD83D\uDCAC', label: 'Open Chat', msg: '' },
       { icon: '\u23F0', label: 'Running late', msg: 'Hi, I am running a bit late for my next session. Please let the team know.' },
       { icon: '\uD83D\uDE4B', label: 'Need assistance', msg: 'Hi, I need some assistance at the resort. Could someone help me?' },
       { icon: '\uD83C\uDF7D\uFE0F', label: 'Room service', msg: 'Hi, I would like to request room service. Please let me know the available options.' }
@@ -6369,7 +6172,7 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
       qmItem.addEventListener('click', function(e) {
         e.stopPropagation();
         var url = GUEST.waBase;
-        if (qm.msg) url += '?text=' + encodeURIComponent(qm.msg);
+        if (qm.msg) url += '&text=' + encodeURIComponent(qm.msg);
         window.open(url, '_blank');
         quickMenu.classList.remove('open');
         logEvent('whatsapp', 'quick-msg', qm.label);
@@ -6391,15 +6194,6 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
       }
     });
 
-    // Bounce animation
-    setTimeout(function() {
-      helpBtn.classList.add('bounce');
-      function onBounceEnd() {
-        helpBtn.classList.remove('bounce');
-        helpBtn.removeEventListener('animationend', onBounceEnd);
-      }
-      helpBtn.addEventListener('animationend', onBounceEnd);
-    }, 1800);
   }
 
   // Service worker registration (change #12)

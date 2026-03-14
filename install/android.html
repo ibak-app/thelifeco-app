@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Install TheLifeCo on Android</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #FAF9F6;
+    color: #333;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 24px 20px 40px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #00609C;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+
+  .back-link:hover { text-decoration: underline; }
+
+  .back-link svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: #00609C;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .logo {
+    font-size: 28px;
+    font-weight: 700;
+    color: #00609C;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+
+  .logo span {
+    font-weight: 400;
+    color: #00BED6;
+  }
+
+  .page-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-top: 16px;
+    margin-bottom: 8px;
+  }
+
+  .page-subtitle {
+    font-size: 14px;
+    color: #777;
+  }
+
+  /* Notice */
+  .notice {
+    background: #EEF7FF;
+    border: 1px solid #C5DFF0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 28px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .notice-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    background: #00609C;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 1px;
+  }
+
+  .notice p {
+    font-size: 13px;
+    color: #00609C;
+    line-height: 1.5;
+  }
+
+  .notice strong { font-weight: 600; }
+
+  /* Steps */
+  .step-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  }
+
+  .step-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .step-number {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: #00BED6;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .step-text { flex: 1; }
+
+  .step-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+  }
+
+  .step-desc {
+    font-size: 13px;
+    color: #777;
+    line-height: 1.5;
+  }
+
+  .step-desc code {
+    background: #F0F4F8;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'SF Mono', Menlo, monospace;
+    color: #00609C;
+  }
+
+  /* Visual hints */
+  .visual-hint {
+    background: #F7F8FA;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Chrome icon */
+  .chrome-icon-mock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .chrome-icon-circle {
+    width: 56px;
+    height: 56px;
+    background: #fff;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chrome-ring {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: conic-gradient(
+      #EA4335 0deg 120deg,
+      #FBBC04 120deg 240deg,
+      #34A853 240deg 360deg
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .chrome-center {
+    width: 16px;
+    height: 16px;
+    background: #4285F4;
+    border-radius: 50%;
+    border: 2px solid #fff;
+  }
+
+  .chrome-icon-label {
+    font-size: 12px;
+    color: #555;
+    font-weight: 500;
+  }
+
+  /* Chrome toolbar mock */
+  .chrome-toolbar {
+    width: 100%;
+    max-width: 300px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .chrome-url-bar {
+    flex: 1;
+    background: #F1F3F4;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 12px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .chrome-lock {
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke: #5F6368;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .chrome-menu-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+  }
+
+  .chrome-dot {
+    width: 4px;
+    height: 4px;
+    background: #5F6368;
+    border-radius: 50%;
+  }
+
+  .chrome-menu-btn.highlighted {
+    background: #E8F0FE;
+    border-radius: 8px;
+    position: relative;
+  }
+
+  .chrome-menu-btn.highlighted .chrome-dot {
+    background: #1A73E8;
+  }
+
+  .chrome-menu-btn.highlighted .pulse-dot {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 10px;
+    height: 10px;
+    background: #F6A358;
+    border-radius: 50%;
+    border: 2px solid #F7F8FA;
+  }
+
+  /* Chrome menu mock */
+  .chrome-menu {
+    width: 100%;
+    max-width: 240px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    overflow: hidden;
+  }
+
+  .chrome-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .chrome-menu-item.highlighted {
+    background: #E8F4FD;
+  }
+
+  .chrome-menu-item.highlighted .menu-item-text {
+    font-weight: 600;
+    color: #00609C;
+  }
+
+  .chrome-menu-item .menu-icon {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: #5F6368;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .chrome-menu-item.highlighted .menu-icon {
+    stroke: #00609C;
+  }
+
+  .chrome-menu-divider {
+    height: 1px;
+    background: #E8EAED;
+    margin: 0 12px;
+  }
+
+  /* Install dialog mock */
+  .install-dialog {
+    width: 100%;
+    max-width: 280px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    padding: 24px 20px 16px;
+    text-align: center;
+  }
+
+  .install-dialog-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #00609C, #00BED6);
+    border-radius: 12px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .install-dialog-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+  }
+
+  .install-dialog-url {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 20px;
+  }
+
+  .install-dialog-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .install-dialog-btn {
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .install-dialog-btn.cancel {
+    color: #666;
+    background: #F1F3F4;
+  }
+
+  .install-dialog-btn.install {
+    color: #fff;
+    background: #1A73E8;
+  }
+
+  /* App icon mock */
+  .home-screen-mock {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .app-icon-mock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .app-icon-square {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #00609C, #00BED6);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0,96,156,0.3);
+  }
+
+  .app-icon-label {
+    font-size: 11px;
+    color: #555;
+    font-weight: 500;
+  }
+
+  .app-icon-ghost {
+    width: 56px;
+    height: 56px;
+    background: #E5E5EA;
+    border-radius: 14px;
+    opacity: 0.4;
+  }
+
+  /* Cross-link */
+  .cross-link {
+    text-align: center;
+    margin: 28px 0;
+    padding: 16px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .cross-link p {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 6px;
+  }
+
+  .cross-link a {
+    color: #00609C;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  .cross-link a:hover { text-decoration: underline; }
+
+  /* Help */
+  .help-section {
+    text-align: center;
+    padding: 24px 20px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 24px;
+  }
+
+  .help-section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+  }
+
+  .help-section p {
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 14px;
+  }
+
+  .help-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #25D366;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 24px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+
+  .help-btn:hover { background: #1fb855; }
+
+  .help-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: #fff;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 16px 0;
+    font-size: 12px;
+    color: #aaa;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <a href="../" class="back-link">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Back to portal
+      </a>
+      <div class="logo">The<span>Life</span>Co</div>
+      <h1 class="page-title">Install on Android</h1>
+      <p class="page-subtitle">Add the app to your home screen in 30 seconds</p>
+    </div>
+
+    <!-- Notice -->
+    <div class="notice">
+      <div class="notice-icon">i</div>
+      <p><strong>Works with most browsers.</strong> Chrome, Samsung Internet, and Microsoft Edge all support PWA install on Android.</p>
+    </div>
+
+    <!-- Step 1: Open Chrome -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">1</div>
+        <div class="step-text">
+          <div class="step-title">Open Chrome</div>
+          <div class="step-desc">Open the Chrome browser on your Android phone. You can also use Samsung Internet or Edge.</div>
+        </div>
+      </div>
+      <div class="visual-hint">
+        <div class="chrome-icon-mock">
+          <div class="chrome-icon-circle">
+            <div class="chrome-ring">
+              <div class="chrome-center"></div>
+            </div>
+          </div>
+          <div class="chrome-icon-label">Chrome</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Navigate -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">2</div>
+        <div class="step-text">
+          <div class="step-title">Go to your guest portal</div>
+          <div class="step-desc">Type the URL in the address bar: <code>thelifeco.app/guest/your-name/</code></div>
+        </div>
+      </div>
+      <div class="visual-hint">
+        <div class="chrome-toolbar">
+          <div class="chrome-url-bar">
+            <svg class="chrome-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            thelifeco.app/guest/...
+          </div>
+          <div class="chrome-menu-btn">
+            <div class="chrome-dot"></div>
+            <div class="chrome-dot"></div>
+            <div class="chrome-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Three-dot menu -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">3</div>
+        <div class="step-text">
+          <div class="step-title">Tap the three-dot menu</div>
+          <div class="step-desc">Find the <strong>&#8942;</strong> (three vertical dots) in the top-right corner of Chrome.</div>
+        </div>
+      </div>
+      <div class="visual-hint">
+        <div class="chrome-toolbar">
+          <div class="chrome-url-bar">
+            <svg class="chrome-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            thelifeco.app/guest/...
+          </div>
+          <div class="chrome-menu-btn highlighted">
+            <div class="chrome-dot"></div>
+            <div class="chrome-dot"></div>
+            <div class="chrome-dot"></div>
+            <span class="pulse-dot"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Add to Home Screen -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">4</div>
+        <div class="step-text">
+          <div class="step-title">Tap "Add to Home Screen"</div>
+          <div class="step-desc">In the menu, look for "Add to Home Screen" or "Install App" (wording varies by browser).</div>
+        </div>
+      </div>
+      <div class="visual-hint">
+        <div class="chrome-menu">
+          <div class="chrome-menu-item">
+            <svg class="menu-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span class="menu-item-text">New tab</span>
+          </div>
+          <div class="chrome-menu-divider"></div>
+          <div class="chrome-menu-item">
+            <svg class="menu-icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h10l4 4v12a2 2 0 01-2 2z"/></svg>
+            <span class="menu-item-text">Add bookmark</span>
+          </div>
+          <div class="chrome-menu-item highlighted">
+            <svg class="menu-icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+            <span class="menu-item-text">Add to Home screen</span>
+          </div>
+          <div class="chrome-menu-item">
+            <svg class="menu-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            <span class="menu-item-text">Settings</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5: Confirm Install -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">5</div>
+        <div class="step-text">
+          <div class="step-title">Tap "Install" to confirm</div>
+          <div class="step-desc">A dialog will appear showing the app name and icon. Tap "Install" to add it.</div>
+        </div>
+      </div>
+      <div class="visual-hint">
+        <div class="install-dialog">
+          <div class="install-dialog-icon">TL</div>
+          <div class="install-dialog-title">TheLifeCo</div>
+          <div class="install-dialog-url">thelifeco.app</div>
+          <div class="install-dialog-buttons">
+            <div class="install-dialog-btn cancel">Cancel</div>
+            <div class="install-dialog-btn install">Install</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 6: Done -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">6</div>
+        <div class="step-text">
+          <div class="step-title">You're all set!</div>
+          <div class="step-desc">The app icon will appear on your home screen. Tap it anytime to open your guest portal.</div>
+        </div>
+      </div>
+      <div class="visual-hint">
+        <div class="home-screen-mock">
+          <div class="app-icon-ghost"></div>
+          <div class="app-icon-mock">
+            <div class="app-icon-square">TL</div>
+            <div class="app-icon-label">TheLifeCo</div>
+          </div>
+          <div class="app-icon-ghost"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cross-link -->
+    <div class="cross-link">
+      <p>Using an iPhone instead?</p>
+      <a href="ios.html">View iPhone instructions &rarr;</a>
+    </div>
+
+    <!-- Help -->
+    <div class="help-section">
+      <h3>Need Help?</h3>
+      <p>Our team is happy to help you install the app.</p>
+      <a href="https://api.whatsapp.com/send?phone=17582861869&text=I%20need%20help%20installing%20the%20app" class="help-btn">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.955 9.955 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
+        Chat on WhatsApp
+      </a>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">TheLifeCo St. Lucia</div>
+
+  </div>
+</body>
+</html>

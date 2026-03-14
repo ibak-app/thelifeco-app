@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Install TheLifeCo on iPhone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #FAF9F6;
+    color: #333;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 24px 20px 40px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #00609C;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+
+  .back-link:hover { text-decoration: underline; }
+
+  .back-link svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: #00609C;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .logo {
+    font-size: 28px;
+    font-weight: 700;
+    color: #00609C;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+
+  .logo span {
+    font-weight: 400;
+    color: #00BED6;
+  }
+
+  .page-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-top: 16px;
+    margin-bottom: 8px;
+  }
+
+  .page-subtitle {
+    font-size: 14px;
+    color: #777;
+  }
+
+  /* Notice */
+  .notice {
+    background: #EEF7FF;
+    border: 1px solid #C5DFF0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 28px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .notice-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    background: #00609C;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 1px;
+  }
+
+  .notice p {
+    font-size: 13px;
+    color: #00609C;
+    line-height: 1.5;
+  }
+
+  .notice strong { font-weight: 600; }
+
+  /* Steps */
+  .step-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  }
+
+  .step-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .step-number {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: #00BED6;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .step-text { flex: 1; }
+
+  .step-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+  }
+
+  .step-desc {
+    font-size: 13px;
+    color: #777;
+    line-height: 1.5;
+  }
+
+  .step-desc code {
+    background: #F0F4F8;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'SF Mono', Menlo, monospace;
+    color: #00609C;
+  }
+
+  /* Visual hints */
+  .visual-hint {
+    background: #F7F8FA;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Safari toolbar mock */
+  .safari-toolbar {
+    width: 100%;
+    max-width: 300px;
+    background: #F2F2F7;
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .safari-url-bar {
+    flex: 1;
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+  }
+
+  .safari-share-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .safari-share-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: #007AFF;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Share sheet mock */
+  .share-sheet {
+    width: 100%;
+    max-width: 280px;
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  }
+
+  .share-sheet-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid #E5E5EA;
+    text-align: center;
+  }
+
+  .share-sheet-header .url {
+    font-size: 11px;
+    color: #888;
+  }
+
+  .share-sheet-actions {
+    padding: 8px 0;
+  }
+
+  .share-action {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+  }
+
+  .share-action.highlighted {
+    background: #EEF7FF;
+    border-radius: 8px;
+    margin: 0 8px;
+  }
+
+  .share-action-icon {
+    width: 28px;
+    height: 28px;
+    background: #E5E5EA;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .share-action.highlighted .share-action-icon {
+    background: #00609C;
+  }
+
+  .share-action-icon svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: #666;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .share-action.highlighted .share-action-icon svg {
+    stroke: #fff;
+  }
+
+  .share-action-text {
+    font-size: 14px;
+    color: #333;
+  }
+
+  .share-action.highlighted .share-action-text {
+    font-weight: 600;
+    color: #00609C;
+  }
+
+  /* Add confirmation mock */
+  .add-bar {
+    width: 100%;
+    max-width: 280px;
+    background: #F2F2F7;
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .add-bar-cancel {
+    font-size: 14px;
+    color: #888;
+  }
+
+  .add-bar-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .add-bar-add {
+    font-size: 14px;
+    font-weight: 700;
+    color: #007AFF;
+    background: #E8F0FE;
+    padding: 4px 14px;
+    border-radius: 6px;
+  }
+
+  /* App icon mock */
+  .home-screen-mock {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .app-icon-mock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .app-icon-square {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #00609C, #00BED6);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0,96,156,0.3);
+  }
+
+  .app-icon-label {
+    font-size: 11px;
+    color: #555;
+    font-weight: 500;
+  }
+
+  .app-icon-ghost {
+    width: 56px;
+    height: 56px;
+    background: #E5E5EA;
+    border-radius: 14px;
+    opacity: 0.4;
+  }
+
+  /* Safari icon */
+  .safari-icon-mock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .safari-icon-circle {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #5AC8FA, #007AFF);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,122,255,0.25);
+  }
+
+  .safari-icon-circle svg {
+    width: 28px;
+    height: 28px;
+    fill: #fff;
+  }
+
+  .safari-icon-label {
+    font-size: 12px;
+    color: #555;
+    font-weight: 500;
+  }
+
+  /* Cross-link */
+  .cross-link {
+    text-align: center;
+    margin: 28px 0;
+    padding: 16px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .cross-link p {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 6px;
+  }
+
+  .cross-link a {
+    color: #00609C;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  .cross-link a:hover { text-decoration: underline; }
+
+  /* Help */
+  .help-section {
+    text-align: center;
+    padding: 24px 20px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 24px;
+  }
+
+  .help-section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+  }
+
+  .help-section p {
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 14px;
+  }
+
+  .help-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #25D366;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 24px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+
+  .help-btn:hover { background: #1fb855; }
+
+  .help-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: #fff;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 16px 0;
+    font-size: 12px;
+    color: #aaa;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <a href="../" class="back-link">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Back to portal
+      </a>
+      <div class="logo">The<span>Life</span>Co</div>
+      <h1 class="page-title">Install on iPhone</h1>
+      <p class="page-subtitle">Add the app to your home screen in 30 seconds</p>
+    </div>
+
+    <!-- Notice -->
+    <div class="notice">
+      <div class="notice-icon">!</div>
+      <p><strong>Safari required.</strong> PWA install only works in Safari on iOS. Chrome and Firefox on iPhone do not support this feature.</p>
+    </div>
+
+    <!-- Step 1: Open Safari -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">1</div>
+        <div class="step-text">
+          <div class="step-title">Open Safari</div>
+          <div class="step-desc">Find the Safari browser on your iPhone or iPad. It has a blue compass icon.</div>
+        </div>
+      </div>
+      <div class="visual-hint">
+        <div class="safari-icon-mock">
+          <div class="safari-icon-circle">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-5.12 3.12-3.12 5.12 5.12-3.12z" fill="#fff" opacity="0.9"/></svg>
+          </div>
+          <div class="safari-icon-label">Safari</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Navigate -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">2</div>
+        <div class="step-text">
+          <div class="step-title">Go to your guest portal</div>
+          <div class="step-desc">Type the URL in the address bar: <code>thelifeco.app/guest/your-name/</code></div>
+        </div>
+      </div>
+      <div class="visual-hint">
+        <div class="safari-toolbar">
+          <div class="safari-url-bar">thelifeco.app/guest/...</div>
+          <div class="safari-share-btn">
+            <svg viewBox="0 0 24 24"><path d="M12 3v12M5 10l7-7 7 7"/><path d="M19 14v4a2 2 0 01-2 2H7a2 2 0 01-2-2v-4"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Share button -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">3</div>
+        <div class="step-text">
+          <div class="step-title">Tap the Share button</div>
+          <div class="step-desc">Look for the square with an upward arrow at the bottom of Safari's toolbar.</div>
+        </div>
+      </div>
+      <div class="visual-hint">
+        <div class="safari-toolbar">
+          <div class="safari-url-bar">thelifeco.app/guest/...</div>
+          <div class="safari-share-btn" style="background: #E8F0FE; border-radius: 8px; position: relative;">
+            <svg viewBox="0 0 24 24"><path d="M12 3v12M5 10l7-7 7 7"/><path d="M19 14v4a2 2 0 01-2 2H7a2 2 0 01-2-2v-4"/></svg>
+            <!-- Pulse indicator -->
+            <span style="position:absolute;top:-4px;right:-4px;width:10px;height:10px;background:#F6A358;border-radius:50%;border:2px solid #F7F8FA;"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Add to Home Screen -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">4</div>
+        <div class="step-text">
+          <div class="step-title">Tap "Add to Home Screen"</div>
+          <div class="step-desc">Scroll down in the share sheet until you see the option. It has a plus (+) icon.</div>
+        </div>
+      </div>
+      <div class="visual-hint">
+        <div class="share-sheet">
+          <div class="share-sheet-header">
+            <div class="url">thelifeco.app</div>
+          </div>
+          <div class="share-sheet-actions">
+            <div class="share-action">
+              <div class="share-action-icon">
+                <svg viewBox="0 0 24 24"><path d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3M12 3v12"/></svg>
+              </div>
+              <div class="share-action-text">Copy</div>
+            </div>
+            <div class="share-action highlighted">
+              <div class="share-action-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+              </div>
+              <div class="share-action-text">Add to Home Screen</div>
+            </div>
+            <div class="share-action">
+              <div class="share-action-icon">
+                <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h10l4 4v12a2 2 0 01-2 2z"/></svg>
+              </div>
+              <div class="share-action-text">Add Bookmark</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5: Confirm -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">5</div>
+        <div class="step-text">
+          <div class="step-title">Tap "Add" to confirm</div>
+          <div class="step-desc">You'll see a preview. Tap the blue "Add" button in the top-right corner.</div>
+        </div>
+      </div>
+      <div class="visual-hint">
+        <div class="add-bar">
+          <div class="add-bar-cancel">Cancel</div>
+          <div class="add-bar-title">Add to Home</div>
+          <div class="add-bar-add">Add</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 6: Done -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">6</div>
+        <div class="step-text">
+          <div class="step-title">You're all set!</div>
+          <div class="step-desc">The app icon will appear on your home screen. Tap it anytime to open your guest portal.</div>
+        </div>
+      </div>
+      <div class="visual-hint">
+        <div class="home-screen-mock">
+          <div class="app-icon-ghost"></div>
+          <div class="app-icon-mock">
+            <div class="app-icon-square">TL</div>
+            <div class="app-icon-label">TheLifeCo</div>
+          </div>
+          <div class="app-icon-ghost"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cross-link -->
+    <div class="cross-link">
+      <p>Using an Android phone?</p>
+      <a href="android.html">View Android instructions &rarr;</a>
+    </div>
+
+    <!-- Help -->
+    <div class="help-section">
+      <h3>Need Help?</h3>
+      <p>Our team is happy to help you install the app.</p>
+      <a href="https://api.whatsapp.com/send?phone=17582861869&text=I%20need%20help%20installing%20the%20app" class="help-btn">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.955 9.955 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
+        Chat on WhatsApp
+      </a>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">TheLifeCo St. Lucia</div>
+
+  </div>
+</body>
+</html>
