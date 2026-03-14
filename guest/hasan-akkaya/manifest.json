@@ -5,7 +5,7 @@
   "start_url": "/guest/hasan-akkaya/",
   "display": "standalone",
   "background_color": "#FAF9F6",
-  "theme_color": "#1B5E7B",
+  "theme_color": "#00609C",
   "orientation": "portrait-primary",
   "icons": [
     { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },

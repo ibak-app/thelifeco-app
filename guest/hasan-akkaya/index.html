@@ -38,7 +38,7 @@
   --text: #1A1A2E;
   --text-2: #4A5568;
   --text-3: #718096;
-  --text-4: #A0AEC0;
+  --text-4: #7A8AA0;
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
@@ -1041,7 +1041,7 @@ ul, ol {
   color: var(--text-3);
   line-height: 1.4;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -1846,14 +1846,10 @@ ul, ol {
 
 .auth-hint {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.45);
   margin-top: 20px;
   line-height: 1.5;
-}
-
-.auth-hint b {
-  color: rgba(255, 255, 255, 0.6);
-  font-weight: 500;
+  text-align: center;
 }
 
 #auth-gate.authenticated {
@@ -2175,22 +2171,6 @@ ul, ol {
 }
 
 /* Weather card */
-.weather-card {
-  margin: 0 20px;
-  padding: 20px;
-  background: linear-gradient(135deg, #E0F7FA, #E8F5E9);
-  border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.weather-icon { font-size: 40px; line-height: 1; }
-.weather-details { flex: 1; }
-.weather-temp { font-size: 28px; font-weight: 700; color: var(--text); }
-.weather-desc { font-size: 13px; color: var(--text-2); margin-top: 2px; }
-.weather-extra { display: flex; gap: 16px; margin-top: 8px; }
-.weather-extra-item { font-size: 11px; color: var(--text-3); }
-.weather-extra-item strong { color: var(--text-2); }
 
 /* Resort map */
 .map-locations { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
@@ -2227,72 +2207,6 @@ ul, ol {
 .rating-star.active { color: #F59E0B; }
 .rating-label { font-size: 11px; color: var(--text-4); margin-left: 8px; }
 
-/* ============================================================
-   RECENTLY VIEWED PILLS
-   ============================================================ */
-.recent-section { padding: 0 20px 8px; }
-.recent-section .section-label { margin-bottom: 6px; }
-.recent-pills {
-  display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none;
-  -webkit-overflow-scrolling: touch; padding-bottom: 4px;
-}
-.recent-pills::-webkit-scrollbar { display: none; }
-.recent-pill {
-  flex-shrink: 0; padding: 6px 14px; font-size: 0.75rem; font-weight: 500;
-  border-radius: var(--radius-full); background: var(--teal-light); color: var(--teal-dark);
-  white-space: nowrap; cursor: pointer; transition: background 0.2s var(--ease), transform 0.15s var(--ease);
-}
-.recent-pill:active { transform: scale(0.95); background: var(--teal); color: #fff; }
-
-/* ============================================================
-   COMPARE MODE
-   ============================================================ */
-.compare-toggle {
-  padding: 6px 14px; font-size: 0.75rem; font-weight: 600; border-radius: var(--radius-full);
-  background: var(--surface-2); color: var(--text-2); border: 1.5px solid var(--border);
-  transition: all 0.2s var(--ease); cursor: pointer; margin-left: 8px;
-}
-.compare-toggle.active { background: var(--blue); color: #fff; border-color: var(--blue); }
-.therapy-card.compare-selected { border: 2px solid var(--teal); box-shadow: 0 0 0 3px rgba(0, 190, 214, 0.15); }
-.compare-bar {
-  position: fixed; bottom: calc(var(--nav-height) + var(--safe-bottom) + 8px);
-  left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 448px;
-  background: var(--surface); border: 1.5px solid var(--teal); border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg); z-index: 850; padding: 12px 16px; display: none;
-}
-.compare-bar.show { display: block; }
-.compare-bar-items { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-.compare-bar-chip {
-  display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;
-  font-size: 0.6875rem; font-weight: 500; background: var(--teal-light);
-  color: var(--teal-dark); border-radius: var(--radius-full);
-}
-.compare-bar-chip .remove-chip { cursor: pointer; font-weight: 700; margin-left: 2px; opacity: 0.6; }
-.compare-bar-chip .remove-chip:hover { opacity: 1; }
-.compare-bar-actions { display: flex; gap: 8px; }
-.compare-bar-actions .btn { flex: 1; padding: 8px; font-size: 0.8125rem; }
-.compare-overlay {
-  position: fixed; inset: 0; z-index: 950; background: rgba(0,0,0,0.5);
-  display: flex; align-items: flex-end; justify-content: center;
-}
-.compare-sheet {
-  width: 100%; max-width: 480px; max-height: 85vh; background: var(--surface);
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0; overflow-y: auto; padding: 20px;
-  animation: slideUp 0.3s var(--ease);
-}
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-.compare-sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-.compare-sheet-header h3 { font-size: 1.125rem; font-weight: 700; }
-.compare-sheet-close {
-  width: 32px; height: 32px; border-radius: 50%; background: var(--surface-2);
-  display: flex; align-items: center; justify-content: center; cursor: pointer;
-  font-size: 18px; color: var(--text-3);
-}
-.compare-grid { display: grid; gap: 12px; }
-.compare-col { background: var(--surface-2); border-radius: var(--radius); padding: 14px; }
-.compare-col h4 { font-size: 0.9375rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
-.compare-col p { font-size: 0.8125rem; color: var(--text-3); line-height: 1.5; margin-bottom: 8px; }
-.compare-col .badge { margin-right: 4px; }
 
 /* ============================================================
    SMART RECOMMENDATIONS
@@ -2357,40 +2271,6 @@ ul, ol {
 .faq-item.open .faq-answer { max-height: 500px; }
 .faq-answer p { padding: 0 0 12px; font-size: 0.8125rem; color: var(--text-2); line-height: 1.6; }
 
-/* ============================================================
-   WEATHER WIDGET ENHANCED
-   ============================================================ */
-.weather-css-icon { width: 48px; height: 48px; position: relative; flex-shrink: 0; }
-.weather-css-icon .sun-body {
-  width: 24px; height: 24px; background: #F59E0B; border-radius: 50%;
-  position: absolute; top: 12px; left: 12px;
-}
-.weather-css-icon .sun-ray {
-  position: absolute; width: 3px; height: 8px; background: #F59E0B; border-radius: 2px;
-  top: 2px; left: 22.5px; transform-origin: 1.5px 22px;
-}
-.weather-css-icon .sun-ray:nth-child(2) { transform: rotate(45deg); }
-.weather-css-icon .sun-ray:nth-child(3) { transform: rotate(90deg); }
-.weather-css-icon .sun-ray:nth-child(4) { transform: rotate(135deg); }
-.weather-css-icon .sun-ray:nth-child(5) { transform: rotate(180deg); }
-.weather-css-icon .sun-ray:nth-child(6) { transform: rotate(225deg); }
-.weather-css-icon .sun-ray:nth-child(7) { transform: rotate(270deg); }
-.weather-css-icon .sun-ray:nth-child(8) { transform: rotate(315deg); }
-.weather-css-icon .cloud-body {
-  position: absolute; bottom: 0; left: 4px; width: 36px; height: 16px;
-  background: #94A3B8; border-radius: 8px;
-}
-.weather-css-icon .cloud-puff1 {
-  position: absolute; bottom: 10px; left: 10px; width: 20px; height: 20px;
-  background: #94A3B8; border-radius: 50%;
-}
-.weather-css-icon .cloud-puff2 {
-  position: absolute; bottom: 6px; left: 22px; width: 16px; height: 16px;
-  background: #94A3B8; border-radius: 50%;
-}
-.weather-sunrise-info { display: flex; gap: 16px; margin-top: 6px; }
-.weather-sunrise-item { font-size: 11px; color: var(--text-3); }
-.weather-sunrise-item strong { color: var(--text-2); }
 
 /* ============================================================
    PAGE TRANSITION ANIMATIONS
@@ -2422,111 +2302,7 @@ ul, ol {
   background-size: 200% 200%; animation: shimmer 1.5s infinite;
 }
 
-/* ============================================================
-   WELLNESS SCORE DASHBOARD
-   ============================================================ */
-.wellness-score {
-  margin: 0 20px 16px;
-  padding: 24px 20px;
-  background: var(--surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
-  text-align: center;
-}
-.wellness-gauge {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 12px;
-}
-.wellness-gauge svg {
-  width: 120px;
-  height: 120px;
-  transform: rotate(-90deg);
-}
-.wellness-gauge .gauge-bg {
-  fill: none;
-  stroke: var(--border);
-  stroke-width: 8;
-}
-.wellness-gauge .gauge-fill {
-  fill: none;
-  stroke: var(--teal);
-  stroke-width: 8;
-  stroke-linecap: round;
-  transition: stroke-dashoffset 1.2s var(--ease);
-}
-.wellness-gauge .gauge-value {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 36px;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1;
-}
-.wellness-gauge .gauge-value small {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-3);
-  margin-top: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-.wellness-score-label {
-  font-size: 13px;
-  color: var(--text-3);
-  margin-top: 4px;
-}
 
-/* ============================================================
-   ACHIEVEMENT BADGES
-   ============================================================ */
-.badge-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  padding: 0 20px;
-  margin-bottom: 16px;
-}
-.badge-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 16px 8px 12px;
-  background: var(--surface);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  text-align: center;
-  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
-}
-.badge-item.unlocked {
-  background: linear-gradient(135deg, #E0F7FA, #FFF5ED);
-  box-shadow: var(--shadow);
-}
-.badge-item.locked {
-  opacity: 0.5;
-  filter: grayscale(0.8);
-}
-.badge-item .badge-emoji {
-  font-size: 28px;
-  margin-bottom: 6px;
-  line-height: 1;
-}
-.badge-item .badge-name {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text);
-  line-height: 1.3;
-}
-.badge-item .badge-date {
-  font-size: 10px;
-  color: var(--text-3);
-  margin-top: 4px;
-}
 
 /* ============================================================
    DAILY WELLNESS TIP
@@ -2601,7 +2377,7 @@ ul, ol {
 }
 .feedback-card textarea {
   width: 100%;
-  min-height: 60px;
+  min-height: 40px;
   padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -2623,11 +2399,6 @@ ul, ol {
   font-weight: 600;
   transition: background 0.2s var(--ease);
 }
-.feedback-save-btn {
-  background: var(--teal);
-  color: #fff;
-}
-.feedback-save-btn:active { background: var(--teal-dark); }
 .feedback-wa-btn {
   background: var(--whatsapp-green);
   color: #fff;
@@ -2759,16 +2530,6 @@ ul, ol {
 .photo-thumb { margin-top: 6px; display: inline-block; }
 .photo-thumb img { width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border); }
 
-/* Schedule Conflict Detection */
-.timeline-item.conflict {
-  border-left: 3px solid #F6A358; background: rgba(246, 163, 88, 0.06);
-  margin: 0 -20px; padding: 14px 20px; border-radius: var(--radius);
-}
-.conflict-badge {
-  display: inline-block; font-size: 0.625rem; font-weight: 700; color: #E67E22;
-  background: rgba(246, 163, 88, 0.15); padding: 1px 6px; border-radius: 4px;
-  letter-spacing: 0.04em; margin-left: 6px; vertical-align: middle;
-}
 
 
 /* Data export/clear buttons */
@@ -2790,10 +2551,10 @@ ul, ol {
 
 /* Print stylesheet */
 @media print {
-  #bottom-nav, #help-btn, .scroll-top-btn, .compare-bar,
+  #bottom-nav, #help-btn, .scroll-top-btn,
   #auth-gate, #splash, .offline-banner, .install-banner,
   .pull-indicator, .emergency-bar,
-  .note-btn, .timeline-cal-btn, .compare-overlay,
+  .note-btn, .timeline-cal-btn,
   .photo-btn, .data-actions { display: none !important; }
   #app { max-width: 100%; padding-bottom: 0; box-shadow: none; border: none; }
   .tab-panel { display: block !important; page-break-after: always; }
@@ -2807,6 +2568,7 @@ ul, ol {
 
 <!-- ==================== SPLASH SCREEN ==================== -->
 <div id="splash" style="position:fixed;inset:0;z-index:10000;background:#00609C;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity 0.5s">
+<script>window._splashStart=Date.now();</script>
   <div style="font-family:'Playfair Display',serif;font-size:28px;color:white;font-weight:600">TheLifeCo</div>
   <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:8px;letter-spacing:0.1em;text-transform:uppercase">Loading your portal...</div>
 </div>
@@ -2827,7 +2589,7 @@ ul, ol {
       <input type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" aria-label="PIN digit 4" />
     </div>
     <div class="auth-error" id="auth-error"></div>
-    <div class="auth-hint">Your PIN is your <b>check-in date</b><br>(e.g. March 9 &rarr; 0309)</div>
+    <div class="auth-hint">Hint: Your check-in date (MMDD)</div>
   </div>
 </div>
 
@@ -2861,8 +2623,6 @@ ul, ol {
 
     <div id="next-activity" class="next-activity-banner" style="display:none"></div>
 
-    <div id="wellness-score" class="wellness-score" style="display:none"></div>
-
     <div class="content-section">
       <div class="today-section-header">
         <div class="section-title" id="today-section-title"></div>
@@ -2895,21 +2655,6 @@ ul, ol {
       </div>
     </div>
 
-    <div class="content-section">
-      <div class="section-title">St. Lucia Weather</div>
-      <div class="weather-card">
-        <div class="weather-icon" id="weather-icon" aria-hidden="true"></div>
-        <div class="weather-details">
-          <div class="weather-temp" id="weather-temp"></div>
-          <div class="weather-desc" id="weather-desc"></div>
-          <div class="weather-extra">
-            <div class="weather-extra-item">Humidity: <strong>75%</strong></div>
-            <div class="weather-extra-item">UV Index: <strong>High</strong></div>
-            <div class="weather-extra-item">Water: <strong>27°C</strong></div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <div id="wellness-tip" class="content-section" style="display:none"></div>
 
@@ -3351,18 +3096,10 @@ var EXPLORE_CATEGORIES = [
 var ONBOARDING_DATES = { '2026-03-09': true, '2026-03-10': true, '2026-03-11': true };
 
 var INFO_SECTIONS = [
-  { id: 'method',       title: 'TheLifeCo Method' },
-  { id: 'program',      title: 'Your Program: Green Salad' },
-  { id: 'nutrition',    title: 'Nutrition Plans' },
-  { id: 'included',     title: 'Included Services' },
-  { id: 'programs',     title: 'Other Programs Available' },
-  { id: 'facilities',   title: 'Facilities' },
-  { id: 'map',          title: 'Resort Map' },
-  { id: 'activities',   title: 'Weekly Group Activities' },
-  { id: 'cancellation', title: 'Cancellation Policy' },
-  { id: 'predetox',     title: 'Pre-Detox Guide' },
-  { id: 'faq',          title: 'FAQ' },
-  { id: 'contact',      title: 'Contact Your Team' }
+  { id: 'your-programme', title: 'Your Programme', subs: ['method', 'nutrition', 'program', 'programs', 'predetox'] },
+  { id: 'resort-facilities', title: 'Resort & Facilities', subs: ['included', 'facilities', 'map', 'activities'] },
+  { id: 'policies-faq', title: 'Policies & FAQ', subs: ['cancellation', 'faq'] },
+  { id: 'contact-help', title: 'Contact & Help', subs: ['contact'] }
 ];
 
 var INFO_CONTENT = {
@@ -3552,9 +3289,9 @@ var INFO_CONTENT = {
 var CATEGORY_IMAGES = {
   biohacking: 'images/iv-therapy.jpg',
   iv: 'images/wellness-method.jpg',
-  massage: 'images/ozone-therapy.jpg',
+  massage: 'images/stretching.jpg',
   beauty: 'images/mindfulness.jpg',
-  clinical: 'images/yoga-beach.jpg',
+  clinical: 'images/ozone-therapy.jpg',
   mind: 'images/meditation-zen.jpg'
 };
 
@@ -3655,119 +3392,6 @@ function addRecent(therapyName) {
 }
 
 // =============================================================
-// COMPARE MODE
-// =============================================================
-
-var compareMode = false;
-var compareList = [];
-
-function toggleCompareMode() {
-  compareMode = !compareMode;
-  var btn = document.getElementById('compare-toggle-btn');
-  if (btn) btn.classList.toggle('active', compareMode);
-  if (!compareMode) {
-    compareList = [];
-    updateCompareBar();
-    document.querySelectorAll('.therapy-card.compare-selected').forEach(function(c) {
-      c.classList.remove('compare-selected');
-    });
-  }
-}
-
-function addToCompare(therapyName, cardEl) {
-  if (!compareMode) return false;
-  var idx = compareList.indexOf(therapyName);
-  if (idx !== -1) {
-    compareList.splice(idx, 1);
-    if (cardEl) cardEl.classList.remove('compare-selected');
-  } else {
-    if (compareList.length >= 3) {
-      showToast('Max 3 therapies to compare');
-      return true;
-    }
-    compareList.push(therapyName);
-    if (cardEl) cardEl.classList.add('compare-selected');
-  }
-  updateCompareBar();
-  return true;
-}
-
-function updateCompareBar() {
-  var bar = document.getElementById('compare-bar');
-  if (!bar) return;
-  if (compareList.length === 0) {
-    bar.classList.remove('show');
-    return;
-  }
-  bar.classList.add('show');
-  var itemsEl = bar.querySelector('.compare-bar-items');
-  while (itemsEl.firstChild) itemsEl.removeChild(itemsEl.firstChild);
-  compareList.forEach(function(name) {
-    var chip = h('span', 'compare-bar-chip');
-    chip.textContent = name;
-    var removeBtn = h('span', 'remove-chip', '\u00D7');
-    removeBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      var i = compareList.indexOf(name);
-      if (i !== -1) compareList.splice(i, 1);
-      document.querySelectorAll('.therapy-card').forEach(function(c) {
-        if (c.getAttribute('data-name') === name) c.classList.remove('compare-selected');
-      });
-      updateCompareBar();
-    });
-    appendTo(chip, removeBtn);
-    appendTo(itemsEl, chip);
-  });
-}
-
-function findTherapyByName(name) {
-  for (var i = 0; i < EXPLORE_CATEGORIES.length; i++) {
-    for (var j = 0; j < EXPLORE_CATEGORIES[i].therapies.length; j++) {
-      if (EXPLORE_CATEGORIES[i].therapies[j].name === name) return EXPLORE_CATEGORIES[i].therapies[j];
-    }
-  }
-  return null;
-}
-
-function showCompareOverlay() {
-  if (compareList.length < 2) {
-    showToast('Select at least 2 therapies');
-    return;
-  }
-  logEvent('explore', 'compare', compareList.join(' vs '));
-  var overlay = h('div', 'compare-overlay');
-  var sheet = h('div', 'compare-sheet');
-  var header = h('div', 'compare-sheet-header');
-  appendTo(header, h('h3', null, 'Compare Therapies'));
-  var closeBtn = h('button', 'compare-sheet-close', '\u00D7');
-  closeBtn.setAttribute('type', 'button');
-  closeBtn.addEventListener('click', function() { overlay.parentNode.removeChild(overlay); });
-  appendTo(header, closeBtn);
-  appendTo(sheet, header);
-  var grid = h('div', 'compare-grid');
-  compareList.forEach(function(name) {
-    var therapy = findTherapyByName(name);
-    if (!therapy) return;
-    var col = h('div', 'compare-col');
-    appendTo(col, h('h4', null, therapy.name));
-    var snippet = therapy.desc.length > 200 ? therapy.desc.substring(0, 200) + '...' : therapy.desc;
-    appendTo(col, h('p', null, snippet));
-    var badges = h('div');
-    if (therapy.popular) appendTo(badges, h('span', 'badge badge-popular', 'Popular'));
-    if (therapy.recommended) appendTo(badges, h('span', 'badge badge-included', 'Recommended'));
-    if (!therapy.popular && !therapy.recommended) appendTo(badges, h('span', 'badge badge-optional', 'Optional'));
-    appendTo(col, badges);
-    appendTo(grid, col);
-  });
-  appendTo(sheet, grid);
-  appendTo(overlay, sheet);
-  overlay.addEventListener('click', function(e) {
-    if (e.target === overlay) overlay.parentNode.removeChild(overlay);
-  });
-  document.body.appendChild(overlay);
-}
-
-// =============================================================
 // ACTIVITY NOTES
 // =============================================================
 
@@ -3792,7 +3416,6 @@ function setNote(key, text) {
     var noteCount = 0;
     var nk;
     for (nk in notes) { if (notes[nk] && notes[nk].trim()) noteCount++; }
-    if (noteCount >= 5) unlockBadge('journaler');
   } catch(e) {}
 }
 
@@ -3990,7 +3613,6 @@ function clearAllData() {
 
 function shareSchedule(dateStr) {
   logEvent('schedule', 'share', dateStr);
-  unlockBadge('socialButterfly');
   var activities = SCHEDULE[dateStr] || [];
   var dayName = getDayName(dateStr);
   var text = '\uD83C\uDF3F TheLifeCo St. Lucia \u2014 ' + dayName + '\n\n';
@@ -4182,60 +3804,6 @@ function setRating(dateStr, activityName, stars) {
   if (navigator.vibrate) navigator.vibrate(30);
   // Badge: zenMaster — rated 10+ activities
   var ratedCount = Object.keys(ratings).length;
-  if (ratedCount >= 10) unlockBadge('zenMaster');
-}
-
-// =============================================================
-// ACHIEVEMENT BADGES
-// =============================================================
-
-var BADGES_KEY = 'tlc_badges';
-
-var BADGE_DEFS = [
-  { id: 'earlyBird', emoji: '\uD83C\uDF05', name: 'Early Bird', desc: 'Completed morning activity before 8am' },
-  { id: 'explorer', emoji: '\uD83E\uDDED', name: 'Explorer', desc: 'Viewed all 6 explore categories' },
-  { id: 'socialButterfly', emoji: '\uD83E\uDD8B', name: 'Social Butterfly', desc: 'Shared your schedule' },
-  { id: 'zenMaster', emoji: '\uD83E\uDDD8', name: 'Zen Master', desc: 'Rated 10+ activities' },
-  { id: 'journaler', emoji: '\uD83D\uDCD3', name: 'Journaler', desc: 'Wrote 5+ activity notes' },
-  { id: 'dedicated', emoji: '\uD83C\uDFC6', name: 'Dedicated', desc: 'Completed all activities in a day' }
-];
-
-function getBadges() {
-  try { return JSON.parse(localStorage.getItem(BADGES_KEY)) || {}; } catch(e) { return {}; }
-}
-
-function unlockBadge(id) {
-  try {
-    var badges = getBadges();
-    if (badges[id] && badges[id].unlocked) return;
-    badges[id] = { unlocked: true, date: Date.now() };
-    localStorage.setItem(BADGES_KEY, JSON.stringify(badges));
-    var def = null;
-    for (var i = 0; i < BADGE_DEFS.length; i++) {
-      if (BADGE_DEFS[i].id === id) { def = BADGE_DEFS[i]; break; }
-    }
-    if (def) showToast(def.emoji + ' Badge unlocked: ' + def.name);
-    logEvent('badge', 'unlock', id);
-  } catch(e) {}
-}
-
-function checkBadges() {
-  // zenMaster: check rated count
-  var ratings = getRatings();
-  if (Object.keys(ratings).length >= 10) unlockBadge('zenMaster');
-  // journaler: check notes count
-  var notes = getNotes();
-  var noteCount = 0;
-  var nk;
-  for (nk in notes) {
-    if (notes[nk] && notes[nk].trim()) noteCount++;
-  }
-  if (noteCount >= 5) unlockBadge('journaler');
-  // explorer: check viewed categories
-  try {
-    var viewed = JSON.parse(localStorage.getItem('tlc_viewed_cats')) || [];
-    if (viewed.length >= 6) unlockBadge('explorer');
-  } catch(e) {}
 }
 
 // =============================================================
@@ -4414,8 +3982,6 @@ function buildTimelineItem(activity, dateStr, currentMinutes, isToday, nowMarked
   var activityMinutes = parseTimeMinutes(activity.time);
   if (isToday && activityMinutes < currentMinutes) {
     item.className += ' completed';
-    // Badge: earlyBird — completed morning activity before 8am
-    if (activityMinutes < 480) unlockBadge('earlyBird');
   } else if (isToday && !nowMarkedRef.value) {
     item.className += ' now';
     nowMarkedRef.value = true;
@@ -4757,37 +4323,6 @@ function initToday() {
     if (activities.length === 0) {
       appendTo(timelineContainer, h('div', 'empty-state', 'No activities scheduled for today.'));
     }
-    // Conflict detection for today timeline
-    if (activities.length > 1) {
-      var todayTlItems = timelineContainer.querySelectorAll('.timeline-item');
-      for (var cj = 0; cj < activities.length - 1; cj++) {
-        if (activities[cj].time === activities[cj + 1].time) {
-          if (todayTlItems[cj]) {
-            todayTlItems[cj].classList.add('conflict');
-            var cbadge1 = h('span', 'conflict-badge', 'Conflict');
-            var ch4a = todayTlItems[cj].querySelector('h4');
-            if (ch4a && ch4a.parentNode) ch4a.parentNode.insertBefore(cbadge1, ch4a.nextSibling);
-          }
-          if (todayTlItems[cj + 1]) {
-            todayTlItems[cj + 1].classList.add('conflict');
-            var cbadge2 = h('span', 'conflict-badge', 'Conflict');
-            var ch4b = todayTlItems[cj + 1].querySelector('h4');
-            if (ch4b && ch4b.parentNode) ch4b.parentNode.insertBefore(cbadge2, ch4b.nextSibling);
-          }
-        }
-      }
-    }
-  }
-
-  // Badge: dedicated — completed all activities in a day
-  if (activities.length > 0) {
-    var allCompleted = true;
-    for (var ci = 0; ci < activities.length; ci++) {
-      if (parseTimeMinutes(activities[ci].time) >= getNowMinutes()) { allCompleted = false; break; }
-    }
-    if (allCompleted) {
-      unlockBadge('dedicated');
-    }
   }
 
   // Next activity banner
@@ -4836,132 +4371,7 @@ function initToday() {
     }
   }
 
-  // Weather widget enhancement
-  (function initWeather() {
-    var CLIMATE = {
-      1:  { temp: 27, desc: 'Warm & breezy', cond: 'cloud', hum: 77, sunrise: '6:15', sunset: '5:55' },
-      2:  { temp: 27, desc: 'Warm & dry',    cond: 'sun',   hum: 74, sunrise: '6:10', sunset: '6:05' },
-      3:  { temp: 29, desc: 'Sunny & warm',  cond: 'sun',   hum: 75, sunrise: '6:05', sunset: '6:12' },
-      4:  { temp: 30, desc: 'Hot & sunny',   cond: 'sun',   hum: 76, sunrise: '5:55', sunset: '6:18' },
-      5:  { temp: 31, desc: 'Hot & humid',   cond: 'cloud', hum: 78, sunrise: '5:48', sunset: '6:22' },
-      6:  { temp: 31, desc: 'Tropical heat', cond: 'cloud', hum: 80, sunrise: '5:45', sunset: '6:28' },
-      7:  { temp: 31, desc: 'Warm & humid',  cond: 'cloud', hum: 82, sunrise: '5:48', sunset: '6:30' },
-      8:  { temp: 31, desc: 'Warm & rainy',  cond: 'cloud', hum: 83, sunrise: '5:55', sunset: '6:25' },
-      9:  { temp: 31, desc: 'Tropical rain',cond: 'cloud', hum: 84, sunrise: '5:58', sunset: '6:12' },
-      10: { temp: 30, desc: 'Rainy season', cond: 'cloud', hum: 83, sunrise: '5:55', sunset: '5:55' },
-      11: { temp: 29, desc: 'Cooling off',  cond: 'cloud', hum: 80, sunrise: '5:58', sunset: '5:45' },
-      12: { temp: 28, desc: 'Pleasant',     cond: 'sun',   hum: 77, sunrise: '6:08', sunset: '5:48' }
-    };
-    var month = new Date().getMonth() + 1;
-    var data = CLIMATE[month] || CLIMATE[3];
-    var iconEl = document.getElementById('weather-icon');
-    var tempEl = document.getElementById('weather-temp');
-    var descEl = document.getElementById('weather-desc');
-    if (tempEl) tempEl.textContent = data.temp + '\u00B0C';
-    if (descEl) descEl.textContent = data.desc;
-    if (iconEl) {
-      while (iconEl.firstChild) iconEl.removeChild(iconEl.firstChild);
-      iconEl.className = 'weather-css-icon';
-      if (data.cond === 'sun') {
-        appendTo(iconEl, h('div', 'sun-body'));
-        for (var r = 0; r < 8; r++) appendTo(iconEl, h('div', 'sun-ray'));
-      } else {
-        appendTo(iconEl, h('div', 'cloud-body'));
-        appendTo(iconEl, h('div', 'cloud-puff1'));
-        appendTo(iconEl, h('div', 'cloud-puff2'));
-      }
-    }
-    // Add sunrise/sunset info
-    var weatherCard = document.querySelector('.weather-card');
-    if (weatherCard) {
-      var existingExtra = weatherCard.querySelector('.weather-extra');
-      // Update humidity
-      if (existingExtra) {
-        var items = existingExtra.querySelectorAll('.weather-extra-item');
-        if (items[0]) { while (items[0].firstChild) items[0].removeChild(items[0].firstChild); items[0].textContent = 'Humidity: '; var s0 = h('strong', null, data.hum + '%'); appendTo(items[0], s0); }
-      }
-      var sunInfo = h('div', 'weather-sunrise-info');
-      var sr = h('span', 'weather-sunrise-item');
-      sr.textContent = 'Sunrise: ';
-      appendTo(sr, h('strong', null, data.sunrise + ' AM'));
-      appendTo(sunInfo, sr);
-      var ss = h('span', 'weather-sunrise-item');
-      ss.textContent = 'Sunset: ';
-      appendTo(ss, h('strong', null, data.sunset + ' PM'));
-      appendTo(sunInfo, ss);
-      var details = weatherCard.querySelector('.weather-details');
-      if (details) appendTo(details, sunInfo);
-    }
-  })();
 
-
-  // =============================================================
-  // WELLNESS SCORE DASHBOARD
-  // =============================================================
-  (function buildWellnessScore() {
-    var scoreEl = document.getElementById('wellness-score');
-    if (!scoreEl) return;
-    while (scoreEl.firstChild) scoreEl.removeChild(scoreEl.firstChild);
-    var completedCount = 0;
-    var totalCount = activities.length;
-    var currentMin = getNowMinutes();
-    for (var si = 0; si < activities.length; si++) {
-      if (parseTimeMinutes(activities[si].time) < currentMin) completedCount++;
-    }
-    var completionPct = totalCount > 0 ? completedCount / totalCount : 0;
-    var allRatings = getRatings();
-    var ratingSum = 0;
-    var ratingCount = 0;
-    var rk;
-    for (rk in allRatings) {
-      if (rk.indexOf(todayStr) === 0) { ratingSum += allRatings[rk]; ratingCount++; }
-    }
-    var avgRating = ratingCount > 0 ? ratingSum / (ratingCount * 5) : 0;
-    var favCount = getFavorites().length;
-    var favScore = Math.min(favCount / 10, 1);
-    var wsScore = Math.round(completionPct * 40 + avgRating * 40 + favScore * 20);
-    if (wsScore < 0) wsScore = 0;
-    if (wsScore > 100) wsScore = 100;
-    var wsGauge = h('div', 'wellness-gauge');
-    var wsSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    wsSvg.setAttribute('viewBox', '0 0 120 120');
-    var wsR = 50;
-    var wsC = 2 * Math.PI * wsR;
-    var wsBg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    wsBg.setAttribute('cx', '60'); wsBg.setAttribute('cy', '60'); wsBg.setAttribute('r', String(wsR));
-    wsBg.setAttribute('class', 'gauge-bg');
-    wsSvg.appendChild(wsBg);
-    var wsFill = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    wsFill.setAttribute('cx', '60'); wsFill.setAttribute('cy', '60'); wsFill.setAttribute('r', String(wsR));
-    wsFill.setAttribute('class', 'gauge-fill');
-    wsFill.setAttribute('stroke-dasharray', String(wsC));
-    wsFill.setAttribute('stroke-dashoffset', String(wsC));
-    wsSvg.appendChild(wsFill);
-    wsGauge.appendChild(wsSvg);
-    var wsValDiv = h('div', 'gauge-value');
-    var wsNumSpan = h('span', null, '0');
-    appendTo(wsValDiv, wsNumSpan);
-    appendTo(wsValDiv, h('small', null, 'Wellness'));
-    appendTo(wsGauge, wsValDiv);
-    appendTo(scoreEl, wsGauge);
-    var wsLbl = h('div', 'wellness-score-label');
-    if (wsScore >= 80) wsLbl.textContent = 'Excellent progress today!';
-    else if (wsScore >= 50) wsLbl.textContent = 'Good progress \u2014 keep going!';
-    else wsLbl.textContent = 'Your wellness journey is underway';
-    appendTo(scoreEl, wsLbl);
-    scoreEl.style.display = '';
-    setTimeout(function() {
-      wsFill.setAttribute('stroke-dashoffset', String(wsC - (wsScore / 100) * wsC));
-      var wsT0 = Date.now();
-      function wsAnim() {
-        var el = Date.now() - wsT0;
-        var p = Math.min(el / 1200, 1);
-        wsNumSpan.textContent = String(Math.round((1 - Math.pow(1 - p, 3)) * wsScore));
-        if (p < 1) requestAnimationFrame(wsAnim);
-      }
-      wsAnim();
-    }, 200);
-  })();
 
   // =============================================================
   // DAILY WELLNESS TIP
@@ -5028,27 +4438,17 @@ function initToday() {
         fbSelEmoji = ed.val;
         fbEmojiDiv.querySelectorAll('.feedback-emoji').forEach(function(b) { b.classList.remove('selected'); });
         eBtn.classList.add('selected');
+        setFeedback(todayStr, ed.val, '');
       });
       appendTo(fbEmojiDiv, eBtn);
     });
     appendTo(fbCard, fbEmojiDiv);
     var fbTxt = document.createElement('textarea');
     fbTxt.placeholder = 'Any comments? (optional)';
+    fbTxt.setAttribute('rows', '2');
     fbCard.appendChild(fbTxt);
     var fbActs = h('div', 'feedback-actions');
-    var fbSaveBtn = h('button', 'feedback-save-btn', 'Save');
-    fbSaveBtn.setAttribute('type', 'button');
-    fbSaveBtn.addEventListener('click', function() {
-      if (!fbSelEmoji) { showToast('Please select a rating'); return; }
-      setFeedback(todayStr, fbSelEmoji, fbTxt.value);
-      logEvent('feedback', 'save', String(fbSelEmoji));
-      showToast('Feedback saved!');
-      while (fbCard.firstChild) fbCard.removeChild(fbCard.firstChild);
-      appendTo(fbCard, h('div', 'feedback-title', 'How was your day?'));
-      appendTo(fbCard, h('div', 'feedback-submitted', 'Thank you for your feedback!'));
-    });
-    appendTo(fbActs, fbSaveBtn);
-    var fbWaBtn = h('button', 'feedback-wa-btn', 'Send via WhatsApp');
+    var fbWaBtn = h('button', 'feedback-wa-btn', 'Send Feedback');
     fbWaBtn.setAttribute('type', 'button');
     fbWaBtn.addEventListener('click', function() {
       if (!fbSelEmoji) { showToast('Please select a rating'); return; }
@@ -5064,8 +4464,6 @@ function initToday() {
     appendTo(fbSec, fbCard);
     fbSec.style.display = '';
   })();
-
-  checkBadges();
 
   // Today updated - dynamic
   var updatedEl = document.getElementById('today-updated');
@@ -5213,27 +4611,6 @@ function loadScheduleDay(dateStr) {
     appendTo(timelineContainer, empty);
   }
 
-  // Conflict detection
-  if (activities.length > 1) {
-    var tlItems = timelineContainer.querySelectorAll('.timeline-item');
-    for (var ci = 0; ci < activities.length - 1; ci++) {
-      if (activities[ci].time === activities[ci + 1].time) {
-        if (tlItems[ci]) {
-          tlItems[ci].classList.add('conflict');
-          var badge1 = h('span', 'conflict-badge', 'Conflict');
-          var h4a = tlItems[ci].querySelector('h4');
-          if (h4a && h4a.parentNode) h4a.parentNode.insertBefore(badge1, h4a.nextSibling);
-        }
-        if (tlItems[ci + 1]) {
-          tlItems[ci + 1].classList.add('conflict');
-          var badge2 = h('span', 'conflict-badge', 'Conflict');
-          var h4b = tlItems[ci + 1].querySelector('h4');
-          if (h4b && h4b.parentNode) h4b.parentNode.insertBefore(badge2, h4b.nextSibling);
-        }
-      }
-    }
-  }
-
   // Daily Summary Card
   if (activities.length > 0) {
     var summaryCard = h('div', 'day-summary');
@@ -5285,31 +4662,6 @@ function initExplore() {
 
   if (!categoriesContainer) return;
 
-  // Recently Viewed section
-  var recent = getRecent();
-  if (recent.length > 0) {
-    var recentSection = h('div', 'recent-section');
-    appendTo(recentSection, h('div', 'section-label', 'Recently Viewed'));
-    var pillsContainer = h('div', 'recent-pills');
-    recent.forEach(function(name) {
-      var pill = h('button', 'recent-pill', name);
-      pill.setAttribute('type', 'button');
-      pill.addEventListener('click', function() {
-        logEvent('explore', 'recent-click', name);
-        categoriesContainer.classList.add('hidden');
-        if (therapiesContainer) therapiesContainer.classList.remove('hidden');
-        if (backBtn) backBtn.classList.remove('hidden');
-        while (therapiesContainer.firstChild) therapiesContainer.removeChild(therapiesContainer.firstChild);
-        var therapy = findTherapyByName(name);
-        if (therapy) appendTo(therapiesContainer, buildSingleTherapyCard(therapy));
-        else appendTo(therapiesContainer, h('div', 'empty-state', 'Therapy not found'));
-      });
-      appendTo(pillsContainer, pill);
-    });
-    appendTo(recentSection, pillsContainer);
-    categoriesContainer.parentNode.insertBefore(recentSection, categoriesContainer);
-  }
-
   // Build category cards
   EXPLORE_CATEGORIES.forEach(function(cat) {
     var card = h('div', 'category-card');
@@ -5332,15 +4684,6 @@ function initExplore() {
 
     card.addEventListener('click', function() {
       logEvent('explore', 'category', cat.title);
-      // Badge: explorer — track viewed categories
-      try {
-        var viewedCats = JSON.parse(localStorage.getItem('tlc_viewed_cats')) || [];
-        if (viewedCats.indexOf(cat.id) === -1) {
-          viewedCats.push(cat.id);
-          localStorage.setItem('tlc_viewed_cats', JSON.stringify(viewedCats));
-          if (viewedCats.length >= 6) unlockBadge('explorer');
-        }
-      } catch(e) {}
       categoriesContainer.classList.add('hidden');
       if (therapiesContainer) therapiesContainer.classList.remove('hidden');
       if (backBtn) backBtn.classList.remove('hidden');
@@ -5469,13 +4812,6 @@ function buildSingleTherapyCard(therapy) {
   logEvent('explore', 'therapy', therapy.name);
   addRecent(therapy.name);
 
-  // Compare mode click handler
-  card.addEventListener('click', function() {
-    if (compareMode) {
-      addToCompare(therapy.name, card);
-    }
-  });
-
   var body = h('div', 'therapy-card-body');
   var cardHeader = h('div', 'flex items-center justify-between');
   appendTo(cardHeader, h('h4', null, therapy.name));
@@ -5603,30 +4939,6 @@ function initInfo() {
 
   accordion.parentNode.insertBefore(emergencySection, accordion);
 
-  // Achievement Badges section
-  (function buildBadgesSection() {
-    var badgesData = getBadges();
-    var badgeSection = h('div', 'content-section');
-    badgeSection.style.padding = '0 0 8px';
-    appendTo(badgeSection, h('div', 'section-title', 'Your Achievements'));
-    var grid = h('div', 'badge-grid');
-    BADGE_DEFS.forEach(function(def) {
-      var isUnlocked = badgesData[def.id] && badgesData[def.id].unlocked;
-      var bItem = h('div', 'badge-item ' + (isUnlocked ? 'unlocked' : 'locked'));
-      appendTo(bItem, h('div', 'badge-emoji', def.emoji));
-      appendTo(bItem, h('div', 'badge-name', def.name));
-      if (isUnlocked && badgesData[def.id].date) {
-        var d = new Date(badgesData[def.id].date);
-        appendTo(bItem, h('div', 'badge-date', d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })));
-      } else {
-        appendTo(bItem, h('div', 'badge-date', 'Locked'));
-      }
-      appendTo(grid, bItem);
-    });
-    appendTo(badgeSection, grid);
-    accordion.parentNode.insertBefore(badgeSection, accordion);
-  })();
-
   INFO_SECTIONS.forEach(function(section) {
     var item = h('div', 'accordion-item');
 
@@ -5651,7 +4963,10 @@ function initInfo() {
 
     var content = h('div', 'accordion-content');
     var body = h('div', 'accordion-body');
-    appendTo(body, buildInfoContent(section.id));
+    var subs = section.subs || [section.id];
+    subs.forEach(function(subId) {
+      appendTo(body, buildInfoContent(subId));
+    });
     appendTo(content, body);
 
     trigger.addEventListener('click', function() {
@@ -6214,11 +5529,16 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
     document.getElementById('offline-banner').classList.add('show');
   }
 
-  // Splash screen fadeout (change #17)
+  // Splash screen fadeout (change #17) — minimum 800ms display
   var splash = document.getElementById('splash');
   if (splash) {
-    splash.style.opacity = '0';
-    setTimeout(function() { splash.style.display = 'none'; }, 500);
+    var splashStart = window._splashStart || Date.now();
+    var elapsed = Date.now() - splashStart;
+    var remaining = Math.max(0, 800 - elapsed);
+    setTimeout(function() {
+      splash.style.opacity = '0';
+      setTimeout(function() { splash.style.display = 'none'; }, 500);
+    }, remaining);
   }
 
   // Install prompt
@@ -6226,22 +5546,30 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
   window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();
     deferredPrompt = e;
-    var dismissed; try { dismissed = localStorage.getItem('tlc_install_dismissed'); } catch(e) { dismissed = null; }
-    if (!dismissed) {
-      document.getElementById('install-banner').classList.add('show');
+    var banner = document.getElementById('install-banner');
+    if (banner && !localStorage.getItem('tlc_install_dismissed')) {
+      banner.style.display = '';
     }
   });
-  document.getElementById('install-btn').addEventListener('click', function() {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(function() { deferredPrompt = null; });
-    }
-    document.getElementById('install-banner').classList.remove('show');
-  });
-  document.getElementById('install-close').addEventListener('click', function() {
-    document.getElementById('install-banner').classList.remove('show');
-    try { localStorage.setItem('tlc_install_dismissed', '1'); } catch(e) {}
-  });
+  var installBtn = document.getElementById('install-btn');
+  if (installBtn) {
+    installBtn.addEventListener('click', function() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function(result) {
+          deferredPrompt = null;
+          document.getElementById('install-banner').style.display = 'none';
+        });
+      }
+    });
+  }
+  var installClose = document.getElementById('install-close');
+  if (installClose) {
+    installClose.addEventListener('click', function() {
+      document.getElementById('install-banner').style.display = 'none';
+      localStorage.setItem('tlc_install_dismissed', '1');
+    });
+  }
 
   // Swipe gestures between tabs
   (function initSwipe() {
@@ -6323,33 +5651,6 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
       }
     });
   }
-
-  // Compare toggle button in Explore header
-  var favHeader = document.getElementById('favorites-header');
-  if (favHeader) {
-    var compareBtn = h('button', 'compare-toggle', 'Compare');
-    compareBtn.setAttribute('type', 'button');
-    compareBtn.id = 'compare-toggle-btn';
-    compareBtn.addEventListener('click', function() { toggleCompareMode(); });
-    favHeader.appendChild(compareBtn);
-  }
-
-  // Compare bar (appended to body)
-  var compareBar = h('div', 'compare-bar');
-  compareBar.id = 'compare-bar';
-  var barItems = h('div', 'compare-bar-items');
-  appendTo(compareBar, barItems);
-  var barActions = h('div', 'compare-bar-actions');
-  var compareNowBtn = h('button', 'btn btn-teal', 'Compare');
-  compareNowBtn.setAttribute('type', 'button');
-  compareNowBtn.addEventListener('click', function() { showCompareOverlay(); });
-  appendTo(barActions, compareNowBtn);
-  var cancelCompareBtn = h('button', 'btn btn-outline', 'Cancel');
-  cancelCompareBtn.setAttribute('type', 'button');
-  cancelCompareBtn.addEventListener('click', function() { toggleCompareMode(); });
-  appendTo(barActions, cancelCompareBtn);
-  appendTo(compareBar, barActions);
-  document.body.appendChild(compareBar);
 
   // Resort gallery lazy loading
   var galleryImgs = document.querySelectorAll('.resort-gallery-card img');
