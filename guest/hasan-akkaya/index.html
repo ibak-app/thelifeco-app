@@ -618,12 +618,12 @@ ul, ol {
 
 .resort-gallery-card {
   flex-shrink: 0;
-  width: 200px;
+  min-width: 85%;
   height: 140px;
   border-radius: var(--radius);
   overflow: hidden;
   position: relative;
-  scroll-snap-align: start;
+  scroll-snap-align: center;
   box-shadow: var(--shadow);
 }
 
@@ -644,6 +644,16 @@ ul, ol {
   font-size: 0.8125rem;
   font-weight: 600;
 }
+
+/* Similar therapies in detail page */
+.therapy-detail-similar { padding: 0 20px 100px; }
+.therapy-detail-similar-title { font-size: 14px; font-weight: 600; color: var(--text-2); margin-bottom: 12px; }
+.similar-cards { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; -webkit-overflow-scrolling: touch; }
+.similar-card { min-width: 140px; max-width: 140px; border-radius: var(--radius); overflow: hidden; background: var(--surface); box-shadow: var(--shadow-sm); cursor: pointer; flex-shrink: 0; }
+.similar-card img { width: 100%; height: 80px; object-fit: cover; }
+.similar-card-body { padding: 8px; }
+.similar-card-body h5 { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px; line-height: 1.3; }
+.similar-card-body span { font-size: 11px; color: var(--teal-dark); font-weight: 600; }
 
 /* Nutrition card */
 .nutrition-card {
@@ -2094,6 +2104,9 @@ ul, ol {
   border-color: #EF4444;
 }
 
+.wishlist-ask-btn { display: block; width: calc(100% - 40px); margin: 16px 20px; padding: 14px; background: var(--whatsapp-green); color: #fff; border-radius: var(--radius); font-size: 14px; font-weight: 600; text-align: center; cursor: pointer; border: none; }
+.wishlist-ask-btn:active { background: #1ebe5d; }
+
 /* ============================================================
    NEXT ACTIVITY BANNER
    ============================================================ */
@@ -2105,6 +2118,7 @@ ul, ol {
   display: flex;
   align-items: center;
   gap: 12px;
+  cursor: pointer;
 }
 .next-activity-icon {
   width: 40px;
@@ -2208,9 +2222,17 @@ ul, ol {
    ============================================================ */
 .nutrition-meals { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
 .nutrition-meals-title { font-size: 12px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
-.nutrition-meal-item { display: flex; gap: 12px; padding: 6px 0; align-items: center; }
-.nutrition-meal-time { font-size: 12px; font-weight: 600; color: var(--teal); min-width: 42px; }
-.nutrition-meal-name { font-size: 13px; color: var(--text-2); }
+.nutrition-meal-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.nutrition-meal-item:last-child { border-bottom: none; }
+.nutrition-meal-time { font-size: 14px; font-weight: 600; color: var(--blue); min-width: 50px; }
+.nutrition-meal-name { font-size: 14px; color: var(--text); font-weight: 500; }
+
+/* Explore filter chips */
+.explore-chips { display: flex; gap: 8px; padding: 0 20px 12px; overflow-x: auto; scrollbar-width: none; }
+.explore-chips::-webkit-scrollbar { display: none; }
+.explore-chip { padding: 6px 14px; border-radius: var(--radius-full); font-size: 12px; font-weight: 500; background: var(--surface); border: 1px solid var(--border); color: var(--text-2); white-space: nowrap; cursor: pointer; transition: all 0.2s var(--ease); flex-shrink: 0; }
+.explore-chip.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+.explore-chip:active { transform: scale(0.95); }
 
 /* ============================================================
    EXPLORE DRILL-DOWN ANIMATION
@@ -4059,6 +4081,25 @@ function buildNextActivityBanner(activities) {
   if (diff >= 60) { var hrs = Math.floor(diff / 60); var mins = diff % 60; ct = hrs + 'h' + (mins > 0 ? ' ' + mins + 'm' : ''); } else { ct = diff + 'm'; }
   appendTo(banner, h('div', 'next-activity-countdown', ct));
 
+  // Make banner tappable — open therapy detail if matching
+  banner.onclick = null;
+  (function(actName) {
+    var matchedTherapy = null;
+    for (var ci = 0; ci < EXPLORE_CATEGORIES.length && !matchedTherapy; ci++) {
+      for (var ti = 0; ti < EXPLORE_CATEGORIES[ci].therapies.length; ti++) {
+        if (EXPLORE_CATEGORIES[ci].therapies[ti].name === actName) {
+          matchedTherapy = EXPLORE_CATEGORIES[ci].therapies[ti];
+          break;
+        }
+      }
+    }
+    if (matchedTherapy) {
+      banner.addEventListener('click', function() {
+        openTherapyDetail(matchedTherapy);
+      });
+    }
+  })(nextActivity.name);
+
   // Session reminder toast when activity is within 15 minutes
   var reminderKey = nextActivity.time + '_' + nextActivity.name;
   if (diff <= 15 && diff > 0 && _lastRemindedActivity !== reminderKey) {
@@ -4116,7 +4157,23 @@ function initToday() {
     var st2 = document.getElementById('today-section-title');
     if (st2) st2.textContent = 'Stay Complete';
     var tc2 = document.getElementById('today-timeline');
-    if (tc2) { while (tc2.firstChild) tc2.removeChild(tc2.firstChild); appendTo(tc2, h('div', 'empty-state', 'Your stay at TheLifeCo has ended. We hope you enjoyed your wellness journey! Contact us anytime via WhatsApp.')); }
+    if (tc2) {
+      while (tc2.firstChild) tc2.removeChild(tc2.firstChild);
+      var endCard = h('div', 'card card-padded');
+      endCard.style.cssText = 'margin: 16px 20px; text-align: center;';
+      appendTo(endCard, h('div', null, '\uD83C\uDF3F'));
+      endCard.lastChild.style.fontSize = '32px';
+      endCard.lastChild.style.marginBottom = '12px';
+      appendTo(endCard, h('h3', null, 'Thank You, ' + GUEST.firstName + '!'));
+      endCard.lastChild.style.cssText = 'font-size:17px;font-weight:700;margin-bottom:6px;color:var(--text);';
+      appendTo(endCard, h('p', null, 'Your wellness journey at TheLifeCo St. Lucia has been completed. We hope you feel renewed and energized.'));
+      endCard.lastChild.style.cssText = 'font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:16px;';
+      var rebookBtn = h('a', 'btn btn-teal btn-full');
+      rebookBtn.href = GUEST.waBase + '&text=' + encodeURIComponent('Hi, I\'d like to book my next retreat at TheLifeCo!');
+      rebookBtn.textContent = 'Book Your Next Retreat';
+      appendTo(endCard, rebookBtn);
+      appendTo(tc2, endCard);
+    }
     var ue2 = document.getElementById('today-updated');
     if (ue2) ue2.textContent = 'Last updated ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     return;
@@ -4217,7 +4274,7 @@ function initToday() {
   }
   // Hydration tracker state
   var htDayKey = 'tlc_hydration_' + todayStr;
-  var htCount = parseInt(sessionStorage.getItem(htDayKey) || '0', 10);
+  var htCount = parseInt(localStorage.getItem(htDayKey) || '0', 10);
   var htMax = 8;
   function updateHydrationTracker() {
     var countEl = document.getElementById('hydration-count');
@@ -4231,7 +4288,7 @@ function initToday() {
     htCountEl.addEventListener('click', function() {
       htCount++;
       if (htCount > htMax) htCount = 0;
-      try { sessionStorage.setItem(htDayKey, String(htCount)); } catch(e) {}
+      try { localStorage.setItem(htDayKey, String(htCount)); } catch(e) {}
       updateHydrationTracker();
       if (navigator.vibrate) navigator.vibrate(15);
     });
@@ -4719,6 +4776,54 @@ function initExplore() {
       }
     });
   }
+
+  // Quick filter chips
+  var chipContainer = h('div', 'explore-chips');
+  var chips = [
+    { label: 'Popular', filter: function(t2) { return t2.popular; } },
+    { label: 'Under $100', filter: function(t2) { var p = THERAPY_PRICES[t2.name]; return p && p.price < 100; } },
+    { label: '30 min', filter: function(t2) { var p = THERAPY_PRICES[t2.name]; return p && p.duration.indexOf('30') !== -1; } },
+    { label: 'Recommended', filter: function(t2) { return t2.recommended; } }
+  ];
+  chips.forEach(function(chip) {
+    var btn = h('button', 'explore-chip');
+    btn.setAttribute('type', 'button');
+    btn.textContent = chip.label;
+    btn.addEventListener('click', function() {
+      btn.classList.toggle('active');
+      chipContainer.querySelectorAll('.explore-chip').forEach(function(b) {
+        if (b !== btn) b.classList.remove('active');
+      });
+      if (!btn.classList.contains('active')) {
+        if (categoriesContainer) categoriesContainer.classList.remove('hidden');
+        if (therapiesContainer) therapiesContainer.classList.add('hidden');
+        if (backBtn) backBtn.classList.add('hidden');
+        return;
+      }
+      if (categoriesContainer) categoriesContainer.classList.add('hidden');
+      if (therapiesContainer) therapiesContainer.classList.remove('hidden');
+      if (backBtn) backBtn.classList.remove('hidden');
+      while (therapiesContainer.firstChild) therapiesContainer.removeChild(therapiesContainer.firstChild);
+      var results = [];
+      EXPLORE_CATEGORIES.forEach(function(cat) {
+        cat.therapies.forEach(function(therapy) {
+          if (chip.filter(therapy)) results.push(therapy);
+        });
+      });
+      if (results.length === 0) {
+        appendTo(therapiesContainer, h('div', 'empty-state', 'No therapies match this filter.'));
+      } else {
+        results.forEach(function(therapy) {
+          appendTo(therapiesContainer, buildSingleTherapyCard(therapy));
+        });
+      }
+    });
+    appendTo(chipContainer, btn);
+  });
+  var searchWrapper = document.querySelector('.explore-search');
+  if (searchWrapper && searchWrapper.parentNode) {
+    searchWrapper.parentNode.insertBefore(chipContainer, searchWrapper.nextSibling);
+  }
 }
 
 function buildSingleTherapyCard(therapy) {
@@ -4881,6 +4986,54 @@ function openTherapyDetail(therapy) {
   appendTo(expectList, thirdItem);
 
   appendTo(content, expectList);
+
+  // Similar therapies section
+  (function() {
+    var therapyCat = null;
+    for (var ci = 0; ci < EXPLORE_CATEGORIES.length; ci++) {
+      for (var ti = 0; ti < EXPLORE_CATEGORIES[ci].therapies.length; ti++) {
+        if (EXPLORE_CATEGORIES[ci].therapies[ti].name === therapy.name) {
+          therapyCat = EXPLORE_CATEGORIES[ci];
+          break;
+        }
+      }
+      if (therapyCat) break;
+    }
+    if (therapyCat) {
+      var similar = [];
+      for (var si = 0; si < therapyCat.therapies.length; si++) {
+        if (therapyCat.therapies[si].name !== therapy.name && similar.length < 3) {
+          similar.push(therapyCat.therapies[si]);
+        }
+      }
+      if (similar.length > 0) {
+        var simSection = h('div', 'therapy-detail-similar');
+        appendTo(simSection, h('div', 'therapy-detail-similar-title', 'You Might Also Like'));
+        var simCards = h('div', 'similar-cards');
+        similar.forEach(function(sim) {
+          var simCard = h('div', 'similar-card');
+          var simImg = document.createElement('img');
+          simImg.src = THERAPY_IMAGES[sim.name] || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop';
+          simImg.alt = sim.name;
+          appendTo(simCard, simImg);
+          var simBody = h('div', 'similar-card-body');
+          appendTo(simBody, h('h5', null, sim.name));
+          var simPrice = THERAPY_PRICES[sim.name];
+          if (simPrice) {
+            appendTo(simBody, h('span', null, '$' + simPrice.price));
+          }
+          appendTo(simCard, simBody);
+          simCard.addEventListener('click', function() {
+            openTherapyDetail(sim);
+          });
+          appendTo(simCards, simCard);
+        });
+        appendTo(simSection, simCards);
+        appendTo(content, simSection);
+      }
+    }
+  })();
+
   appendTo(overlay, content);
 
   // Sticky bottom bar
@@ -5621,7 +5774,7 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
   updateFavoritesCount();
   var favFilterBtn = document.getElementById('favorites-filter-btn');
   if (favFilterBtn) {
-    favFilterBtn.textContent = '\u2764 Favorites';
+    favFilterBtn.textContent = 'Wishlist';
     var favFilterActive = false;
     favFilterBtn.addEventListener('click', function() {
       favFilterActive = !favFilterActive;
@@ -5645,6 +5798,16 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
           });
           if (!therapiesContainer.firstChild) {
             appendTo(therapiesContainer, h('div', 'empty-state', 'No favorites saved yet. Tap the heart icon on any therapy to save it.'));
+          } else {
+            // Add "Ask About These" WhatsApp button
+            var askBtn = h('button', 'wishlist-ask-btn');
+            askBtn.setAttribute('type', 'button');
+            askBtn.textContent = 'Ask About These';
+            askBtn.addEventListener('click', function() {
+              var msg = 'Hi! I\'m interested in these therapies:\n\n' + favs.join('\n') + '\n\nCould you help me book them?';
+              location.href = GUEST.waBase + '&text=' + encodeURIComponent(msg);
+            });
+            appendTo(therapiesContainer, askBtn);
           }
         }
       } else {
@@ -5668,6 +5831,17 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
     img.className = 'lazy-loading';
   });
   initLazyImages();
+
+  // Resort gallery auto-scroll
+  var resortGallery = document.querySelector('.resort-gallery');
+  if (resortGallery) {
+    var _resortIdx = 0;
+    var resortCards = resortGallery.querySelectorAll('.resort-gallery-card');
+    setInterval(function() {
+      _resortIdx = (_resortIdx + 1) % resortCards.length;
+      resortCards[_resortIdx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }, 4000);
+  }
 
   // =============================================================
   // PULL-TO-REFRESH
