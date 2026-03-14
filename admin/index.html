@@ -9,257 +9,164 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --navy: #00609C;
-  --navy-dark: #004d7a;
-  --teal: #00BED6;
-  --teal-light: rgba(0,190,214,0.12);
-  --orange: #F6A358;
-  --orange-light: rgba(246,163,88,0.12);
-  --bg: #F7F8FA;
-  --white: #ffffff;
-  --text: #1a2332;
-  --text-secondary: #5b6e82;
-  --text-muted: #8fa3b8;
-  --border: #e3eaf1;
-  --green: #22c55e;
-  --green-light: rgba(34,197,94,0.10);
-  --blue: #3b82f6;
-  --blue-light: rgba(59,130,246,0.10);
-  --gray: #94a3b8;
-  --gray-light: rgba(148,163,184,0.10);
-  --red: #ef4444;
-  --red-light: rgba(239,68,68,0.10);
+  --navy: #00609C; --navy-dark: #004d7a; --teal: #00BED6; --teal-light: rgba(0,190,214,0.12);
+  --orange: #F6A358; --orange-light: rgba(246,163,88,0.12); --bg: #F7F8FA; --white: #ffffff;
+  --text: #1a2332; --text-secondary: #5b6e82; --text-muted: #8fa3b8; --border: #e3eaf1;
+  --green: #22c55e; --green-light: rgba(34,197,94,0.10); --blue: #3b82f6; --blue-light: rgba(59,130,246,0.10);
+  --gray: #94a3b8; --gray-light: rgba(148,163,184,0.10); --red: #ef4444; --red-light: rgba(239,68,68,0.10);
   --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-lg: 0 4px 12px rgba(0,0,0,0.08);
-  --radius: 10px;
-  --sidebar-w: 260px;
-  --transition: 0.2s ease;
+  --shadow-lg: 0 4px 12px rgba(0,0,0,0.08); --radius: 10px; --sidebar-w: 260px; --transition: 0.2s ease;
 }
 html { font-size: 14px; }
 body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; }
-
-/* Sidebar */
-.sidebar {
-  width: var(--sidebar-w); min-height: 100vh; background: var(--navy); color: #fff;
-  display: flex; flex-direction: column; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100;
-  transition: transform 0.3s ease;
-}
+.sidebar { width: var(--sidebar-w); min-height: 100vh; background: var(--navy); color: #fff; display: flex; flex-direction: column; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; transition: transform 0.3s ease; }
 .sidebar-brand { padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
 .sidebar-brand h1 { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em; }
 .sidebar-brand span { font-size: 0.75rem; color: rgba(255,255,255,0.55); font-weight: 400; display: block; margin-top: 2px; }
 .sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
 .nav-section { padding: 0 20px; margin-bottom: 8px; }
 .nav-section-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.35); font-weight: 600; margin-bottom: 6px; padding: 0 12px; }
-.nav-item {
-  display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px;
-  color: rgba(255,255,255,0.7); cursor: pointer; transition: var(--transition); font-size: 0.9rem; font-weight: 500;
-  margin-bottom: 2px; text-decoration: none;
-}
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; color: rgba(255,255,255,0.7); cursor: pointer; transition: var(--transition); font-size: 0.9rem; font-weight: 500; margin-bottom: 2px; }
 .nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
 .nav-item.active { background: var(--teal); color: #fff; }
 .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
 .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.72rem; color: rgba(255,255,255,0.35); }
-
-/* Main content */
 .main { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; }
-.topbar {
-  background: var(--white); border-bottom: 1px solid var(--border); padding: 16px 32px;
-  display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50;
-}
+.topbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
 .topbar-title { font-size: 1.25rem; font-weight: 700; }
 .topbar-right { display: flex; align-items: center; gap: 12px; }
 .topbar-date { font-size: 0.85rem; color: var(--text-secondary); }
 .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; color: var(--text); }
 .hamburger svg { width: 24px; height: 24px; }
 .content { padding: 28px 32px; }
-
-/* Page containers */
-.page { display: none; }
-.page.active { display: block; }
-
-/* Cards */
+.page { display: none; } .page.active { display: block; }
 .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); }
 .card-header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
 .card-header h2 { font-size: 1rem; font-weight: 600; }
 .card-body { padding: 22px; }
-
-/* Stats row */
 .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 28px; }
-.stat-card {
-  background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
-  padding: 22px; border: 1px solid var(--border); border-left: 4px solid var(--navy);
-  display: flex; flex-direction: column; gap: 6px;
-}
-.stat-card.teal { border-left-color: var(--teal); }
-.stat-card.orange { border-left-color: var(--orange); }
-.stat-card.green { border-left-color: var(--green); }
+.stat-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px; border: 1px solid var(--border); border-left: 4px solid var(--navy); display: flex; flex-direction: column; gap: 6px; cursor: pointer; transition: var(--transition); }
+.stat-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
+.stat-card.teal { border-left-color: var(--teal); } .stat-card.orange { border-left-color: var(--orange); } .stat-card.green { border-left-color: var(--green); }
 .stat-label { font-size: 0.78rem; color: var(--text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
 .stat-value { font-size: 2rem; font-weight: 700; color: var(--text); }
-
-/* Tables */
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; }
 th { text-align: left; padding: 10px 16px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); background: var(--bg); border-bottom: 1px solid var(--border); }
 td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 0.88rem; vertical-align: middle; }
 tr:hover td { background: rgba(0,96,156,0.02); }
-
-/* Badges */
-.badge {
-  display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px;
-  border-radius: 20px; font-size: 0.75rem; font-weight: 600;
-}
+.badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
 .badge-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
-.badge-active { background: var(--green-light); color: #15803d; }
-.badge-active .badge-dot { background: var(--green); }
-.badge-upcoming { background: var(--blue-light); color: #1d4ed8; }
-.badge-upcoming .badge-dot { background: var(--blue); }
-.badge-completed { background: var(--gray-light); color: #475569; }
-.badge-completed .badge-dot { background: var(--gray); }
-.badge-draft { background: var(--orange-light); color: #c2410c; }
-.badge-draft .badge-dot { background: var(--orange); }
-
-/* Buttons */
-.btn {
-  display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
-  border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
-  border: 1px solid transparent; transition: var(--transition); font-family: inherit;
-}
-.btn-primary { background: var(--navy); color: #fff; }
-.btn-primary:hover { background: var(--navy-dark); }
-.btn-teal { background: var(--teal); color: #fff; }
-.btn-teal:hover { background: #00a8be; }
-.btn-outline { background: transparent; border-color: var(--border); color: var(--text-secondary); }
-.btn-outline:hover { border-color: var(--navy); color: var(--navy); }
+.badge-active { background: var(--green-light); color: #15803d; } .badge-active .badge-dot { background: var(--green); }
+.badge-upcoming { background: var(--blue-light); color: #1d4ed8; } .badge-upcoming .badge-dot { background: var(--blue); }
+.badge-completed { background: var(--gray-light); color: #475569; } .badge-completed .badge-dot { background: var(--gray); }
+.badge-draft { background: var(--orange-light); color: #c2410c; } .badge-draft .badge-dot { background: var(--orange); }
+.badge-checkout { background: var(--red-light); color: var(--red); font-size: 0.7rem; padding: 2px 8px; margin-left: 6px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: var(--transition); font-family: inherit; }
+.btn-primary { background: var(--navy); color: #fff; } .btn-primary:hover { background: var(--navy-dark); }
+.btn-teal { background: var(--teal); color: #fff; } .btn-teal:hover { background: #00a8be; }
+.btn-outline { background: transparent; border-color: var(--border); color: var(--text-secondary); } .btn-outline:hover { border-color: var(--navy); color: var(--navy); }
 .btn-sm { padding: 5px 10px; font-size: 0.78rem; }
-.btn-danger { background: var(--red); color: #fff; }
-.btn-danger:hover { background: #dc2626; }
-.btn-link { background: none; border: none; color: var(--navy); padding: 4px 8px; font-size: 0.82rem; text-decoration: underline; cursor: pointer; }
-
-/* Forms */
+.btn-danger { background: var(--red); color: #fff; } .btn-danger:hover { background: #dc2626; }
+.btn-success { background: var(--green); color: #fff; } .btn-success:hover { background: #16a34a; }
+.btn-whatsapp { background: #25D366; color: #fff; } .btn-whatsapp:hover { background: #20bd5a; }
+.btn-link { background: none; border: none; color: var(--navy); padding: 4px 8px; font-size: 0.82rem; text-decoration: underline; cursor: pointer; font-family: inherit; }
 .form-group { margin-bottom: 18px; }
 .form-label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
-.form-input, .form-select, .form-textarea {
-  width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px;
-  font-size: 0.88rem; font-family: inherit; color: var(--text); background: var(--white);
-  transition: var(--transition); outline: none;
-}
+.form-input, .form-select, .form-textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.88rem; font-family: inherit; color: var(--text); background: var(--white); transition: var(--transition); outline: none; }
 .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(0,96,156,0.1); }
 .form-textarea { resize: vertical; min-height: 80px; }
-
-/* Grid layouts */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
 .grid-dashboard { display: grid; grid-template-columns: 1fr 340px; gap: 28px; }
-
-/* Tabs */
 .tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 18px; }
-.tab {
-  padding: 10px 20px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted);
-  cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: var(--transition);
-  background: none; border-top: none; border-left: none; border-right: none; font-family: inherit;
-}
-.tab.active { color: var(--navy); border-bottom-color: var(--navy); }
-.tab:hover { color: var(--text); }
-
-/* Search */
-.search-bar {
-  display: flex; align-items: center; gap: 8px; background: var(--bg); border: 1px solid var(--border);
-  border-radius: 8px; padding: 8px 14px; max-width: 320px;
-}
+.tab { padding: 10px 20px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: var(--transition); background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; }
+.tab.active { color: var(--navy); border-bottom-color: var(--navy); } .tab:hover { color: var(--text); }
+.search-bar { display: flex; align-items: center; gap: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; max-width: 320px; }
 .search-bar input { border: none; background: none; outline: none; font-size: 0.88rem; font-family: inherit; flex: 1; color: var(--text); }
 .search-bar svg { width: 16px; height: 16px; color: var(--text-muted); flex-shrink: 0; }
-
-/* Upload zone */
-.upload-zone {
-  border: 2px dashed var(--border); border-radius: var(--radius); padding: 40px 20px;
-  text-align: center; cursor: pointer; transition: var(--transition);
-}
+.upload-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 40px 20px; text-align: center; cursor: pointer; transition: var(--transition); }
 .upload-zone:hover, .upload-zone.drag-over { border-color: var(--teal); background: var(--teal-light); }
 .upload-zone-icon { font-size: 2.5rem; color: var(--text-muted); margin-bottom: 10px; }
 .upload-zone-text { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
 .upload-zone-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
-
-/* Toggle switch */
 .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
 .toggle-row:last-child { border-bottom: none; }
 .toggle-label { font-size: 0.88rem; font-weight: 500; }
 .toggle-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
-.toggle {
-  width: 44px; height: 24px; background: #cbd5e1; border-radius: 12px; position: relative;
-  cursor: pointer; transition: var(--transition); flex-shrink: 0;
-}
+.toggle { width: 44px; height: 24px; background: #cbd5e1; border-radius: 12px; position: relative; cursor: pointer; transition: var(--transition); flex-shrink: 0; }
 .toggle.on { background: var(--teal); }
-.toggle-knob {
-  width: 20px; height: 20px; background: #fff; border-radius: 50%; position: absolute;
-  top: 2px; left: 2px; transition: var(--transition); box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-}
+.toggle-knob { width: 20px; height: 20px; background: #fff; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: var(--transition); box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
 .toggle.on .toggle-knob { left: 22px; }
-
-/* Modal */
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none;
-  align-items: center; justify-content: center; z-index: 200;
-}
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; z-index: 200; }
 .modal-overlay.open { display: flex; }
-.modal {
-  background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-lg);
-  width: 90%; max-width: 520px; max-height: 85vh; overflow-y: auto;
-}
-.modal-header {
-  padding: 18px 22px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-}
+.modal { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-lg); width: 90%; max-width: 520px; max-height: 85vh; overflow-y: auto; }
+.modal.modal-lg { max-width: 720px; }
+.modal-header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
 .modal-header h3 { font-size: 1.05rem; font-weight: 600; }
-.modal-close { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 1.2rem; padding: 4px; }
+.modal-close { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 1.2rem; padding: 4px; font-family: inherit; }
 .modal-body { padding: 22px; }
 .modal-footer { padding: 14px 22px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
-
-/* Activity list */
 .activity-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
 .activity-item:last-child { border-bottom: none; }
 .activity-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
 .activity-text { font-size: 0.85rem; color: var(--text); line-height: 1.4; }
 .activity-time { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
-
-/* Guest avatar */
 .guest-cell { display: flex; align-items: center; gap: 10px; }
-.avatar {
-  width: 34px; height: 34px; border-radius: 50%; background: var(--teal-light);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.82rem; font-weight: 700; color: var(--navy); flex-shrink: 0;
-}
-.guest-name { font-weight: 600; font-size: 0.88rem; }
+.avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--teal-light); display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 700; color: var(--navy); flex-shrink: 0; }
+.guest-name { font-weight: 600; font-size: 0.88rem; cursor: pointer; }
+.guest-name:hover { color: var(--navy); text-decoration: underline; }
 .guest-email { font-size: 0.75rem; color: var(--text-muted); }
-
-/* Parsed schedule preview */
 .schedule-preview { margin-top: 16px; }
 .schedule-day { background: var(--bg); border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; }
 .schedule-day-title { font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; color: var(--navy); }
 .schedule-item { font-size: 0.82rem; color: var(--text-secondary); padding: 2px 0; }
-
-/* Success banner */
-.success-banner {
-  background: var(--green-light); border: 1px solid var(--green); border-radius: var(--radius);
-  padding: 20px; margin-top: 20px; display: none;
-}
+.success-banner { background: var(--green-light); border: 1px solid var(--green); border-radius: var(--radius); padding: 20px; margin-top: 20px; display: none; }
 .success-banner.visible { display: block; }
-.success-url { background: var(--bg); padding: 10px 14px; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin: 10px 0; word-break: break-all; }
-.success-pin { font-size: 1.5rem; font-weight: 700; color: var(--navy); letter-spacing: 0.1em; }
-
-/* Responsive */
-@media (max-width: 1024px) {
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
-  .grid-dashboard { grid-template-columns: 1fr; }
-  .grid-2 { grid-template-columns: 1fr; }
-}
-@media (max-width: 768px) {
-  .sidebar { transform: translateX(-100%); }
-  .sidebar.open { transform: translateX(0); }
-  .main { margin-left: 0; }
-  .hamburger { display: block; }
-  .content { padding: 20px 16px; }
-  .topbar { padding: 12px 16px; }
-  .stats-row { grid-template-columns: 1fr; }
-}
+.success-url { background: var(--bg); padding: 10px 14px; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin: 10px 0; word-break: break-all; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.success-pin { font-size: 1.5rem; font-weight: 700; color: var(--navy); letter-spacing: 0.1em; display: inline-flex; align-items: center; gap: 8px; }
+.guest-detail-header { display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
+.guest-detail-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--teal-light); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; color: var(--navy); flex-shrink: 0; }
+.guest-detail-info h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; }
+.guest-detail-info p { font-size: 0.85rem; color: var(--text-secondary); }
+.detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.detail-item { padding: 14px; background: var(--bg); border-radius: 8px; }
+.detail-item-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
+.detail-item-value { font-size: 0.95rem; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.copy-btn { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; cursor: pointer; color: var(--text-secondary); transition: var(--transition); font-family: inherit; }
+.copy-btn:hover { border-color: var(--navy); color: var(--navy); }
+.quick-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+.action-card { display: flex; align-items: center; gap: 10px; padding: 14px 18px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: var(--transition); }
+.action-card:hover { border-color: var(--navy); box-shadow: var(--shadow); }
+.action-card-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.action-card-text { font-size: 0.85rem; font-weight: 600; }
+.day-builder { background: var(--bg); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+.day-builder-title { font-weight: 600; font-size: 0.88rem; color: var(--navy); margin-bottom: 10px; }
+.activity-row-builder { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.activity-row-builder input, .activity-row-builder select { padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.82rem; font-family: inherit; }
+.activity-row-builder input[type="time"] { width: 100px; }
+.activity-row-builder input[type="text"] { flex: 1; min-width: 0; }
+.activity-row-builder select { width: 110px; }
+.remove-activity { background: var(--red-light); color: var(--red); border: none; border-radius: 4px; width: 24px; height: 24px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; font-family: inherit; line-height: 1; }
+.add-activity-btn { background: none; border: 1px dashed var(--border); border-radius: 6px; padding: 8px; width: 100%; cursor: pointer; font-size: 0.82rem; color: var(--text-muted); transition: var(--transition); font-family: inherit; }
+.add-activity-btn:hover { border-color: var(--teal); color: var(--teal); }
+.admin-toast { position: fixed; bottom: 20px; right: 20px; background: var(--text); color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: 500; z-index: 300; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; pointer-events: none; }
+.admin-toast.visible { opacity: 1; transform: translateY(0); }
+.today-section { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 28px; }
+.today-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; border: 1px solid var(--border); }
+.today-card h3 { font-size: 0.88rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.today-guest-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.today-guest-item:last-child { border-bottom: none; }
+.spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--teal); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 20px auto; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.sort-select { padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.82rem; font-family: inherit; background: var(--white); color: var(--text); }
+.results-count { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; }
+.occupancy-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 6px; }
+.occupancy-fill { height: 100%; background: var(--teal); border-radius: 4px; transition: width 0.3s ease; }
+.parse-step { padding: 16px; background: var(--bg); border-radius: 8px; margin-bottom: 12px; }
+.parse-step-title { font-weight: 600; font-size: 0.88rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.parse-step-check { color: var(--green); }
+@media (max-width: 1024px) { .stats-row { grid-template-columns: repeat(2, 1fr); } .grid-dashboard { grid-template-columns: 1fr; } .grid-2 { grid-template-columns: 1fr; } }
+@media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .main { margin-left: 0; } .hamburger { display: block; } .content { padding: 20px 16px; } .topbar { padding: 12px 16px; } .stats-row { grid-template-columns: 1fr; } .detail-grid { grid-template-columns: 1fr; } .today-section { grid-template-columns: 1fr; } .guest-detail-header { flex-direction: column; text-align: center; } .quick-actions { flex-direction: column; } .activity-row-builder { flex-wrap: wrap; } }
 </style>
 </head>
 <body>
@@ -269,12 +176,13 @@ tr:hover td { background: rgba(0,96,156,0.02); }
   <div class="content" id="content"></div>
 </div>
 <div class="modal-overlay" id="modalOverlay"></div>
+<div class="admin-toast" id="adminToast"></div>
 
 <script>
 (function() {
   'use strict';
 
-  // ── Helpers ──────────────────────────────────────────
+  // -- Helpers --
   function el(tag, attrs, children) {
     var e = document.createElement(tag);
     if (attrs) {
@@ -288,7 +196,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     if (children) {
       (Array.isArray(children) ? children : [children]).forEach(function(c) {
         if (c == null) return;
-        if (typeof c === 'string') { e.appendChild(document.createTextNode(c)); }
+        if (typeof c === 'string') e.appendChild(document.createTextNode(c));
         else e.appendChild(c);
       });
     }
@@ -299,34 +207,59 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     size = size || 18;
     var ns = 'http://www.w3.org/2000/svg';
     var svg = document.createElementNS(ns, 'svg');
-    svg.setAttribute('width', size);
-    svg.setAttribute('height', size);
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.setAttribute('fill', 'none');
-    svg.setAttribute('stroke', 'currentColor');
-    svg.setAttribute('stroke-width', '2');
-    svg.setAttribute('stroke-linecap', 'round');
-    svg.setAttribute('stroke-linejoin', 'round');
-    var paths = Array.isArray(pathD) ? pathD : [pathD];
-    paths.forEach(function(d) {
+    svg.setAttribute('width', size); svg.setAttribute('height', size);
+    svg.setAttribute('viewBox', '0 0 24 24'); svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor'); svg.setAttribute('stroke-width', '2');
+    svg.setAttribute('stroke-linecap', 'round'); svg.setAttribute('stroke-linejoin', 'round');
+    (Array.isArray(pathD) ? pathD : [pathD]).forEach(function(d) {
       var p = document.createElementNS(ns, 'path');
-      p.setAttribute('d', d);
-      svg.appendChild(p);
+      p.setAttribute('d', d); svg.appendChild(p);
     });
     return svg;
   }
 
   function clearEl(e) { while (e.firstChild) e.removeChild(e.firstChild); }
-
-  function formatDate(d) {
-    if (!d) return '';
-    var dt = new Date(d);
-    return dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-  }
-
+  function formatDate(d) { if (!d) return ''; return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); }
   function generateId() { return '_' + Math.random().toString(36).slice(2, 10); }
 
-  // ── SVG paths (Feather icons) ────────────────────
+  function showAdminToast(msg) {
+    var t = document.getElementById('adminToast');
+    t.textContent = msg;
+    t.classList.add('visible');
+    setTimeout(function() { t.classList.remove('visible'); }, 2500);
+  }
+
+  function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function() { showAdminToast('Copied to clipboard'); });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta); showAdminToast('Copied to clipboard');
+    }
+  }
+
+  function getPortalUrl(g) {
+    var slug = (g.firstName + '-' + g.lastName).toLowerCase().replace(/[^a-z0-9-]/g, '');
+    return 'https://thelifeco.app/guest/' + slug + '/';
+  }
+
+  function cleanWhatsApp(num) { return num.replace(/[^0-9]/g, ''); }
+
+  function sendWhatsAppWelcome(g) {
+    var url = getPortalUrl(g);
+    var msg = 'Welcome to TheLifeCo St. Lucia, ' + g.firstName + '! Your personal wellness portal is ready: ' + url + ' Your PIN: ' + g.pin;
+    var phone = cleanWhatsApp(g.whatsapp);
+    location.href = 'https://api.whatsapp.com/send?phone=' + phone + '&text=' + encodeURIComponent(msg);
+  }
+
+  function openModal() { document.getElementById('modalOverlay').classList.add('open'); }
+  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+  var TODAY_STR = '2026-03-14';
+  var TOTAL_ROOMS = 20;
+
   var ICONS = {
     home: ['M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z', 'M9 22V12h6v10'],
     users: ['M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2', 'M23 21v-2a4 4 0 0 0-3-3.87', 'M16 3.13a4 4 0 0 1 0 7.75'],
@@ -344,17 +277,22 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     download: ['M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4', 'M7 10l5 5 5-5', 'M12 15V3'],
     trash: ['M3 6h18', 'M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'],
     calendar: ['M16 2v4', 'M8 2v4', 'M3 10h18', 'M21 8v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'],
+    check: ['M20 6L9 17l-5-5'],
+    phone: ['M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z'],
+    send: ['M22 2L11 13', 'M22 2l-7 20-4-9-9-4 20-7'],
+    eye: ['M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'],
+    clipboard: ['M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2'],
+    arrowLeft: ['M19 12H5', 'M12 19l-7-7 7-7'],
   };
 
-  // ── Data Store ──────────────────────────────────────
+  // -- Data Store --
   var STORAGE_KEY = 'tlc_admin';
-
   function defaultStore() {
     return {
       guests: [
-        { id: 'g1', firstName: 'Hasan', lastName: 'Akkaya', email: 'hasan@example.com', whatsapp: '+90 555 123 4567', checkin: '2026-03-09', duration: 7, programme: 'Green Salad', room: '204', notes: 'Vegan preferences', status: 'active', pin: '0309', createdAt: '2026-03-08T10:00:00Z' },
-        { id: 'g2', firstName: 'Sarah', lastName: 'Johnson', email: 'sarah.j@example.com', whatsapp: '+1 555 987 6543', checkin: '2026-03-12', duration: 14, programme: 'Master Detox', room: '112', notes: '', status: 'active', pin: '0312', createdAt: '2026-03-11T09:00:00Z' },
-        { id: 'g3', firstName: 'Marco', lastName: 'Rossi', email: 'marco.r@example.com', whatsapp: '+39 333 456 7890', checkin: '2026-03-20', duration: 7, programme: 'Green Juice Cleanse', room: '301', notes: 'First visit', status: 'upcoming', pin: '0320', createdAt: '2026-03-14T08:00:00Z' }
+        { id: 'g1', firstName: 'Hasan', lastName: 'Akkaya', email: 'hasan@example.com', whatsapp: '+90 555 123 4567', checkin: '2026-03-09', duration: 7, programme: 'Green Salad', room: '204', notes: 'Vegan preferences', status: 'active', pin: '0309', schedule: null, createdAt: '2026-03-08T10:00:00Z' },
+        { id: 'g2', firstName: 'Sarah', lastName: 'Johnson', email: 'sarah.j@example.com', whatsapp: '+1 555 987 6543', checkin: '2026-03-12', duration: 14, programme: 'Master Detox', room: '112', notes: '', status: 'active', pin: '0312', schedule: null, createdAt: '2026-03-11T09:00:00Z' },
+        { id: 'g3', firstName: 'Marco', lastName: 'Rossi', email: 'marco.r@example.com', whatsapp: '+39 333 456 7890', checkin: '2026-03-20', duration: 7, programme: 'Green Juice Cleanse', room: '301', notes: 'First visit', status: 'upcoming', pin: '0320', schedule: null, createdAt: '2026-03-14T08:00:00Z' }
       ],
       templates: [
         { id: 't1', name: '7-Day Green Salad Standard', programme: 'Green Salad', duration: 7, createdAt: '2026-02-15T12:00:00Z' },
@@ -373,22 +311,17 @@ tr:hover td { background: rgba(0,96,156,0.02); }
         { id: 'a5', time: '2026-03-08T10:00:00Z', action: 'Guest Created', user: 'Admin', details: 'Created portal for Hasan Akkaya' }
       ],
       settings: {
-        autoPin: true, welcomeMsg: true, guestFeedback: false, calendarExport: true, sessionTimeout: true,
-        resortName: 'TheLifeCo Well-Being', whatsappNumber: '+1 758 XXX XXXX',
-        portalBaseUrl: 'https://ibak-app.github.io/thelifeco-design-review/portal.html',
+        autoPin: true, welcomeMsg: true, guestFeedback: true, sessionTimeout: true,
+        resortName: 'TheLifeCo Well-Being', whatsappNumber: '17582861869',
+        portalBaseUrl: 'https://thelifeco.app/guest/',
         defaultDuration: 7
       }
     };
   }
 
   function loadStore() {
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) return JSON.parse(raw);
-    } catch(e) {}
-    var s = defaultStore();
-    saveStore(s);
-    return s;
+    try { var raw = localStorage.getItem(STORAGE_KEY); if (raw) return JSON.parse(raw); } catch(e) {}
+    var s = defaultStore(); saveStore(s); return s;
   }
   function saveStore(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
   function addLog(action, details) {
@@ -398,15 +331,53 @@ tr:hover td { background: rgba(0,96,156,0.02); }
 
   var store = loadStore();
   var currentPage = 'dashboard';
+  var detailGuestId = null;
 
-  // ── Programmes list ─────────────────────────────────
   var PROGRAMMES = ['Master Detox','Green Juice Cleanse','Green Salad','Water Fasting','Low Calorie','Intermittent Fasting','Ketogenic','Mental Wellness','Get Fit & Healthy'];
 
-  // ── Sidebar ─────────────────────────────────────────
-  function buildSidebar() {
-    var sb = document.getElementById('sidebar');
-    clearEl(sb);
+  // -- Computed helpers --
+  function guestCheckout(g) {
+    var d = new Date(g.checkin); d.setDate(d.getDate() + g.duration);
+    return d.toISOString().slice(0,10);
+  }
+  function guestDaysLeft(g) {
+    var checkout = new Date(guestCheckout(g));
+    var now = new Date(TODAY_STR);
+    var diff = Math.ceil((checkout - now) / 86400000);
+    return diff > 0 ? diff : 0;
+  }
+  function autoStatus(g) {
+    var co = guestCheckout(g);
+    if (co <= TODAY_STR) return 'completed';
+    if (g.checkin <= TODAY_STR) return 'active';
+    return 'upcoming';
+  }
+  function isCheckoutToday(g) { return guestCheckout(g) === TODAY_STR; }
+  function isCheckinToday(g) { return g.checkin === TODAY_STR; }
 
+  // -- Avatar helper --
+  function avatarEl(name, large) {
+    var initials = name.split(' ').map(function(w) { return w.charAt(0); }).join('').slice(0,2);
+    var cls = large ? 'guest-detail-avatar' : 'avatar';
+    return el('div', { className: cls, textContent: initials });
+  }
+
+  function statusBadge(status) {
+    var b = el('span', { className: 'badge badge-' + status });
+    b.appendChild(el('span', { className: 'badge-dot' }));
+    b.appendChild(document.createTextNode(status.charAt(0).toUpperCase() + status.slice(1)));
+    return b;
+  }
+
+  function makeCopyBtn(text) {
+    var btn = el('button', { className: 'copy-btn', textContent: 'Copy' });
+    btn.addEventListener('click', function(e) { e.stopPropagation(); copyToClipboard(text); });
+    return btn;
+  }
+
+  // -- Sidebar --
+  function buildSidebar() {
+    var sb = document.getElementById('sidebar'); clearEl(sb);
     var brand = el('div', { className: 'sidebar-brand' });
     brand.appendChild(el('h1', { textContent: 'TheLifeCo' }));
     brand.appendChild(el('span', { textContent: 'Admin Dashboard' }));
@@ -425,7 +396,6 @@ tr:hover td { background: rgba(0,96,156,0.02); }
         { id: 'activity', icon: 'list', text: 'Activity Log' }
       ]}
     ];
-
     sections.forEach(function(sec) {
       var s = el('div', { className: 'nav-section' });
       s.appendChild(el('div', { className: 'nav-section-label', textContent: sec.label }));
@@ -434,9 +404,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
         ni.appendChild(svgIcon(ICONS[item.icon]));
         ni.appendChild(el('span', { textContent: item.text }));
         ni.addEventListener('click', function() {
-          currentPage = item.id;
-          render();
-          // close mobile sidebar
+          currentPage = item.id; detailGuestId = null; render();
           document.getElementById('sidebar').classList.remove('open');
         });
         s.appendChild(ni);
@@ -444,89 +412,128 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       nav.appendChild(s);
     });
     sb.appendChild(nav);
-
-    var footer = el('div', { className: 'sidebar-footer', textContent: 'v1.0 MVP \u2014 localStorage' });
-    sb.appendChild(footer);
+    sb.appendChild(el('div', { className: 'sidebar-footer', textContent: 'v2.0 \u2014 Enhanced Admin' }));
   }
 
-  // ── Topbar ──────────────────────────────────────────
+  // -- Topbar --
   function buildTopbar() {
-    var tb = document.getElementById('topbar');
-    clearEl(tb);
-
+    var tb = document.getElementById('topbar'); clearEl(tb);
     var left = el('div', { style: 'display:flex;align-items:center;gap:12px' });
     var ham = el('button', { className: 'hamburger' });
     ham.appendChild(svgIcon(ICONS.menu, 24));
-    ham.addEventListener('click', function() {
-      document.getElementById('sidebar').classList.toggle('open');
-    });
+    ham.addEventListener('click', function() { document.getElementById('sidebar').classList.toggle('open'); });
     left.appendChild(ham);
-
-    var titles = { dashboard: 'Dashboard', guests: 'Guests', create: 'Create Guest', programmes: 'Programmes', settings: 'Settings', activity: 'Activity Log' };
+    var titles = { dashboard: 'Dashboard', guests: 'Guests', create: 'Create Guest', programmes: 'Programmes', settings: 'Settings', activity: 'Activity Log', detail: 'Guest Detail' };
     left.appendChild(el('div', { className: 'topbar-title', textContent: titles[currentPage] || 'Dashboard' }));
     tb.appendChild(left);
-
     var right = el('div', { className: 'topbar-right' });
-    right.appendChild(el('span', { className: 'topbar-date', textContent: new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }));
+    right.appendChild(el('span', { className: 'topbar-date', textContent: new Date(TODAY_STR).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }));
     tb.appendChild(right);
   }
 
-  // ── Badge helper ────────────────────────────────────
-  function statusBadge(status) {
-    var b = el('span', { className: 'badge badge-' + status });
-    b.appendChild(el('span', { className: 'badge-dot' }));
-    b.appendChild(document.createTextNode(status.charAt(0).toUpperCase() + status.slice(1)));
-    return b;
-  }
-
-  // ── Avatar helper ───────────────────────────────────
-  function avatarEl(name) {
-    var initials = name.split(' ').map(function(w) { return w.charAt(0); }).join('').slice(0,2);
-    return el('div', { className: 'avatar', textContent: initials });
-  }
-
-  function guestCheckout(g) {
-    var d = new Date(g.checkin);
-    d.setDate(d.getDate() + g.duration);
-    return d.toISOString().slice(0,10);
-  }
-
-  function guestDaysLeft(g) {
-    var checkout = new Date(guestCheckout(g));
-    var now = new Date('2026-03-14');
-    var diff = Math.ceil((checkout - now) / 86400000);
-    return diff > 0 ? diff : 0;
-  }
-
-  // ── Dashboard Page ──────────────────────────────────
+  // -- Dashboard --
   function renderDashboard() {
-    var page = el('div', { className: 'page active', id: 'page-dashboard' });
+    var page = el('div', { className: 'page active' });
+
+    // Quick action buttons at top
+    var qa = el('div', { className: 'quick-actions' });
+    var newGuestCard = el('div', { className: 'action-card' });
+    var ngIcon = el('div', { className: 'action-card-icon', style: 'background:var(--teal-light)' });
+    ngIcon.appendChild(svgIcon(ICONS.userPlus, 20));
+    newGuestCard.appendChild(ngIcon);
+    newGuestCard.appendChild(el('span', { className: 'action-card-text', textContent: 'New Guest' }));
+    newGuestCard.addEventListener('click', function() { currentPage = 'create'; render(); });
+    qa.appendChild(newGuestCard);
+
+    var broadcastCard = el('div', { className: 'action-card' });
+    var bcIcon = el('div', { className: 'action-card-icon', style: 'background:var(--green-light)' });
+    bcIcon.appendChild(svgIcon(ICONS.send, 20));
+    broadcastCard.appendChild(bcIcon);
+    broadcastCard.appendChild(el('span', { className: 'action-card-text', textContent: 'Send Broadcast' }));
+    broadcastCard.addEventListener('click', function() { showAdminToast('Broadcast feature coming soon'); });
+    qa.appendChild(broadcastCard);
+    page.appendChild(qa);
 
     // Stats
     var stats = el('div', { className: 'stats-row' });
     var activeCount = store.guests.filter(function(g) { return g.status === 'active'; }).length;
     var upcomingCount = store.guests.filter(function(g) { return g.status === 'upcoming'; }).length;
-    var templateCount = store.templates.length;
+    var completedCount = store.guests.filter(function(g) { return g.status === 'completed'; }).length;
     var totalCount = store.guests.length;
+    var occupiedRooms = store.guests.filter(function(g) { return g.status === 'active'; }).length;
 
     var statData = [
-      { label: 'Active Guests', value: activeCount, cls: 'green' },
-      { label: 'Upcoming', value: upcomingCount, cls: 'teal' },
-      { label: 'Templates', value: templateCount, cls: 'orange' },
-      { label: 'Total Guests', value: totalCount, cls: '' }
+      { label: 'Active Guests', value: activeCount, cls: 'green', filter: 'active' },
+      { label: 'Upcoming', value: upcomingCount, cls: 'teal', filter: 'upcoming' },
+      { label: 'Occupancy', value: occupiedRooms + '/' + TOTAL_ROOMS, cls: 'orange', filter: null },
+      { label: 'Total Guests', value: totalCount, cls: '', filter: 'all' }
     ];
     statData.forEach(function(s) {
       var sc = el('div', { className: 'stat-card' + (s.cls ? ' ' + s.cls : '') });
       sc.appendChild(el('div', { className: 'stat-label', textContent: s.label }));
       sc.appendChild(el('div', { className: 'stat-value', textContent: String(s.value) }));
+      if (s.label === 'Occupancy') {
+        var bar = el('div', { className: 'occupancy-bar' });
+        var fill = el('div', { className: 'occupancy-fill' });
+        fill.style.width = Math.round((occupiedRooms / TOTAL_ROOMS) * 100) + '%';
+        bar.appendChild(fill);
+        sc.appendChild(bar);
+      }
+      sc.addEventListener('click', function() {
+        if (s.filter) { currentPage = 'guests'; guestFilterOverride = s.filter; render(); }
+      });
       stats.appendChild(sc);
     });
     page.appendChild(stats);
 
+    // Today section
+    var checkinToday = store.guests.filter(function(g) { return isCheckinToday(g); });
+    var checkoutToday = store.guests.filter(function(g) { return isCheckoutToday(g); });
+
+    var todaySec = el('div', { className: 'today-section' });
+    var ciCard = el('div', { className: 'today-card' });
+    var ciH = el('h3');
+    ciH.appendChild(document.createTextNode('Checking In Today'));
+    ciH.appendChild(el('span', { className: 'badge badge-active', textContent: String(checkinToday.length) }));
+    ciCard.appendChild(ciH);
+    if (checkinToday.length === 0) {
+      ciCard.appendChild(el('div', { style: 'color:var(--text-muted);font-size:0.85rem', textContent: 'No check-ins today' }));
+    } else {
+      checkinToday.forEach(function(g) {
+        var item = el('div', { className: 'today-guest-item' });
+        item.appendChild(avatarEl(g.firstName + ' ' + g.lastName));
+        var info = el('div');
+        info.appendChild(el('div', { style: 'font-weight:600;font-size:0.85rem', textContent: g.firstName + ' ' + g.lastName }));
+        info.appendChild(el('div', { style: 'font-size:0.75rem;color:var(--text-muted)', textContent: g.programme + ' - Room ' + g.room }));
+        item.appendChild(info);
+        ciCard.appendChild(item);
+      });
+    }
+    todaySec.appendChild(ciCard);
+
+    var coCard = el('div', { className: 'today-card' });
+    var coH = el('h3');
+    coH.appendChild(document.createTextNode('Checking Out Today'));
+    coH.appendChild(el('span', { className: 'badge badge-checkout', textContent: String(checkoutToday.length) }));
+    coCard.appendChild(coH);
+    if (checkoutToday.length === 0) {
+      coCard.appendChild(el('div', { style: 'color:var(--text-muted);font-size:0.85rem', textContent: 'No check-outs today' }));
+    } else {
+      checkoutToday.forEach(function(g) {
+        var item = el('div', { className: 'today-guest-item' });
+        item.appendChild(avatarEl(g.firstName + ' ' + g.lastName));
+        var info = el('div');
+        info.appendChild(el('div', { style: 'font-weight:600;font-size:0.85rem', textContent: g.firstName + ' ' + g.lastName }));
+        info.appendChild(el('div', { style: 'font-size:0.75rem;color:var(--text-muted)', textContent: 'Room ' + g.room }));
+        item.appendChild(info);
+        coCard.appendChild(item);
+      });
+    }
+    todaySec.appendChild(coCard);
+    page.appendChild(todaySec);
+
     // Grid: table + activity
     var grid = el('div', { className: 'grid-dashboard' });
-
-    // Guests table card
     var card = el('div', { className: 'card' });
     var ch = el('div', { className: 'card-header' });
     ch.appendChild(el('h2', { textContent: 'Current Guests' }));
@@ -540,21 +547,19 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     var table = el('table');
     var thead = el('thead');
     var hr = el('tr');
-    ['Guest', 'Programme', 'Check-in', 'Status', 'Portal'].forEach(function(h) {
-      hr.appendChild(el('th', { textContent: h }));
-    });
+    ['Guest', 'Programme', 'Check-in', 'Status', 'Portal'].forEach(function(h) { hr.appendChild(el('th', { textContent: h })); });
     thead.appendChild(hr);
     table.appendChild(thead);
-
     var tb = el('tbody');
-    var activeGuests = store.guests.filter(function(g) { return g.status === 'active' || g.status === 'upcoming'; });
-    activeGuests.forEach(function(g) {
+    store.guests.filter(function(g) { return g.status === 'active' || g.status === 'upcoming'; }).forEach(function(g) {
       var tr = el('tr');
       var nameCell = el('td');
       var gc = el('div', { className: 'guest-cell' });
       gc.appendChild(avatarEl(g.firstName + ' ' + g.lastName));
       var nameDiv = el('div');
-      nameDiv.appendChild(el('div', { className: 'guest-name', textContent: g.firstName + ' ' + g.lastName }));
+      var nameLink = el('div', { className: 'guest-name', textContent: g.firstName + ' ' + g.lastName });
+      nameLink.addEventListener('click', function() { detailGuestId = g.id; currentPage = 'detail'; render(); });
+      nameDiv.appendChild(nameLink);
       gc.appendChild(nameDiv);
       nameCell.appendChild(gc);
       tr.appendChild(nameCell);
@@ -562,13 +567,11 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       tr.appendChild(el('td', { textContent: formatDate(g.checkin) }));
       var statusTd = el('td');
       statusTd.appendChild(statusBadge(g.status));
+      if (isCheckoutToday(g)) statusTd.appendChild(el('span', { className: 'badge badge-checkout', textContent: 'Out today' }));
       tr.appendChild(statusTd);
       var actionTd = el('td');
       var link = el('button', { className: 'btn btn-teal btn-sm', textContent: 'Open Portal' });
-      link.addEventListener('click', function() {
-        var url = store.settings.portalBaseUrl + '?guest=' + g.id;
-        window.open(url, '_blank');
-      });
+      link.addEventListener('click', function() { window.open(getPortalUrl(g), '_blank'); });
       actionTd.appendChild(link);
       tr.appendChild(actionTd);
       tb.appendChild(tr);
@@ -585,8 +588,8 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     ach.appendChild(el('h2', { textContent: 'Recent Activity' }));
     actCard.appendChild(ach);
     var acb = el('div', { className: 'card-body' });
-    var colors = { 'Guest Created': 'var(--green)', 'PDF Uploaded': 'var(--teal)', 'Settings Updated': 'var(--orange)' };
-    store.activityLog.slice(0, 5).forEach(function(a) {
+    var colors = { 'Guest Created': 'var(--green)', 'PDF Uploaded': 'var(--teal)', 'Settings Updated': 'var(--orange)', 'Guest Deleted': 'var(--red)', 'Guest Updated': 'var(--blue)', 'Status Changed': 'var(--blue)' };
+    store.activityLog.slice(0, 6).forEach(function(a) {
       var ai = el('div', { className: 'activity-item' });
       var dot = el('div', { className: 'activity-dot' });
       dot.style.background = colors[a.action] || 'var(--navy)';
@@ -599,34 +602,42 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     });
     actCard.appendChild(acb);
     grid.appendChild(actCard);
-
     page.appendChild(grid);
     return page;
   }
 
-  // ── Guests Page ─────────────────────────────────────
-  function renderGuests() {
-    var page = el('div', { className: 'page active', id: 'page-guests' });
+  // -- Guests Page --
+  var guestFilterOverride = null;
 
-    // Search + Tabs
+  function renderGuests() {
+    var page = el('div', { className: 'page active' });
     var toolbar = el('div', { style: 'display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:12px' });
     var sb = el('div', { className: 'search-bar' });
     sb.appendChild(svgIcon(ICONS.search, 16));
-    var searchInput = el('input', { type: 'text', placeholder: 'Search guests...' });
+    var searchInput = el('input', { type: 'text', placeholder: 'Search name, email, room, phone...' });
     sb.appendChild(searchInput);
     toolbar.appendChild(sb);
+
+    var rightTools = el('div', { style: 'display:flex;gap:10px;align-items:center' });
+    var sortSel = el('select', { className: 'sort-select' });
+    [['name', 'Sort: Name'], ['checkin', 'Sort: Check-in'], ['status', 'Sort: Status']].forEach(function(o) {
+      sortSel.appendChild(el('option', { value: o[0], textContent: o[1] }));
+    });
+    rightTools.appendChild(sortSel);
     var addBtn = el('button', { className: 'btn btn-primary' });
     addBtn.appendChild(document.createTextNode('+ New Guest'));
     addBtn.addEventListener('click', function() { currentPage = 'create'; render(); });
-    toolbar.appendChild(addBtn);
+    rightTools.appendChild(addBtn);
+    toolbar.appendChild(rightTools);
     page.appendChild(toolbar);
 
-    var filterState = { tab: 'all' };
+    var filterState = { tab: guestFilterOverride || 'all' };
+    guestFilterOverride = null;
 
     var tabs = el('div', { className: 'tabs' });
     ['All', 'Active', 'Upcoming', 'Completed'].forEach(function(t) {
       var key = t.toLowerCase();
-      var tab = el('button', { className: 'tab' + (key === 'all' ? ' active' : ''), textContent: t });
+      var tab = el('button', { className: 'tab' + (key === filterState.tab ? ' active' : ''), textContent: t });
       tab.addEventListener('click', function() {
         filterState.tab = key;
         tabs.querySelectorAll('.tab').forEach(function(tt) { tt.classList.remove('active'); });
@@ -637,6 +648,9 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     });
     page.appendChild(tabs);
 
+    var countEl = el('div', { className: 'results-count' });
+    page.appendChild(countEl);
+
     var card = el('div', { className: 'card' });
     var cardBody = el('div', { className: 'card-body' });
     var tableWrap = el('div', { className: 'table-wrap' });
@@ -644,62 +658,73 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     card.appendChild(cardBody);
     page.appendChild(card);
 
-    function rebuildTable() {
-      clearEl(tableWrap);
+    function getFiltered() {
       var query = searchInput.value.toLowerCase();
       var filtered = store.guests.filter(function(g) {
         var matchTab = filterState.tab === 'all' || g.status === filterState.tab;
-        var matchSearch = !query || (g.firstName + ' ' + g.lastName + ' ' + g.email + ' ' + g.programme).toLowerCase().indexOf(query) !== -1;
+        var searchStr = (g.firstName + ' ' + g.lastName + ' ' + g.email + ' ' + g.programme + ' ' + (g.room || '') + ' ' + (g.whatsapp || '')).toLowerCase();
+        var matchSearch = !query || searchStr.indexOf(query) !== -1;
         return matchTab && matchSearch;
       });
+      var sortKey = sortSel.value;
+      filtered.sort(function(a, b) {
+        if (sortKey === 'name') return (a.firstName + a.lastName).localeCompare(b.firstName + b.lastName);
+        if (sortKey === 'checkin') return a.checkin.localeCompare(b.checkin);
+        if (sortKey === 'status') return a.status.localeCompare(b.status);
+        return 0;
+      });
+      return filtered;
+    }
+
+    function rebuildTable() {
+      clearEl(tableWrap);
+      var filtered = getFiltered();
+      countEl.textContent = filtered.length + ' guest' + (filtered.length !== 1 ? 's' : '') + ' found';
 
       var table = el('table');
       var thead = el('thead');
       var hr = el('tr');
-      ['Guest', 'Programme', 'Check-in', 'Check-out', 'Days', 'Status', 'Actions'].forEach(function(h) {
+      ['Guest', 'Programme', 'Room', 'Check-in', 'Check-out', 'Days Left', 'Status', 'Actions'].forEach(function(h) {
         hr.appendChild(el('th', { textContent: h }));
       });
       thead.appendChild(hr);
       table.appendChild(thead);
-
       var tbody = el('tbody');
       filtered.forEach(function(g) {
         var tr = el('tr');
-        // Guest cell
         var nameTd = el('td');
         var gc = el('div', { className: 'guest-cell' });
         gc.appendChild(avatarEl(g.firstName + ' ' + g.lastName));
         var nd = el('div');
-        nd.appendChild(el('div', { className: 'guest-name', textContent: g.firstName + ' ' + g.lastName }));
+        var nameLink = el('div', { className: 'guest-name', textContent: g.firstName + ' ' + g.lastName });
+        nameLink.addEventListener('click', function() { detailGuestId = g.id; currentPage = 'detail'; render(); });
+        nd.appendChild(nameLink);
         nd.appendChild(el('div', { className: 'guest-email', textContent: g.email }));
         gc.appendChild(nd);
         nameTd.appendChild(gc);
         tr.appendChild(nameTd);
-
         tr.appendChild(el('td', { textContent: g.programme }));
+        tr.appendChild(el('td', { textContent: g.room || '-' }));
         tr.appendChild(el('td', { textContent: formatDate(g.checkin) }));
         tr.appendChild(el('td', { textContent: formatDate(guestCheckout(g)) }));
-        tr.appendChild(el('td', { textContent: g.duration + ' days' }));
-
+        var daysLeft = guestDaysLeft(g);
+        tr.appendChild(el('td', { textContent: g.status === 'completed' ? '-' : daysLeft + 'd' }));
         var statusTd = el('td');
         statusTd.appendChild(statusBadge(g.status));
+        if (isCheckoutToday(g)) statusTd.appendChild(el('span', { className: 'badge badge-checkout', textContent: 'Out today' }));
         tr.appendChild(statusTd);
 
-        // Actions
         var actionTd = el('td');
-        var actionWrap = el('div', { style: 'display:flex;gap:6px' });
+        var actionWrap = el('div', { style: 'display:flex;gap:6px;flex-wrap:wrap' });
         var portalBtn = el('button', { className: 'btn btn-teal btn-sm', textContent: 'Portal' });
-        portalBtn.addEventListener('click', function() {
-          window.open(store.settings.portalBaseUrl + '?guest=' + g.id, '_blank');
-        });
+        portalBtn.addEventListener('click', function() { window.open(getPortalUrl(g), '_blank'); });
         actionWrap.appendChild(portalBtn);
         var editBtn = el('button', { className: 'btn btn-outline btn-sm', textContent: 'Edit' });
-        editBtn.addEventListener('click', function() {
-          currentPage = 'create';
-          editingGuest = g.id;
-          render();
-        });
+        editBtn.addEventListener('click', function() { editingGuest = g.id; currentPage = 'create'; render(); });
         actionWrap.appendChild(editBtn);
+        var delBtn = el('button', { className: 'btn btn-danger btn-sm', textContent: 'Delete' });
+        delBtn.addEventListener('click', function() { deleteGuest(g); });
+        actionWrap.appendChild(delBtn);
         actionTd.appendChild(actionWrap);
         tr.appendChild(actionTd);
         tbody.appendChild(tr);
@@ -709,19 +734,160 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     }
 
     searchInput.addEventListener('input', rebuildTable);
+    sortSel.addEventListener('change', rebuildTable);
     rebuildTable();
     return page;
   }
 
-  // ── Create Guest Page ───────────────────────────────
+  function deleteGuest(g) {
+    if (!confirm('Delete ' + g.firstName + ' ' + g.lastName + '? This cannot be undone.')) return;
+    store.guests = store.guests.filter(function(gg) { return gg.id !== g.id; });
+    addLog('Guest Deleted', 'Deleted guest: ' + g.firstName + ' ' + g.lastName);
+    saveStore(store);
+    render();
+    showAdminToast('Guest deleted');
+  }
+
+  // -- Guest Detail Page --
+  function renderGuestDetail() {
+    var g = store.guests.find(function(gg) { return gg.id === detailGuestId; });
+    if (!g) { currentPage = 'guests'; return renderGuests(); }
+    var page = el('div', { className: 'page active' });
+
+    // Back button
+    var backBtn = el('button', { className: 'btn btn-outline btn-sm', style: 'margin-bottom:18px' });
+    backBtn.appendChild(svgIcon(ICONS.arrowLeft, 14));
+    backBtn.appendChild(document.createTextNode(' Back to Guests'));
+    backBtn.addEventListener('click', function() { currentPage = 'guests'; render(); });
+    page.appendChild(backBtn);
+
+    // Header
+    var header = el('div', { className: 'guest-detail-header' });
+    header.appendChild(avatarEl(g.firstName + ' ' + g.lastName, true));
+    var info = el('div', { className: 'guest-detail-info' });
+    info.appendChild(el('h2', { textContent: g.firstName + ' ' + g.lastName }));
+    var subline = el('p');
+    subline.appendChild(document.createTextNode(g.programme + ' \u2022 Room ' + (g.room || '-')));
+    info.appendChild(subline);
+    var statusLine = el('div', { style: 'margin-top:6px' });
+    statusLine.appendChild(statusBadge(g.status));
+    if (isCheckoutToday(g)) statusLine.appendChild(el('span', { className: 'badge badge-checkout', textContent: 'Checking out today' }));
+    info.appendChild(statusLine);
+    header.appendChild(info);
+    page.appendChild(header);
+
+    // Quick actions
+    var actions = el('div', { className: 'quick-actions' });
+
+    var waBtn = el('div', { className: 'action-card' });
+    var waIcon = el('div', { className: 'action-card-icon', style: 'background:#e6faf0' });
+    waIcon.appendChild(svgIcon(ICONS.phone, 18));
+    waBtn.appendChild(waIcon);
+    waBtn.appendChild(el('span', { className: 'action-card-text', textContent: 'Send WhatsApp Welcome' }));
+    waBtn.addEventListener('click', function() { sendWhatsAppWelcome(g); });
+    actions.appendChild(waBtn);
+
+    var portalAct = el('div', { className: 'action-card' });
+    var pIcon = el('div', { className: 'action-card-icon', style: 'background:var(--teal-light)' });
+    pIcon.appendChild(svgIcon(ICONS.externalLink, 18));
+    portalAct.appendChild(pIcon);
+    portalAct.appendChild(el('span', { className: 'action-card-text', textContent: 'Open Portal' }));
+    portalAct.addEventListener('click', function() { window.open(getPortalUrl(g), '_blank'); });
+    actions.appendChild(portalAct);
+
+    var editAct = el('div', { className: 'action-card' });
+    var eIcon = el('div', { className: 'action-card-icon', style: 'background:var(--blue-light)' });
+    eIcon.appendChild(svgIcon(ICONS.edit, 18));
+    editAct.appendChild(eIcon);
+    editAct.appendChild(el('span', { className: 'action-card-text', textContent: 'Edit Guest' }));
+    editAct.addEventListener('click', function() { editingGuest = g.id; currentPage = 'create'; render(); });
+    actions.appendChild(editAct);
+
+    if (g.status === 'active') {
+      var compAct = el('div', { className: 'action-card' });
+      var cIcon = el('div', { className: 'action-card-icon', style: 'background:var(--gray-light)' });
+      cIcon.appendChild(svgIcon(ICONS.check, 18));
+      compAct.appendChild(cIcon);
+      compAct.appendChild(el('span', { className: 'action-card-text', textContent: 'Mark Completed' }));
+      compAct.addEventListener('click', function() { g.status = 'completed'; addLog('Status Changed', g.firstName + ' ' + g.lastName + ' marked as completed'); saveStore(store); render(); });
+      actions.appendChild(compAct);
+    }
+    if (g.status === 'upcoming' && g.checkin <= TODAY_STR) {
+      var actAct = el('div', { className: 'action-card' });
+      var aIcon = el('div', { className: 'action-card-icon', style: 'background:var(--green-light)' });
+      aIcon.appendChild(svgIcon(ICONS.check, 18));
+      actAct.appendChild(aIcon);
+      actAct.appendChild(el('span', { className: 'action-card-text', textContent: 'Mark Active' }));
+      actAct.addEventListener('click', function() { g.status = 'active'; addLog('Status Changed', g.firstName + ' ' + g.lastName + ' marked as active'); saveStore(store); render(); });
+      actions.appendChild(actAct);
+    }
+
+    var delAct = el('div', { className: 'action-card' });
+    var dIcon = el('div', { className: 'action-card-icon', style: 'background:var(--red-light)' });
+    dIcon.appendChild(svgIcon(ICONS.trash, 18));
+    delAct.appendChild(dIcon);
+    delAct.appendChild(el('span', { className: 'action-card-text', textContent: 'Delete' }));
+    delAct.addEventListener('click', function() { deleteGuest(g); });
+    actions.appendChild(delAct);
+    page.appendChild(actions);
+
+    // Detail grid
+    var portalUrl = getPortalUrl(g);
+    var dg = el('div', { className: 'detail-grid' });
+    var items = [
+      { label: 'Email', value: g.email },
+      { label: 'WhatsApp', value: g.whatsapp },
+      { label: 'Room', value: g.room || '-' },
+      { label: 'Check-in', value: formatDate(g.checkin) },
+      { label: 'Check-out', value: formatDate(guestCheckout(g)) },
+      { label: 'Days Left', value: g.status === 'completed' ? 'Completed' : guestDaysLeft(g) + ' days' },
+      { label: 'Portal URL', value: portalUrl, copy: true },
+      { label: 'PIN', value: g.pin, copy: true },
+      { label: 'Notes', value: g.notes || 'None' }
+    ];
+    items.forEach(function(item) {
+      var di = el('div', { className: 'detail-item' });
+      di.appendChild(el('div', { className: 'detail-item-label', textContent: item.label }));
+      var val = el('div', { className: 'detail-item-value' });
+      val.appendChild(document.createTextNode(item.value));
+      if (item.copy) val.appendChild(makeCopyBtn(item.value));
+      di.appendChild(val);
+      dg.appendChild(di);
+    });
+    page.appendChild(dg);
+
+    // Schedule preview if any
+    if (g.schedule && g.schedule.length > 0) {
+      var schedCard = el('div', { className: 'card' });
+      var sch = el('div', { className: 'card-header' });
+      sch.appendChild(el('h2', { textContent: 'Schedule' }));
+      schedCard.appendChild(sch);
+      var scb = el('div', { className: 'card-body' });
+      g.schedule.forEach(function(day) {
+        var dayEl = el('div', { className: 'schedule-day' });
+        dayEl.appendChild(el('div', { className: 'schedule-day-title', textContent: day.title }));
+        if (day.activities) {
+          day.activities.forEach(function(act) {
+            dayEl.appendChild(el('div', { className: 'schedule-item', textContent: act.time + ' - ' + act.name + ' (' + act.type + ')' }));
+          });
+        }
+        scb.appendChild(dayEl);
+      });
+      schedCard.appendChild(scb);
+      page.appendChild(schedCard);
+    }
+
+    return page;
+  }
+
+  // -- Create Guest Page --
   var editingGuest = null;
 
   function renderCreateGuest() {
-    var page = el('div', { className: 'page active', id: 'page-create' });
+    var page = el('div', { className: 'page active' });
     var existing = editingGuest ? store.guests.find(function(g) { return g.id === editingGuest; }) : null;
 
-    var title = el('h2', { textContent: existing ? 'Edit Guest' : 'Create New Guest Portal', style: 'margin-bottom:20px;font-size:1.15rem;font-weight:700' });
-    page.appendChild(title);
+    page.appendChild(el('h2', { textContent: existing ? 'Edit Guest' : 'Create New Guest Portal', style: 'margin-bottom:20px;font-size:1.15rem;font-weight:700' }));
 
     var grid = el('div', { className: 'grid-2' });
 
@@ -751,16 +917,14 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       var inp;
       if (f.type === 'select') {
         inp = el('select', { className: 'form-select', id: 'field-' + f.id });
-        var emptyOpt = el('option', { value: '', textContent: 'Select programme...' });
-        inp.appendChild(emptyOpt);
+        inp.appendChild(el('option', { value: '', textContent: 'Select programme...' }));
         PROGRAMMES.forEach(function(p) {
           var opt = el('option', { value: p, textContent: p });
           if (f.value === p) opt.selected = true;
           inp.appendChild(opt);
         });
       } else if (f.type === 'textarea') {
-        inp = el('textarea', { className: 'form-textarea', id: 'field-' + f.id });
-        inp.textContent = f.value;
+        inp = el('textarea', { className: 'form-textarea', id: 'field-' + f.id, textContent: f.value });
       } else {
         inp = el('input', { className: 'form-input', type: f.type, id: 'field-' + f.id, value: String(f.value) });
       }
@@ -778,7 +942,6 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     rightCard.appendChild(rch);
     var rcb = el('div', { className: 'card-body' });
 
-    // Tabs
     var uploadTabs = el('div', { className: 'tabs' });
     var uploadTabBtn = el('button', { className: 'tab active', textContent: 'Upload PDF' });
     var manualTabBtn = el('button', { className: 'tab', textContent: 'Build Manually' });
@@ -786,49 +949,38 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     uploadTabs.appendChild(manualTabBtn);
     rcb.appendChild(uploadTabs);
 
-    var uploadPane = el('div', { id: 'upload-pane' });
-    var manualPane = el('div', { id: 'manual-pane', style: 'display:none' });
+    var uploadPane = el('div');
+    var manualPane = el('div', { style: 'display:none' });
 
     uploadTabBtn.addEventListener('click', function() {
-      uploadTabBtn.classList.add('active');
-      manualTabBtn.classList.remove('active');
-      uploadPane.style.display = 'block';
-      manualPane.style.display = 'none';
+      uploadTabBtn.classList.add('active'); manualTabBtn.classList.remove('active');
+      uploadPane.style.display = 'block'; manualPane.style.display = 'none';
     });
     manualTabBtn.addEventListener('click', function() {
-      manualTabBtn.classList.add('active');
-      uploadTabBtn.classList.remove('active');
-      manualPane.style.display = 'block';
-      uploadPane.style.display = 'none';
+      manualTabBtn.classList.add('active'); uploadTabBtn.classList.remove('active');
+      manualPane.style.display = 'block'; uploadPane.style.display = 'none';
     });
 
     // Upload zone
     var zone = el('div', { className: 'upload-zone' });
-    zone.appendChild(el('div', { className: 'upload-zone-icon', textContent: '\u2B06' }));
+    zone.appendChild(el('div', { className: 'upload-zone-icon' }, [svgIcon(ICONS.upload, 40)]));
     zone.appendChild(el('div', { className: 'upload-zone-text', textContent: 'Drop PDF here or click to upload' }));
     zone.appendChild(el('div', { className: 'upload-zone-sub', textContent: 'Supports .pdf files up to 10MB' }));
-
     var fileInput = el('input', { type: 'file', accept: '.pdf', style: 'display:none' });
     zone.addEventListener('click', function() { fileInput.click(); });
     zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('drag-over'); });
     zone.addEventListener('dragleave', function() { zone.classList.remove('drag-over'); });
-    zone.addEventListener('drop', function(e) { e.preventDefault(); zone.classList.remove('drag-over'); simulatePdfParse(uploadPane); });
-    fileInput.addEventListener('change', function() { if (fileInput.files.length) simulatePdfParse(uploadPane); });
-
+    zone.addEventListener('drop', function(e) { e.preventDefault(); zone.classList.remove('drag-over'); simulatePdfParse(uploadPane, inputs); });
+    fileInput.addEventListener('change', function() { if (fileInput.files.length) simulatePdfParse(uploadPane, inputs); });
     uploadPane.appendChild(zone);
     uploadPane.appendChild(fileInput);
-
-    // Schedule preview area
-    var previewArea = el('div', { className: 'schedule-preview', id: 'schedule-preview' });
+    var previewArea = el('div', { className: 'schedule-preview' });
     uploadPane.appendChild(previewArea);
-
     rcb.appendChild(uploadPane);
 
-    // Manual tab placeholder
-    var manualMsg = el('div', { style: 'padding:30px;text-align:center' });
-    manualMsg.appendChild(el('div', { style: 'font-size:2rem;margin-bottom:10px', textContent: '\uD83D\uDEE0' }));
-    manualMsg.appendChild(el('div', { style: 'color:var(--text-secondary);font-size:0.9rem', textContent: 'Manual schedule builder coming soon. Use PDF upload for now.' }));
-    manualPane.appendChild(manualMsg);
+    // Manual schedule builder
+    var manualSchedule = existing && existing.schedule ? JSON.parse(JSON.stringify(existing.schedule)) : [];
+    buildManualScheduleUI(manualPane, manualSchedule, inputs);
     rcb.appendChild(manualPane);
 
     rightCard.appendChild(rcb);
@@ -839,7 +991,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     var banner = el('div', { className: 'success-banner', id: 'create-success' });
     page.appendChild(banner);
 
-    // Submit button
+    // Submit button row
     var submitRow = el('div', { style: 'margin-top:24px;display:flex;gap:12px' });
     var submitBtn = el('button', { className: 'btn btn-primary' });
     submitBtn.appendChild(document.createTextNode(existing ? 'Update Guest' : 'Create Guest Portal'));
@@ -855,15 +1007,12 @@ tr:hover td { background: rgba(0,96,156,0.02); }
         programme: inputs.programme.value,
         room: inputs.room.value.trim(),
         notes: inputs.notes.value.trim(),
-        status: inputs.checkin.value <= '2026-03-14' ? 'active' : 'upcoming',
+        status: inputs.checkin.value <= TODAY_STR ? 'active' : 'upcoming',
         pin: inputs.checkin.value ? inputs.checkin.value.slice(5).replace('-', '') : '0000',
+        schedule: manualSchedule.length > 0 ? manualSchedule : (existing ? existing.schedule : null),
         createdAt: existing ? existing.createdAt : new Date().toISOString()
       };
-
-      if (!guestData.firstName || !guestData.lastName) {
-        alert('Please enter guest name.');
-        return;
-      }
+      if (!guestData.firstName || !guestData.lastName) { alert('Please enter guest name.'); return; }
 
       if (existing) {
         store.guests = store.guests.map(function(g) { return g.id === existing.id ? guestData : g; });
@@ -879,53 +1028,233 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       clearEl(sb2);
       sb2.classList.add('visible');
       sb2.appendChild(el('div', { style: 'font-weight:700;font-size:1rem;margin-bottom:8px;color:#15803d', textContent: (existing ? 'Guest Updated!' : 'Guest Portal Created!') }));
+
+      var portalUrl = getPortalUrl(guestData);
       sb2.appendChild(el('div', { style: 'font-size:0.88rem;margin-bottom:6px', textContent: 'Portal URL:' }));
-      sb2.appendChild(el('div', { className: 'success-url', textContent: store.settings.portalBaseUrl + '?guest=' + guestData.id }));
+      var urlRow = el('div', { className: 'success-url' });
+      urlRow.appendChild(el('span', { textContent: portalUrl }));
+      urlRow.appendChild(makeCopyBtn(portalUrl));
+      sb2.appendChild(urlRow);
+
       sb2.appendChild(el('div', { style: 'font-size:0.88rem;margin-bottom:4px', textContent: 'Guest PIN:' }));
-      sb2.appendChild(el('div', { className: 'success-pin', textContent: guestData.pin }));
+      var pinRow = el('div', { className: 'success-pin' });
+      pinRow.appendChild(document.createTextNode(guestData.pin));
+      pinRow.appendChild(makeCopyBtn(guestData.pin));
+      sb2.appendChild(pinRow);
+
+      // WhatsApp send button
+      var waRow = el('div', { style: 'margin-top:14px;display:flex;gap:10px' });
+      var waBtn = el('button', { className: 'btn btn-whatsapp' });
+      waBtn.appendChild(svgIcon(ICONS.phone, 16));
+      waBtn.appendChild(document.createTextNode(' Send WhatsApp Welcome'));
+      waBtn.addEventListener('click', function() { sendWhatsAppWelcome(guestData); });
+      waRow.appendChild(waBtn);
+      var openBtn = el('button', { className: 'btn btn-teal' });
+      openBtn.appendChild(svgIcon(ICONS.externalLink, 16));
+      openBtn.appendChild(document.createTextNode(' Open Portal'));
+      openBtn.addEventListener('click', function() { window.open(portalUrl, '_blank'); });
+      waRow.appendChild(openBtn);
+      sb2.appendChild(waRow);
 
       editingGuest = null;
     });
     submitRow.appendChild(submitBtn);
-
     if (existing) {
       var cancelBtn = el('button', { className: 'btn btn-outline', textContent: 'Cancel' });
       cancelBtn.addEventListener('click', function() { editingGuest = null; currentPage = 'guests'; render(); });
       submitRow.appendChild(cancelBtn);
     }
     page.appendChild(submitRow);
-
     return page;
   }
 
-  function simulatePdfParse(container) {
-    var preview = container.querySelector('#schedule-preview');
+  // -- Manual Schedule Builder --
+  function buildManualScheduleUI(container, schedule, inputs) {
+    clearEl(container);
+    var duration = parseInt(inputs.duration.value, 10) || 7;
+
+    // Initialize schedule if empty
+    if (schedule.length === 0) {
+      for (var i = 0; i < duration; i++) {
+        schedule.push({ title: 'Day ' + (i + 1), activities: [] });
+      }
+    }
+
+    // Day selector tabs
+    var dayTabs = el('div', { style: 'display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px' });
+    var dayPanes = [];
+    var activeDayIdx = 0;
+
+    schedule.forEach(function(day, idx) {
+      var dayBtn = el('button', { className: 'btn ' + (idx === 0 ? 'btn-primary' : 'btn-outline') + ' btn-sm', textContent: day.title });
+      dayBtn.addEventListener('click', function() {
+        activeDayIdx = idx;
+        dayTabs.querySelectorAll('.btn').forEach(function(b, bi) {
+          b.className = 'btn ' + (bi === idx ? 'btn-primary' : 'btn-outline') + ' btn-sm';
+        });
+        dayPanes.forEach(function(p, pi) { p.style.display = pi === idx ? 'block' : 'none'; });
+      });
+      dayTabs.appendChild(dayBtn);
+    });
+    container.appendChild(dayTabs);
+
+    schedule.forEach(function(day, dayIdx) {
+      var pane = el('div', { className: 'day-builder', style: dayIdx === 0 ? '' : 'display:none' });
+      pane.appendChild(el('div', { className: 'day-builder-title', textContent: day.title }));
+
+      var activitiesWrap = el('div');
+
+      function renderActivities() {
+        clearEl(activitiesWrap);
+        day.activities.forEach(function(act, actIdx) {
+          var row = el('div', { className: 'activity-row-builder' });
+          var timeInp = el('input', { type: 'time', value: act.time || '09:00' });
+          timeInp.addEventListener('change', function() { act.time = timeInp.value; });
+          row.appendChild(timeInp);
+          var nameInp = el('input', { type: 'text', value: act.name || '', placeholder: 'Activity name...' });
+          nameInp.addEventListener('input', function() { act.name = nameInp.value; });
+          row.appendChild(nameInp);
+          var typeSel = el('select');
+          ['group', 'food', 'clinic', 'extra'].forEach(function(t) {
+            var opt = el('option', { value: t, textContent: t.charAt(0).toUpperCase() + t.slice(1) });
+            if (act.type === t) opt.selected = true;
+            typeSel.appendChild(opt);
+          });
+          typeSel.addEventListener('change', function() { act.type = typeSel.value; });
+          row.appendChild(typeSel);
+          var rmBtn = el('button', { className: 'remove-activity', textContent: '\u00D7' });
+          rmBtn.addEventListener('click', function() {
+            day.activities.splice(actIdx, 1);
+            renderActivities();
+          });
+          row.appendChild(rmBtn);
+          activitiesWrap.appendChild(row);
+        });
+
+        var addBtn = el('button', { className: 'add-activity-btn', textContent: '+ Add Activity' });
+        addBtn.addEventListener('click', function() {
+          day.activities.push({ time: '09:00', name: '', type: 'group' });
+          renderActivities();
+        });
+        activitiesWrap.appendChild(addBtn);
+      }
+      renderActivities();
+      pane.appendChild(activitiesWrap);
+      container.appendChild(pane);
+      dayPanes.push(pane);
+    });
+
+    // Update days when duration changes
+    inputs.duration.addEventListener('change', function() {
+      var newDur = parseInt(inputs.duration.value, 10) || 7;
+      while (schedule.length < newDur) {
+        schedule.push({ title: 'Day ' + (schedule.length + 1), activities: [] });
+      }
+      while (schedule.length > newDur) { schedule.pop(); }
+      buildManualScheduleUI(container, schedule, inputs);
+    });
+
+    // Preview
+    if (schedule.some(function(d) { return d.activities.length > 0; })) {
+      var prevTitle = el('div', { style: 'font-weight:600;margin-top:16px;margin-bottom:8px;font-size:0.88rem', textContent: 'Schedule Preview' });
+      container.appendChild(prevTitle);
+      schedule.forEach(function(day) {
+        if (day.activities.length === 0) return;
+        var dayEl = el('div', { className: 'schedule-day' });
+        dayEl.appendChild(el('div', { className: 'schedule-day-title', textContent: day.title }));
+        day.activities.forEach(function(act) {
+          dayEl.appendChild(el('div', { className: 'schedule-item', textContent: (act.time || '') + ' - ' + (act.name || '(unnamed)') + ' (' + (act.type || 'group') + ')' }));
+        });
+        container.appendChild(dayEl);
+      });
+    }
+  }
+
+  // -- PDF Parse Simulation --
+  function simulatePdfParse(container, inputs) {
+    var preview = container.querySelector('.schedule-preview');
     if (!preview) return;
     clearEl(preview);
 
-    preview.appendChild(el('div', { style: 'font-weight:600;margin-bottom:12px;font-size:0.92rem', textContent: 'Parsed Schedule Preview' }));
+    // Step 1: Loading animation
+    var loadingBox = el('div', { className: 'parse-step' });
+    var loadTitle = el('div', { className: 'parse-step-title' });
+    loadTitle.appendChild(document.createTextNode('Parsing PDF...'));
+    loadingBox.appendChild(loadTitle);
+    loadingBox.appendChild(el('div', { className: 'spinner' }));
+    loadingBox.appendChild(el('div', { style: 'text-align:center;color:var(--text-muted);font-size:0.82rem', textContent: 'Extracting schedule data from document' }));
+    preview.appendChild(loadingBox);
 
-    var sampleDays = [
-      { day: 'Day 1', items: ['07:00 - Morning tea', '09:00 - Colon hydrotherapy', '12:00 - Green juice', '15:00 - Infrared sauna', '18:00 - Vegetable broth'] },
-      { day: 'Day 2', items: ['07:00 - Morning tea', '09:30 - Lymph drainage massage', '12:00 - Green juice', '14:00 - Ozone therapy', '18:00 - Raw salad'] },
-      { day: 'Day 3', items: ['07:00 - Morning tea', '10:00 - Yoga session', '12:00 - Green juice', '15:00 - Meditation', '18:00 - Vegetable broth'] }
-    ];
+    var programme = inputs && inputs.programme ? inputs.programme.value : 'Green Salad';
 
-    sampleDays.forEach(function(d) {
-      var dayEl = el('div', { className: 'schedule-day' });
-      dayEl.appendChild(el('div', { className: 'schedule-day-title', textContent: d.day }));
-      d.items.forEach(function(item) {
-        dayEl.appendChild(el('div', { className: 'schedule-item', textContent: item }));
+    setTimeout(function() {
+      clearEl(preview);
+
+      // Step 2: Show parsed results
+      var resultBox = el('div', { className: 'parse-step' });
+      var resTitle = el('div', { className: 'parse-step-title' });
+      resTitle.appendChild(el('span', { className: 'parse-step-check', textContent: '\u2713 ' }));
+      resTitle.appendChild(document.createTextNode('PDF Parsed Successfully'));
+      resultBox.appendChild(resTitle);
+      resultBox.appendChild(el('div', { style: 'font-size:0.82rem;color:var(--text-secondary);margin-bottom:12px', textContent: 'Detected programme: ' + programme }));
+      preview.appendChild(resultBox);
+
+      var scheduleData = getProgrammeSchedule(programme);
+
+      preview.appendChild(el('div', { style: 'font-weight:600;margin-bottom:12px;font-size:0.92rem', textContent: 'Parsed Schedule Preview' }));
+
+      scheduleData.forEach(function(d) {
+        var dayEl = el('div', { className: 'schedule-day' });
+        dayEl.appendChild(el('div', { className: 'schedule-day-title', textContent: d.day }));
+        d.items.forEach(function(item) {
+          dayEl.appendChild(el('div', { className: 'schedule-item', textContent: item }));
+        });
+        preview.appendChild(dayEl);
       });
-      preview.appendChild(dayEl);
-    });
+
+      // Approve button
+      var approveRow = el('div', { style: 'margin-top:14px;display:flex;gap:10px' });
+      var approveBtn = el('button', { className: 'btn btn-success' });
+      approveBtn.appendChild(svgIcon(ICONS.check, 16));
+      approveBtn.appendChild(document.createTextNode(' Approve & Save Schedule'));
+      approveBtn.addEventListener('click', function() {
+        showAdminToast('Schedule approved and saved');
+        approveBtn.textContent = 'Approved';
+        approveBtn.disabled = true;
+        approveBtn.style.opacity = '0.6';
+      });
+      approveRow.appendChild(approveBtn);
+
+      var rejectBtn = el('button', { className: 'btn btn-outline', textContent: 'Reject & Re-upload' });
+      rejectBtn.addEventListener('click', function() { clearEl(preview); });
+      approveRow.appendChild(rejectBtn);
+      preview.appendChild(approveRow);
+    }, 2000);
   }
 
-  // ── Programmes Page ─────────────────────────────────
-  function renderProgrammes() {
-    var page = el('div', { className: 'page active', id: 'page-programmes' });
+  function getProgrammeSchedule(programme) {
+    var schedules = {
+      'Master Detox': [
+        { day: 'Day 1', items: ['07:00 - Morning herbal tea', '09:00 - Colon hydrotherapy', '12:00 - Green juice', '15:00 - Infrared sauna', '18:00 - Vegetable broth'] },
+        { day: 'Day 2', items: ['07:00 - Morning herbal tea', '09:30 - Lymph drainage massage', '12:00 - Green juice', '14:00 - Ozone therapy', '18:00 - Vegetable broth'] },
+        { day: 'Day 3', items: ['07:00 - Morning herbal tea', '10:00 - Yoga session', '12:00 - Green juice', '15:00 - Meditation', '18:00 - Vegetable broth'] }
+      ],
+      'Green Salad': [
+        { day: 'Day 1', items: ['07:30 - Wake-up tea', '08:30 - Morning yoga', '10:00 - Green smoothie', '12:30 - Green salad lunch', '15:00 - Spa treatment', '18:30 - Light dinner'] },
+        { day: 'Day 2', items: ['07:30 - Wake-up tea', '09:00 - Nature walk', '10:30 - Fresh juice', '12:30 - Green salad lunch', '14:30 - Meditation', '18:30 - Light dinner'] },
+        { day: 'Day 3', items: ['07:30 - Wake-up tea', '08:30 - Pilates', '10:00 - Green smoothie', '12:30 - Green salad lunch', '15:00 - Pool session', '18:30 - Light dinner'] }
+      ],
+      'Water Fasting': [
+        { day: 'Day 1', items: ['07:00 - Warm water with lemon', '09:00 - Medical check-up', '11:00 - Guided rest', '14:00 - Light walk', '16:00 - Warm water', '19:00 - Evening meditation'] },
+        { day: 'Day 2', items: ['07:00 - Warm water', '09:00 - Gentle yoga', '11:00 - Rest period', '14:00 - Doctor consultation', '16:00 - Warm herbal water', '19:00 - Breathing exercises'] }
+      ]
+    };
+    return schedules[programme] || schedules['Green Salad'];
+  }
 
-    // Templates card
+  // -- Programmes Page --
+  function renderProgrammes() {
+    var page = el('div', { className: 'page active' });
     var card1 = el('div', { className: 'card', style: 'margin-bottom:24px' });
     var ch1 = el('div', { className: 'card-header' });
     ch1.appendChild(el('h2', { textContent: 'Programme Templates' }));
@@ -933,17 +1262,13 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     newTplBtn.addEventListener('click', openTemplateModal);
     ch1.appendChild(newTplBtn);
     card1.appendChild(ch1);
-
     var cb1 = el('div', { className: 'card-body' });
     var tw1 = el('div', { className: 'table-wrap' });
     var t1 = el('table');
     var th1 = el('thead');
     var hr1 = el('tr');
-    ['Template Name', 'Programme', 'Duration', 'Created', 'Actions'].forEach(function(h) {
-      hr1.appendChild(el('th', { textContent: h }));
-    });
-    th1.appendChild(hr1);
-    t1.appendChild(th1);
+    ['Template Name', 'Programme', 'Duration', 'Created', 'Actions'].forEach(function(h) { hr1.appendChild(el('th', { textContent: h })); });
+    th1.appendChild(hr1); t1.appendChild(th1);
     var tb1 = el('tbody');
     store.templates.forEach(function(t) {
       var tr = el('tr');
@@ -954,6 +1279,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       var actTd = el('td');
       var delBtn = el('button', { className: 'btn btn-outline btn-sm', textContent: 'Delete' });
       delBtn.addEventListener('click', function() {
+        if (!confirm('Delete template "' + t.name + '"?')) return;
         store.templates = store.templates.filter(function(tt) { return tt.id !== t.id; });
         addLog('Template Deleted', 'Deleted template: ' + t.name);
         render();
@@ -962,13 +1288,10 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       tr.appendChild(actTd);
       tb1.appendChild(tr);
     });
-    t1.appendChild(tb1);
-    tw1.appendChild(t1);
-    cb1.appendChild(tw1);
-    card1.appendChild(cb1);
+    t1.appendChild(tb1); tw1.appendChild(t1); cb1.appendChild(tw1); card1.appendChild(cb1);
     page.appendChild(card1);
 
-    // PDF History card
+    // PDF History
     var card2 = el('div', { className: 'card' });
     var ch2 = el('div', { className: 'card-header' });
     ch2.appendChild(el('h2', { textContent: 'PDF Ingestion History' }));
@@ -978,11 +1301,8 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     var t2 = el('table');
     var th2 = el('thead');
     var hr2 = el('tr');
-    ['Filename', 'Guest', 'Uploaded', 'Status'].forEach(function(h) {
-      hr2.appendChild(el('th', { textContent: h }));
-    });
-    th2.appendChild(hr2);
-    t2.appendChild(th2);
+    ['Filename', 'Guest', 'Uploaded', 'Status'].forEach(function(h) { hr2.appendChild(el('th', { textContent: h })); });
+    th2.appendChild(hr2); t2.appendChild(th2);
     var tb2 = el('tbody');
     store.pdfHistory.forEach(function(p) {
       var tr = el('tr');
@@ -999,37 +1319,27 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       tr.appendChild(sTd);
       tb2.appendChild(tr);
     });
-    t2.appendChild(tb2);
-    tw2.appendChild(t2);
-    cb2.appendChild(tw2);
-    card2.appendChild(cb2);
+    t2.appendChild(tb2); tw2.appendChild(t2); cb2.appendChild(tw2); card2.appendChild(cb2);
     page.appendChild(card2);
-
     return page;
   }
 
-  // Template modal
   function openTemplateModal() {
     var overlay = document.getElementById('modalOverlay');
-    clearEl(overlay);
-    overlay.classList.add('open');
-
+    clearEl(overlay); openModal();
     var modal = el('div', { className: 'modal' });
     var mh = el('div', { className: 'modal-header' });
     mh.appendChild(el('h3', { textContent: 'New Programme Template' }));
-    var closeBtn = el('button', { className: 'modal-close', textContent: '\u2715' });
-    closeBtn.addEventListener('click', function() { overlay.classList.remove('open'); });
+    var closeBtn = el('button', { className: 'modal-close', textContent: '\u00D7' });
+    closeBtn.addEventListener('click', closeModal);
     mh.appendChild(closeBtn);
     modal.appendChild(mh);
-
     var mb = el('div', { className: 'modal-body' });
-    var fields = [
-      { id: 'tpl-name', label: 'Template Name', type: 'text' },
-      { id: 'tpl-programme', label: 'Programme', type: 'select' },
-      { id: 'tpl-duration', label: 'Duration (days)', type: 'number', value: '7' }
-    ];
     var tplInputs = {};
-    fields.forEach(function(f) {
+    [{ id: 'tpl-name', label: 'Template Name', type: 'text' },
+     { id: 'tpl-programme', label: 'Programme', type: 'select' },
+     { id: 'tpl-duration', label: 'Duration (days)', type: 'number', value: '7' }
+    ].forEach(function(f) {
       var fg = el('div', { className: 'form-group' });
       fg.appendChild(el('label', { className: 'form-label', textContent: f.label }));
       var inp;
@@ -1040,43 +1350,31 @@ tr:hover td { background: rgba(0,96,156,0.02); }
         inp = el('input', { className: 'form-input', type: f.type });
         if (f.value) inp.value = f.value;
       }
-      fg.appendChild(inp);
-      mb.appendChild(fg);
+      fg.appendChild(inp); mb.appendChild(fg);
       tplInputs[f.id] = inp;
     });
     modal.appendChild(mb);
-
     var mf = el('div', { className: 'modal-footer' });
     var cancelBtn = el('button', { className: 'btn btn-outline', textContent: 'Cancel' });
-    cancelBtn.addEventListener('click', function() { overlay.classList.remove('open'); });
+    cancelBtn.addEventListener('click', closeModal);
     mf.appendChild(cancelBtn);
     var saveBtn = el('button', { className: 'btn btn-primary', textContent: 'Create Template' });
     saveBtn.addEventListener('click', function() {
       var name = tplInputs['tpl-name'].value.trim();
       if (!name) { alert('Enter template name'); return; }
-      store.templates.push({
-        id: generateId(),
-        name: name,
-        programme: tplInputs['tpl-programme'].value,
-        duration: parseInt(tplInputs['tpl-duration'].value, 10) || 7,
-        createdAt: new Date().toISOString()
-      });
+      store.templates.push({ id: generateId(), name: name, programme: tplInputs['tpl-programme'].value, duration: parseInt(tplInputs['tpl-duration'].value, 10) || 7, createdAt: new Date().toISOString() });
       addLog('Template Created', 'Created template: ' + name);
-      overlay.classList.remove('open');
-      render();
+      closeModal(); render();
     });
     mf.appendChild(saveBtn);
     modal.appendChild(mf);
-
     overlay.appendChild(modal);
-    overlay.addEventListener('click', function(e) {
-      if (e.target === overlay) overlay.classList.remove('open');
-    });
+    overlay.addEventListener('click', function(e) { if (e.target === overlay) closeModal(); });
   }
 
-  // ── Settings Page ───────────────────────────────────
+  // -- Settings Page --
   function renderSettings() {
-    var page = el('div', { className: 'page active', id: 'page-settings' });
+    var page = el('div', { className: 'page active' });
     var grid = el('div', { className: 'grid-2' });
 
     // Portal settings
@@ -1085,15 +1383,12 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     ch1.appendChild(el('h2', { textContent: 'Portal Settings' }));
     card1.appendChild(ch1);
     var cb1 = el('div', { className: 'card-body' });
-
     var toggles = [
       { key: 'autoPin', label: 'Auto-generate PIN', desc: 'Generate PIN from check-in date (MMDD)' },
       { key: 'welcomeMsg', label: 'Send Welcome Message', desc: 'Auto-send WhatsApp welcome on portal creation' },
-      { key: 'guestFeedback', label: 'Enable Guest Feedback', desc: 'Allow guests to submit feedback via portal' },
-      { key: 'calendarExport', label: 'Calendar Export', desc: 'Enable iCal/Google Calendar export' },
+      { key: 'guestFeedback', label: 'Enable Guest Feedback', desc: 'Allow guests to submit feedback via portal (enabled)' },
       { key: 'sessionTimeout', label: 'Session Timeout', desc: 'Auto-logout after 30 minutes of inactivity' }
     ];
-
     toggles.forEach(function(t) {
       var row = el('div', { className: 'toggle-row' });
       var info = el('div');
@@ -1101,8 +1396,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       info.appendChild(el('div', { className: 'toggle-desc', textContent: t.desc }));
       row.appendChild(info);
       var toggle = el('div', { className: 'toggle' + (store.settings[t.key] ? ' on' : '') });
-      var knob = el('div', { className: 'toggle-knob' });
-      toggle.appendChild(knob);
+      toggle.appendChild(el('div', { className: 'toggle-knob' }));
       toggle.addEventListener('click', function() {
         store.settings[t.key] = !store.settings[t.key];
         toggle.classList.toggle('on');
@@ -1120,7 +1414,6 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     ch2.appendChild(el('h2', { textContent: 'Resort Configuration' }));
     card2.appendChild(ch2);
     var cb2 = el('div', { className: 'card-body' });
-
     var configFields = [
       { key: 'resortName', label: 'Resort Name', type: 'text' },
       { key: 'whatsappNumber', label: 'WhatsApp Number', type: 'tel' },
@@ -1132,11 +1425,9 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       var fg = el('div', { className: 'form-group' });
       fg.appendChild(el('label', { className: 'form-label', textContent: f.label }));
       var inp = el('input', { className: 'form-input', type: f.type, value: String(store.settings[f.key] || '') });
-      fg.appendChild(inp);
-      cb2.appendChild(fg);
+      fg.appendChild(inp); cb2.appendChild(fg);
       configInputs[f.key] = inp;
     });
-
     var saveSettingsBtn = el('button', { className: 'btn btn-primary', textContent: 'Save Configuration', style: 'margin-top:8px' });
     saveSettingsBtn.addEventListener('click', function() {
       configFields.forEach(function(f) {
@@ -1144,12 +1435,11 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       });
       addLog('Settings Updated', 'Resort configuration updated');
       saveStore(store);
-      alert('Settings saved.');
+      showAdminToast('Settings saved successfully');
     });
     cb2.appendChild(saveSettingsBtn);
     card2.appendChild(cb2);
     grid.appendChild(card2);
-
     page.appendChild(grid);
 
     // Data management
@@ -1166,9 +1456,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     exportBtn.addEventListener('click', function() {
       var blob = new Blob([JSON.stringify(store, null, 2)], { type: 'application/json' });
       var a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'tlc-admin-data.json';
-      a.click();
+      a.href = URL.createObjectURL(blob); a.download = 'tlc-admin-data.json'; a.click();
       URL.revokeObjectURL(a.href);
     });
     btnRow.appendChild(exportBtn);
@@ -1179,16 +1467,15 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     var importFile = el('input', { type: 'file', accept: '.json', style: 'display:none' });
     importBtn.addEventListener('click', function() { importFile.click(); });
     importFile.addEventListener('change', function() {
-      var f = importFile.files[0];
-      if (!f) return;
+      var f = importFile.files[0]; if (!f) return;
       var reader = new FileReader();
       reader.onload = function(e) {
         try {
-          var data = JSON.parse(e.target.result);
-          store = data;
+          store = JSON.parse(e.target.result);
           saveStore(store);
           addLog('Data Imported', 'Imported data from JSON file');
           render();
+          showAdminToast('Data imported successfully');
         } catch(err) { alert('Invalid JSON file.'); }
       };
       reader.readAsText(f);
@@ -1201,24 +1488,22 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     clearBtn.appendChild(document.createTextNode(' Clear All Data'));
     clearBtn.addEventListener('click', function() {
       if (confirm('This will delete all data and reset to defaults. Continue?')) {
-        store = defaultStore();
-        saveStore(store);
+        store = defaultStore(); saveStore(store);
         addLog('Data Cleared', 'All data reset to defaults');
         render();
+        showAdminToast('Data cleared');
       }
     });
     btnRow.appendChild(clearBtn);
-
     cb3.appendChild(btnRow);
     card3.appendChild(cb3);
     page.appendChild(card3);
-
     return page;
   }
 
-  // ── Activity Log Page ───────────────────────────────
+  // -- Activity Log Page --
   function renderActivity() {
-    var page = el('div', { className: 'page active', id: 'page-activity' });
+    var page = el('div', { className: 'page active' });
     var card = el('div', { className: 'card' });
     var ch = el('div', { className: 'card-header' });
     ch.appendChild(el('h2', { textContent: 'Activity Log' }));
@@ -1228,13 +1513,11 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     var table = el('table');
     var thead = el('thead');
     var hr = el('tr');
-    ['Time', 'Action', 'User', 'Details'].forEach(function(h) {
-      hr.appendChild(el('th', { textContent: h }));
-    });
+    ['Time', 'Action', 'User', 'Details'].forEach(function(h) { hr.appendChild(el('th', { textContent: h })); });
     thead.appendChild(hr);
     table.appendChild(thead);
-
     var tbody = el('tbody');
+    var actionColors = { 'Guest Created': 'badge-active', 'Guest Updated': 'badge-active', 'Guest Deleted': 'badge-completed', 'PDF Uploaded': 'badge-upcoming', 'Settings Updated': 'badge-draft', 'Template Created': 'badge-upcoming', 'Template Deleted': 'badge-completed', 'Data Cleared': 'badge-completed', 'Data Imported': 'badge-upcoming', 'Status Changed': 'badge-upcoming' };
     store.activityLog.forEach(function(a) {
       var tr = el('tr');
       var timeTd = el('td');
@@ -1242,50 +1525,39 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       timeTd.appendChild(el('div', { textContent: formatDate(a.time), style: 'font-weight:500' }));
       timeTd.appendChild(el('div', { textContent: dt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }), style: 'font-size:0.75rem;color:var(--text-muted)' }));
       tr.appendChild(timeTd);
-
       var actionTd = el('td');
-      var ab = el('span', { className: 'badge' });
-      var actionColors = { 'Guest Created': 'badge-active', 'Guest Updated': 'badge-active', 'PDF Uploaded': 'badge-upcoming', 'Settings Updated': 'badge-draft', 'Template Created': 'badge-upcoming', 'Template Deleted': 'badge-completed', 'Data Cleared': 'badge-completed', 'Data Imported': 'badge-upcoming' };
-      ab.classList.add(actionColors[a.action] || 'badge-completed');
-      ab.textContent = a.action;
+      var ab = el('span', { className: 'badge ' + (actionColors[a.action] || 'badge-completed'), textContent: a.action });
       actionTd.appendChild(ab);
       tr.appendChild(actionTd);
-
       tr.appendChild(el('td', { textContent: a.user }));
       tr.appendChild(el('td', { textContent: a.details }));
       tbody.appendChild(tr);
     });
     table.appendChild(tbody);
-    tw.appendChild(table);
-    cb.appendChild(tw);
-    card.appendChild(cb);
-    page.appendChild(card);
+    tw.appendChild(table); cb.appendChild(tw); card.appendChild(cb); page.appendChild(card);
     return page;
   }
 
-  // ── Main render ─────────────────────────────────────
+  // -- Main render --
   function render() {
     buildSidebar();
     buildTopbar();
     var content = document.getElementById('content');
     clearEl(content);
-
     var renderers = {
       dashboard: renderDashboard,
       guests: renderGuests,
       create: renderCreateGuest,
+      detail: renderGuestDetail,
       programmes: renderProgrammes,
       settings: renderSettings,
       activity: renderActivity
     };
-
     var fn = renderers[currentPage] || renderDashboard;
     content.appendChild(fn());
   }
 
-  // Initial render
   render();
-
 })();
 </script>
 </body>
