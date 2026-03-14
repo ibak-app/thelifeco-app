@@ -1451,6 +1451,431 @@ ul, ol {
 
 
 /* ============================================================
+   ME TAB — Body Map & Wellness Check-in
+   ============================================================ */
+#tab-me {
+  padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 20px);
+}
+
+.me-header {
+  text-align: center;
+  padding: 32px 20px 16px;
+}
+
+.me-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.me-header p {
+  font-size: 0.85rem;
+  color: var(--text-3);
+}
+
+/* Progress Ring */
+.progress-ring-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0 20px;
+}
+
+.progress-ring-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.progress-ring-container svg {
+  width: 120px;
+  height: 120px;
+  transform: rotate(-90deg);
+}
+
+.progress-ring-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.progress-ring-label span {
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: var(--text-3);
+}
+
+/* Body Map */
+.body-map-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 0 20px 24px;
+}
+
+.body-map-container {
+  position: relative;
+  width: 200px;
+  height: 400px;
+}
+
+.body-map-container svg {
+  width: 200px;
+  height: 400px;
+}
+
+.body-zone {
+  fill: rgba(0, 190, 214, 0.08);
+  stroke: rgba(0, 190, 214, 0.25);
+  stroke-width: 1;
+  cursor: pointer;
+  transition: fill 0.3s var(--ease), stroke 0.3s var(--ease), filter 0.3s var(--ease);
+}
+
+.body-zone:hover,
+.body-zone:active {
+  fill: rgba(0, 190, 214, 0.18);
+  stroke: var(--teal);
+  stroke-width: 1.5;
+}
+
+.body-zone[data-valence="positive"] {
+  fill: rgba(72, 187, 120, 0.22);
+  stroke: #48BB78;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 6px rgba(72, 187, 120, 0.35));
+}
+
+.body-zone[data-valence="negative"] {
+  fill: rgba(245, 101, 101, 0.22);
+  stroke: #F56565;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 6px rgba(245, 101, 101, 0.35));
+}
+
+.body-zone[data-valence="neutral"] {
+  fill: rgba(246, 163, 88, 0.22);
+  stroke: var(--warm);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 6px rgba(246, 163, 88, 0.35));
+}
+
+.body-zone-label {
+  fill: var(--text-3);
+  font-size: 7px;
+  font-family: 'Inter', sans-serif;
+  text-anchor: middle;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* Emotion Picker Bottom Sheet */
+.emotion-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s var(--ease), visibility 0.3s;
+}
+
+.emotion-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.emotion-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  width: 100%;
+  max-width: 480px;
+  background: var(--surface);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  padding: 12px 20px calc(20px + var(--safe-bottom));
+  z-index: 1101;
+  transition: transform 0.35s var(--ease);
+  max-height: 75vh;
+  overflow-y: auto;
+}
+
+.emotion-sheet.active {
+  transform: translateX(-50%) translateY(0);
+}
+
+.emotion-sheet-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  margin: 0 auto 16px;
+}
+
+.emotion-sheet-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.emotion-sheet-zone {
+  font-size: 0.8rem;
+  color: var(--text-3);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.emotion-group-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  margin-top: 16px;
+}
+
+.emotion-group-label.positive { color: #2F855A; }
+.emotion-group-label.negative { color: #C53030; }
+.emotion-group-label.neutral-label { color: #975A16; }
+
+.emotion-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.emotion-chip {
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
+  border: none;
+  outline: none;
+}
+
+.emotion-chip:active {
+  transform: scale(0.93);
+}
+
+.emotion-chip.positive {
+  background: rgba(72, 187, 120, 0.12);
+  color: #2F855A;
+}
+
+.emotion-chip.positive:hover {
+  background: rgba(72, 187, 120, 0.22);
+  box-shadow: 0 2px 8px rgba(72, 187, 120, 0.2);
+}
+
+.emotion-chip.negative {
+  background: rgba(245, 101, 101, 0.12);
+  color: #C53030;
+}
+
+.emotion-chip.negative:hover {
+  background: rgba(245, 101, 101, 0.22);
+  box-shadow: 0 2px 8px rgba(245, 101, 101, 0.2);
+}
+
+.emotion-chip.neutral {
+  background: rgba(246, 163, 88, 0.12);
+  color: #975A16;
+}
+
+.emotion-chip.neutral:hover {
+  background: rgba(246, 163, 88, 0.22);
+  box-shadow: 0 2px 8px rgba(246, 163, 88, 0.2);
+}
+
+/* Check-in History */
+.me-section {
+  padding: 0 20px 20px;
+}
+
+.me-section-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.me-section-title::before {
+  content: '';
+  width: 3px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--teal);
+}
+
+.checkin-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkin-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  box-shadow: var(--shadow-sm);
+  animation: checkinSlideIn 0.35s var(--ease);
+}
+
+@keyframes checkinSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.checkin-time {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-3);
+  min-width: 42px;
+}
+
+.checkin-zone-name {
+  font-size: 0.82rem;
+  color: var(--text);
+  flex: 1;
+}
+
+.checkin-emotion {
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.checkin-emotion.positive {
+  background: rgba(72, 187, 120, 0.12);
+  color: #2F855A;
+}
+
+.checkin-emotion.negative {
+  background: rgba(245, 101, 101, 0.12);
+  color: #C53030;
+}
+
+.checkin-emotion.neutral {
+  background: rgba(246, 163, 88, 0.12);
+  color: #975A16;
+}
+
+.checkin-empty {
+  text-align: center;
+  padding: 24px 16px;
+  color: var(--text-3);
+  font-size: 0.85rem;
+}
+
+/* Week Summary */
+.week-summary {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.week-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.week-day-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+}
+
+.week-day-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 2px solid var(--border);
+  transition: all 0.3s var(--ease);
+}
+
+.week-day-dot.positive {
+  background: rgba(72, 187, 120, 0.2);
+  border-color: #48BB78;
+}
+
+.week-day-dot.negative {
+  background: rgba(245, 101, 101, 0.2);
+  border-color: #F56565;
+}
+
+.week-day-dot.neutral {
+  background: rgba(246, 163, 88, 0.2);
+  border-color: var(--warm);
+}
+
+.week-day-dot.today {
+  box-shadow: 0 0 0 2px var(--teal);
+}
+
+/* Me Nav Button — Elevated Center */
+.nav-item-me {
+  position: relative;
+}
+
+.nav-item-me .nav-me-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal), var(--blue));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -18px;
+  box-shadow: 0 4px 16px rgba(0, 190, 214, 0.35);
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.nav-item-me .nav-me-icon svg {
+  width: 22px;
+  height: 22px;
+  color: #fff;
+}
+
+.nav-item-me.active .nav-me-icon {
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(0, 190, 214, 0.45);
+}
+
+.nav-item-me.active::before {
+  display: none;
+}
+
+.nav-item-me span {
+  margin-top: 2px;
+}
+
+
+/* ============================================================
    BOTTOM NAV
    ============================================================ */
 #bottom-nav {
@@ -2822,6 +3247,34 @@ ul, ol {
 
   </div>
 
+  <!-- ========== ME TAB ========== -->
+  <div id="tab-me" class="tab-panel">
+
+    <div class="me-header">
+      <h2>How are you feeling?</h2>
+      <p>Tap a body area to check in</p>
+    </div>
+
+    <div class="progress-ring-wrap">
+      <div class="progress-ring-container" id="me-progress-ring"></div>
+    </div>
+
+    <div class="body-map-wrap">
+      <div class="body-map-container" id="me-body-map"></div>
+    </div>
+
+    <div class="me-section">
+      <div class="me-section-title">Today's Check-ins</div>
+      <div id="me-checkins-today" class="checkin-timeline"></div>
+    </div>
+
+    <div class="me-section">
+      <div class="me-section-title">This Week</div>
+      <div id="me-week-summary" class="week-summary"></div>
+    </div>
+
+  </div>
+
   <!-- ========== INFO TAB ========== -->
   <div id="tab-info" class="tab-panel">
 
@@ -2867,6 +3320,12 @@ ul, ol {
   <button class="nav-item" data-tab="schedule">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
     <span>Schedule</span>
+  </button>
+  <button class="nav-item nav-item-me" data-tab="me">
+    <div class="nav-me-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </div>
+    <span>Me</span>
   </button>
   <button class="nav-item" data-tab="explore">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
@@ -5417,11 +5876,12 @@ function initLazyImages() {
 var tabs = {
   today:    { initialized: false },
   schedule: { initialized: false },
+  me:       { initialized: false },
   explore:  { initialized: false },
   info:     { initialized: false }
 };
 
-var TAB_ORDER = ['today', 'schedule', 'explore', 'info'];
+var TAB_ORDER = ['today', 'schedule', 'me', 'explore', 'info'];
 var _previousTabIndex = 0;
 
 function switchTab(tabId, skipHistory) {
@@ -5459,6 +5919,7 @@ function switchTab(tabId, skipHistory) {
   if (!tabs[tabId].initialized) {
     tabs[tabId].initialized = true;
     if (tabId === 'schedule') initSchedule();
+    if (tabId === 'me') initMe();
     if (tabId === 'explore') initExplore();
     if (tabId === 'info') initInfo();
   }
@@ -5497,6 +5958,442 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
     switchTab(btn.getAttribute('data-tab'));
   });
 });
+
+
+// =============================================================
+// ME TAB — Body Map & Wellness Check-in
+// =============================================================
+
+var _meInitialized = false;
+var _emotionOverlay = null;
+var _emotionSheet = null;
+var _selectedZone = null;
+
+var ME_EMOTIONS = {
+  positive: ['Calm', 'Energized', 'Strong', 'Relaxed', 'Grateful', 'Clear', 'Light', 'Warm'],
+  negative: ['Tense', 'Tired', 'Sore', 'Anxious', 'Heavy', 'Numb', 'Stiff', 'Bloated'],
+  neutral:  ['Neutral', 'Aware', 'Tingling', 'Pulsing']
+};
+
+var ME_ZONE_LABELS = {
+  head: 'Head', neck: 'Neck & Shoulders', chest: 'Chest',
+  stomach: 'Stomach & Core', 'left-arm': 'Left Arm', 'right-arm': 'Right Arm',
+  'left-hand': 'Left Hand', 'right-hand': 'Right Hand',
+  'upper-back': 'Upper Back', 'lower-back': 'Lower Back',
+  hips: 'Hips', 'upper-legs': 'Upper Legs', 'lower-legs': 'Lower Legs', feet: 'Feet'
+};
+
+var CHECKINS_KEY = 'tlc_checkins';
+
+function getCheckins() {
+  try { return JSON.parse(localStorage.getItem(CHECKINS_KEY) || '[]'); } catch(e) { return []; }
+}
+
+function saveCheckin(entry) {
+  var all = getCheckins();
+  all.push(entry);
+  localStorage.setItem(CHECKINS_KEY, JSON.stringify(all));
+}
+
+function todayStr() {
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function nowTime() {
+  var d = new Date();
+  return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+}
+
+function svgEl(tag) {
+  return document.createElementNS('http://www.w3.org/2000/svg', tag);
+}
+
+function svgAttr(el, attrs) {
+  Object.keys(attrs).forEach(function(k) { el.setAttribute(k, attrs[k]); });
+  return el;
+}
+
+function initMe() {
+  if (_meInitialized) {
+    refreshMeData();
+    return;
+  }
+  _meInitialized = true;
+
+  buildBodyMap();
+  buildProgressRing();
+  buildEmotionSheet();
+  refreshMeData();
+}
+
+function buildBodyMap() {
+  var container = document.getElementById('me-body-map');
+  if (!container) return;
+
+  var svg = svgEl('svg');
+  svgAttr(svg, { viewBox: '0 0 200 400', fill: 'none', xmlns: 'http://www.w3.org/2000/svg' });
+
+  // Body silhouette outline (decorative)
+  var silhouette = svgEl('path');
+  svgAttr(silhouette, {
+    d: 'M100 8 C115 8 126 20 126 36 C126 52 115 62 100 62 C85 62 74 52 74 36 C74 20 85 8 100 8 Z ' +
+       'M100 62 C100 62 72 66 64 80 C56 94 48 120 44 140 C42 150 40 155 32 162 C24 169 16 172 12 178 ' +
+       'C8 184 10 190 16 190 C22 190 34 186 42 180 C46 177 50 170 52 164 C54 158 56 152 60 148 ' +
+       'C62 146 66 144 68 144 C70 144 70 200 68 230 C66 260 64 290 62 310 C60 330 58 350 56 364 ' +
+       'C54 378 56 388 64 390 C72 392 78 386 80 374 C82 362 86 330 90 300 C92 284 96 268 100 260 ' +
+       'C104 268 108 284 110 300 C114 330 118 362 120 374 C122 386 128 392 136 390 C144 388 146 378 144 364 ' +
+       'C142 350 140 330 138 310 C136 290 134 260 132 230 C130 200 130 144 132 144 C134 144 138 146 140 148 ' +
+       'C144 152 146 158 148 164 C150 170 154 177 158 180 C166 186 178 190 184 190 C190 190 192 184 188 178 ' +
+       'C184 172 176 169 168 162 C160 155 158 150 156 140 C152 120 144 94 136 80 C128 66 100 62 100 62 Z',
+    fill: 'none',
+    stroke: 'rgba(0,96,156,0.1)',
+    'stroke-width': '1'
+  });
+  svg.appendChild(silhouette);
+
+  // Clickable zones as simplified shapes
+  var zones = [
+    { id: 'head', shape: 'ellipse', cx: 100, cy: 35, rx: 22, ry: 24 },
+    { id: 'neck', shape: 'rect', x: 72, y: 60, w: 56, h: 22, rx: 6 },
+    { id: 'chest', shape: 'rect', x: 68, y: 84, w: 64, h: 36, rx: 8 },
+    { id: 'stomach', shape: 'rect', x: 72, y: 122, w: 56, h: 34, rx: 8 },
+    { id: 'left-arm', shape: 'rect', x: 28, y: 90, w: 36, h: 52, rx: 10 },
+    { id: 'right-arm', shape: 'rect', x: 136, y: 90, w: 36, h: 52, rx: 10 },
+    { id: 'left-hand', shape: 'ellipse', cx: 28, cy: 174, rx: 14, ry: 16 },
+    { id: 'right-hand', shape: 'ellipse', cx: 172, cy: 174, rx: 14, ry: 16 },
+    { id: 'hips', shape: 'rect', x: 68, y: 158, w: 64, h: 32, rx: 8 },
+    { id: 'upper-legs', shape: 'rect', x: 66, y: 192, w: 68, h: 70, rx: 10 },
+    { id: 'lower-legs', shape: 'rect', x: 64, y: 264, w: 72, h: 80, rx: 10 },
+    { id: 'feet', shape: 'rect', x: 60, y: 348, w: 80, h: 30, rx: 10 }
+  ];
+
+  zones.forEach(function(z) {
+    var el;
+    if (z.shape === 'ellipse') {
+      el = svgEl('ellipse');
+      svgAttr(el, { cx: z.cx, cy: z.cy, rx: z.rx, ry: z.ry });
+    } else {
+      el = svgEl('rect');
+      svgAttr(el, { x: z.x, y: z.y, width: z.w, height: z.h, rx: z.rx || 0 });
+    }
+    el.setAttribute('class', 'body-zone');
+    el.setAttribute('data-zone', z.id);
+    el.addEventListener('click', function() {
+      if (navigator.vibrate) navigator.vibrate(10);
+      _selectedZone = z.id;
+      showEmotionSheet(z.id);
+    });
+    svg.appendChild(el);
+
+    // Label
+    var label = svgEl('text');
+    var lx = z.cx || (z.x + z.w / 2);
+    var ly = z.cy || (z.y + z.h / 2);
+    svgAttr(label, { x: lx, y: ly + 3, 'class': 'body-zone-label' });
+    label.textContent = ME_ZONE_LABELS[z.id] || z.id;
+    svg.appendChild(label);
+  });
+
+  container.appendChild(svg);
+}
+
+function buildProgressRing() {
+  var container = document.getElementById('me-progress-ring');
+  if (!container) return;
+
+  var svg = svgEl('svg');
+  svgAttr(svg, { viewBox: '0 0 120 120', xmlns: 'http://www.w3.org/2000/svg' });
+
+  // Background circle
+  var bgCircle = svgEl('circle');
+  svgAttr(bgCircle, { cx: 60, cy: 60, r: 50, fill: 'none', stroke: '#E8E4DD', 'stroke-width': 8 });
+  svg.appendChild(bgCircle);
+
+  // Segment arcs — will be updated by refreshMeData
+  var arcPos = svgEl('circle');
+  svgAttr(arcPos, { cx: 60, cy: 60, r: 50, fill: 'none', stroke: '#48BB78', 'stroke-width': 8,
+    'stroke-dasharray': '0 314', 'stroke-linecap': 'round', id: 'ring-positive' });
+  svg.appendChild(arcPos);
+
+  var arcNeu = svgEl('circle');
+  svgAttr(arcNeu, { cx: 60, cy: 60, r: 50, fill: 'none', stroke: '#F6A358', 'stroke-width': 8,
+    'stroke-dasharray': '0 314', 'stroke-linecap': 'round', id: 'ring-neutral' });
+  svg.appendChild(arcNeu);
+
+  var arcNeg = svgEl('circle');
+  svgAttr(arcNeg, { cx: 60, cy: 60, r: 50, fill: 'none', stroke: '#F56565', 'stroke-width': 8,
+    'stroke-dasharray': '0 314', 'stroke-linecap': 'round', id: 'ring-negative' });
+  svg.appendChild(arcNeg);
+
+  container.appendChild(svg);
+
+  // Center label
+  var labelDiv = h('div', 'progress-ring-label');
+  labelDiv.setAttribute('id', 'ring-label');
+  labelDiv.textContent = 'Tap to begin';
+  var sub = h('span', null, 'no check-ins yet');
+  appendTo(labelDiv, sub);
+  appendTo(container, labelDiv);
+}
+
+function buildEmotionSheet() {
+  // Overlay
+  _emotionOverlay = h('div', 'emotion-overlay');
+  _emotionOverlay.addEventListener('click', function() { hideEmotionSheet(); });
+  document.body.appendChild(_emotionOverlay);
+
+  // Sheet
+  _emotionSheet = h('div', 'emotion-sheet');
+  _emotionSheet.addEventListener('click', function(e) { e.stopPropagation(); });
+
+  var handle = h('div', 'emotion-sheet-handle');
+  appendTo(_emotionSheet, handle);
+
+  var title = h('div', 'emotion-sheet-title', 'How does it feel?');
+  title.setAttribute('id', 'emotion-sheet-title');
+  appendTo(_emotionSheet, title);
+
+  var zoneLabel = h('div', 'emotion-sheet-zone');
+  zoneLabel.setAttribute('id', 'emotion-sheet-zone');
+  appendTo(_emotionSheet, zoneLabel);
+
+  // Positive
+  var posLabel = h('div', 'emotion-group-label positive', 'Positive');
+  appendTo(_emotionSheet, posLabel);
+  var posChips = h('div', 'emotion-chips');
+  ME_EMOTIONS.positive.forEach(function(em) {
+    var chip = h('button', 'emotion-chip positive', em);
+    chip.setAttribute('data-emotion', em);
+    chip.setAttribute('data-valence', 'positive');
+    chip.addEventListener('click', function() { selectEmotion(em, 'positive'); });
+    appendTo(posChips, chip);
+  });
+  appendTo(_emotionSheet, posChips);
+
+  // Neutral
+  var neuLabel = h('div', 'emotion-group-label neutral-label', 'Neutral');
+  appendTo(_emotionSheet, neuLabel);
+  var neuChips = h('div', 'emotion-chips');
+  ME_EMOTIONS.neutral.forEach(function(em) {
+    var chip = h('button', 'emotion-chip neutral', em);
+    chip.setAttribute('data-emotion', em);
+    chip.setAttribute('data-valence', 'neutral');
+    chip.addEventListener('click', function() { selectEmotion(em, 'neutral'); });
+    appendTo(neuChips, chip);
+  });
+  appendTo(_emotionSheet, neuChips);
+
+  // Negative
+  var negLabel = h('div', 'emotion-group-label negative', 'Challenging');
+  appendTo(_emotionSheet, negLabel);
+  var negChips = h('div', 'emotion-chips');
+  ME_EMOTIONS.negative.forEach(function(em) {
+    var chip = h('button', 'emotion-chip negative', em);
+    chip.setAttribute('data-emotion', em);
+    chip.setAttribute('data-valence', 'negative');
+    chip.addEventListener('click', function() { selectEmotion(em, 'negative'); });
+    appendTo(negChips, chip);
+  });
+  appendTo(_emotionSheet, negChips);
+
+  document.body.appendChild(_emotionSheet);
+}
+
+function showEmotionSheet(zoneId) {
+  var zoneLabel = document.getElementById('emotion-sheet-zone');
+  if (zoneLabel) zoneLabel.textContent = ME_ZONE_LABELS[zoneId] || zoneId;
+
+  if (_emotionOverlay) _emotionOverlay.classList.add('active');
+  if (_emotionSheet) {
+    _emotionSheet.classList.add('active');
+    _emotionSheet.scrollTop = 0;
+  }
+}
+
+function hideEmotionSheet() {
+  if (_emotionOverlay) _emotionOverlay.classList.remove('active');
+  if (_emotionSheet) _emotionSheet.classList.remove('active');
+}
+
+function selectEmotion(emotion, valence) {
+  if (!_selectedZone) return;
+
+  var entry = {
+    date: todayStr(),
+    time: nowTime(),
+    zone: _selectedZone,
+    emotion: emotion,
+    valence: valence
+  };
+  saveCheckin(entry);
+
+  // Color the body zone
+  var zoneEl = document.querySelector('.body-zone[data-zone="' + _selectedZone + '"]');
+  if (zoneEl) {
+    zoneEl.setAttribute('data-valence', valence);
+  }
+
+  hideEmotionSheet();
+  showToast(ME_ZONE_LABELS[_selectedZone] + ' — ' + emotion);
+  refreshMeData();
+  _selectedZone = null;
+}
+
+function refreshMeData() {
+  var today = todayStr();
+  var all = getCheckins();
+  var todayCheckins = all.filter(function(c) { return c.date === today; });
+
+  // Update body map zone colors from today's latest per zone
+  var latestByZone = {};
+  todayCheckins.forEach(function(c) { latestByZone[c.zone] = c.valence; });
+  document.querySelectorAll('.body-zone').forEach(function(el) {
+    var z = el.getAttribute('data-zone');
+    if (latestByZone[z]) {
+      el.setAttribute('data-valence', latestByZone[z]);
+    } else {
+      el.removeAttribute('data-valence');
+    }
+  });
+
+  // Update progress ring
+  updateProgressRing(todayCheckins);
+
+  // Update today's checkin list
+  renderTodayCheckins(todayCheckins);
+
+  // Update week summary
+  renderWeekSummary(all);
+}
+
+function updateProgressRing(todayCheckins) {
+  var total = todayCheckins.length;
+  var circumference = 2 * Math.PI * 50; // ~314
+  var ringPos = document.getElementById('ring-positive');
+  var ringNeu = document.getElementById('ring-neutral');
+  var ringNeg = document.getElementById('ring-negative');
+  var ringLabel = document.getElementById('ring-label');
+
+  if (!total) {
+    if (ringPos) ringPos.setAttribute('stroke-dasharray', '0 ' + circumference);
+    if (ringNeu) ringNeu.setAttribute('stroke-dasharray', '0 ' + circumference);
+    if (ringNeg) ringNeg.setAttribute('stroke-dasharray', '0 ' + circumference);
+    if (ringLabel) {
+      ringLabel.textContent = '';
+      var t1 = h('span', null, 'no check-ins yet');
+      ringLabel.appendChild(document.createTextNode('Tap to begin'));
+      ringLabel.appendChild(t1);
+    }
+    return;
+  }
+
+  var posCount = 0, neuCount = 0, negCount = 0;
+  todayCheckins.forEach(function(c) {
+    if (c.valence === 'positive') posCount++;
+    else if (c.valence === 'neutral') neuCount++;
+    else negCount++;
+  });
+
+  var posLen = (posCount / total) * circumference;
+  var neuLen = (neuCount / total) * circumference;
+  var negLen = (negCount / total) * circumference;
+
+  var posOffset = 0;
+  var neuOffset = posLen;
+  var negOffset = posLen + neuLen;
+
+  if (ringPos) {
+    ringPos.setAttribute('stroke-dasharray', posLen + ' ' + (circumference - posLen));
+    ringPos.setAttribute('stroke-dashoffset', String(-posOffset));
+  }
+  if (ringNeu) {
+    ringNeu.setAttribute('stroke-dasharray', neuLen + ' ' + (circumference - neuLen));
+    ringNeu.setAttribute('stroke-dashoffset', String(-neuOffset));
+  }
+  if (ringNeg) {
+    ringNeg.setAttribute('stroke-dasharray', negLen + ' ' + (circumference - negLen));
+    ringNeg.setAttribute('stroke-dashoffset', String(-negOffset));
+  }
+
+  // Determine dominant mood
+  var dominant = 'Balanced';
+  if (posCount > neuCount && posCount > negCount) dominant = 'Positive';
+  else if (negCount > posCount && negCount > neuCount) dominant = 'Challenging';
+  else if (neuCount > posCount && neuCount > negCount) dominant = 'Neutral';
+
+  if (ringLabel) {
+    while (ringLabel.firstChild) ringLabel.removeChild(ringLabel.firstChild);
+    ringLabel.appendChild(document.createTextNode(dominant));
+    var sub = h('span', null, total + ' check-in' + (total !== 1 ? 's' : ''));
+    ringLabel.appendChild(sub);
+  }
+}
+
+function renderTodayCheckins(todayCheckins) {
+  var container = document.getElementById('me-checkins-today');
+  if (!container) return;
+  while (container.firstChild) container.removeChild(container.firstChild);
+
+  if (!todayCheckins.length) {
+    var empty = h('div', 'checkin-empty', 'No check-ins yet today. Tap the body map above to start.');
+    appendTo(container, empty);
+    return;
+  }
+
+  // Show most recent first
+  var sorted = todayCheckins.slice().reverse();
+  sorted.forEach(function(c) {
+    var row = h('div', 'checkin-entry');
+    var time = h('div', 'checkin-time', c.time);
+    appendTo(row, time);
+    var zoneName = h('div', 'checkin-zone-name', ME_ZONE_LABELS[c.zone] || c.zone);
+    appendTo(row, zoneName);
+    var emotionChip = h('div', 'checkin-emotion ' + c.valence, c.emotion);
+    appendTo(row, emotionChip);
+    appendTo(container, row);
+  });
+}
+
+function renderWeekSummary(allCheckins) {
+  var container = document.getElementById('me-week-summary');
+  if (!container) return;
+  while (container.firstChild) container.removeChild(container.firstChild);
+
+  var today = new Date();
+  var dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  for (var i = 6; i >= 0; i--) {
+    var d = new Date(today);
+    d.setDate(d.getDate() - i);
+    var dateStr = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    var dayCheckins = allCheckins.filter(function(c) { return c.date === dateStr; });
+
+    var dayEl = h('div', 'week-day');
+    var label = h('div', 'week-day-label', dayNames[d.getDay()]);
+    appendTo(dayEl, label);
+
+    var dotCls = 'week-day-dot';
+    if (i === 0) dotCls += ' today';
+
+    if (dayCheckins.length) {
+      // Determine dominant valence
+      var posC = 0, neuC = 0, negC = 0;
+      dayCheckins.forEach(function(c) {
+        if (c.valence === 'positive') posC++;
+        else if (c.valence === 'neutral') neuC++;
+        else negC++;
+      });
+      if (posC >= neuC && posC >= negC) dotCls += ' positive';
+      else if (negC > posC && negC > neuC) dotCls += ' negative';
+      else dotCls += ' neutral';
+    }
+
+    var dot = h('div', dotCls);
+    appendTo(dayEl, dot);
+    appendTo(container, dayEl);
+  }
+}
 
 
 // =============================================================
@@ -5700,7 +6597,7 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
   (function initSwipe() {
     var startX = 0;
     var startY = 0;
-    var tabOrder = ['today', 'schedule', 'explore', 'info'];
+    var tabOrder = ['today', 'schedule', 'me', 'explore', 'info'];
     document.addEventListener('touchstart', function(e) {
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
@@ -5725,7 +6622,7 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
   // Keyboard navigation for tabs (arrow keys)
   document.addEventListener('keydown', function(e) {
     if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) return;
-    var tabOrder = ['today', 'schedule', 'explore', 'info'];
+    var tabOrder = ['today', 'schedule', 'me', 'explore', 'info'];
     var activeNav = document.querySelector('.nav-item.active');
     if (!activeNav) return;
     var currentTab = activeNav.getAttribute('data-tab');
