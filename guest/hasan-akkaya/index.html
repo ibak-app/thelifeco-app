@@ -563,15 +563,7 @@ ul, ol {
   height: 14px;
 }
 
-/* Therapy read more toggle */
-.therapy-read-more {
-  color: var(--teal);
-  font-weight: 500;
-  font-size: 0.8125rem;
-  cursor: pointer;
-  margin-top: 4px;
-  display: inline-block;
-}
+/* Therapy read more toggle — removed (detail page now) */
 
 /* Resort gallery (horizontal scroll) */
 .resort-gallery {
@@ -991,72 +983,241 @@ ul, ol {
   padding: 0 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 2px;
 }
 
 .therapy-card {
   display: flex;
+  gap: 14px;
+  padding: 12px;
   background: var(--surface);
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: var(--shadow);
-  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin-bottom: 10px;
   cursor: pointer;
+  transition: transform .15s var(--ease), box-shadow .15s var(--ease);
+  position: relative;
 }
-
-.therapy-card:active {
-  transform: scale(0.98);
-  box-shadow: var(--shadow-sm);
-}
-
-.therapy-card-image {
-  width: 100px;
-  min-height: 100px;
+.therapy-card:active { transform: scale(.98); }
+.therapy-card-img {
+  width: 88px;
+  height: 88px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
   flex-shrink: 0;
+  background: var(--surface-2);
+}
+.therapy-card-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.therapy-card-body h4 {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 3px;
+}
+.therapy-card-snippet {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
 }
+.therapy-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+.therapy-price {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--blue);
+}
+.therapy-duration {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.therapy-card .badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 10px;
+  z-index: 1;
+}
+.therapy-card .fav-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+}
 
-.therapy-card-image img {
+/* --- Therapy Detail Page --- */
+.therapy-detail {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  background: var(--bg);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.therapy-detail-hero {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+.therapy-detail-hero img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-
-.therapy-card-body {
-  flex: 1;
-  padding: 14px;
-  min-width: 0;
+.therapy-detail-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.45));
 }
-
-.therapy-card-body h4 {
-  font-size: 0.9375rem;
+.therapy-detail-back {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 160;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  border: none;
+  transition: background .2s var(--ease);
+}
+.therapy-detail-back:active { background: rgba(0,0,0,0.55); }
+.therapy-detail-content {
+  padding: 24px 20px 120px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.therapy-detail-content h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
   font-weight: 600;
-  color: var(--text);
-  margin-bottom: 4px;
   line-height: 1.3;
+  margin-bottom: 10px;
 }
-
-.therapy-card-body p {
-  font-size: 0.8125rem;
-  color: var(--text-3);
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.therapy-card-meta {
+.therapy-detail-price-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 8px;
-  flex-wrap: wrap;
+  margin-bottom: 16px;
 }
-
-.therapy-card-duration {
-  font-size: 0.75rem;
-  color: var(--text-4);
+.therapy-detail-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--blue);
+}
+.therapy-detail-dur {
+  font-size: 14px;
+  color: var(--text-3);
+}
+.therapy-detail-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 16px 0;
+}
+.therapy-detail-label {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  margin-bottom: 10px;
+}
+.therapy-detail-desc {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.7;
+}
+.therapy-detail-expect {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.therapy-detail-expect li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.5;
+  padding: 8px 0;
+}
+.therapy-detail-expect li::before {
+  content: '\2713';
+  color: var(--teal);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.therapy-detail-sticky {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 160;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 12px 20px calc(12px + var(--safe-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.therapy-detail-sticky-price {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+.therapy-detail-sticky-price span {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-3);
+}
+.therapy-detail-book {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--teal);
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  transition: background .2s var(--ease), transform .1s var(--ease);
+  text-decoration: none;
+}
+.therapy-detail-book:active {
+  transform: scale(0.97);
+  background: var(--teal-dark);
 }
 
 /* Badges */
@@ -1087,32 +1248,7 @@ ul, ol {
   color: #fff;
 }
 
-/* WhatsApp book button */
-.btn-whatsapp-book {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  padding: 14px;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: #fff;
-  background: var(--whatsapp-green);
-  border-radius: var(--radius);
-  transition: background 0.2s var(--ease), transform 0.1s var(--ease);
-  margin-top: 12px;
-}
-
-.btn-whatsapp-book:active {
-  transform: scale(0.97);
-  background: #1EBE56;
-}
-
-.btn-whatsapp-book svg {
-  width: 20px;
-  height: 20px;
-}
+/* WhatsApp book button — moved to therapy detail page */
 
 
 /* ============================================================
@@ -1922,7 +2058,7 @@ ul, ol {
 .accordion-trigger:focus-visible,
 .category-card:focus-visible,
 .btn:focus-visible,
-.btn-whatsapp-book:focus-visible {
+.therapy-detail-book:focus-visible {
   outline: 2px solid var(--teal);
   outline-offset: 2px;
   border-radius: var(--radius);
@@ -2220,16 +2356,26 @@ ul, ol {
 }
 .recommendation-cards::-webkit-scrollbar { display: none; }
 .recommendation-card {
-  flex-shrink: 0; width: 200px; background: var(--surface); border-radius: var(--radius);
-  box-shadow: var(--shadow); padding: 14px; cursor: pointer; transition: transform 0.2s var(--ease);
+  flex-shrink: 0; width: 220px; background: var(--surface); border-radius: var(--radius);
+  box-shadow: var(--shadow); cursor: pointer; transition: transform 0.2s var(--ease);
+  overflow: hidden; display: flex; flex-direction: column;
 }
 .recommendation-card:active { transform: scale(0.97); }
-.recommendation-card h4 { font-size: 0.8125rem; font-weight: 600; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
-.recommendation-card p {
-  font-size: 0.6875rem; color: var(--text-3); line-height: 1.4;
-  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+.recommendation-card-img {
+  width: 100%; height: 110px; object-fit: cover; background: var(--surface-2);
 }
-.recommendation-card .badge { margin-top: 8px; }
+.recommendation-card-body { padding: 12px; }
+.recommendation-card-body h4 { font-size: 0.8125rem; font-weight: 600; color: var(--text); margin-bottom: 3px; line-height: 1.3; }
+.recommendation-card-body p {
+  font-size: 0.6875rem; color: var(--text-3); line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.recommendation-card-footer {
+  display: flex; align-items: center; gap: 6px; margin-top: 6px;
+}
+.recommendation-card-footer .therapy-price { font-size: 13px; }
+.recommendation-card-footer .therapy-duration { font-size: 11px; }
+.recommendation-card .badge { margin-top: 6px; }
 
 /* ============================================================
    EMERGENCY QUICK-DIAL
@@ -3287,12 +3433,12 @@ var INFO_CONTENT = {
 // =============================================================
 
 var CATEGORY_IMAGES = {
-  biohacking: 'images/iv-therapy.jpg',
-  iv: 'images/wellness-method.jpg',
-  massage: 'images/stretching.jpg',
-  beauty: 'images/mindfulness.jpg',
-  clinical: 'images/ozone-therapy.jpg',
-  mind: 'images/meditation-zen.jpg'
+  biohacking: 'https://www.thelifeco.com/wp-content/uploads/2024/10/supporting-therapies.webp',
+  iv: 'https://www.thelifeco.com/wp-content/uploads/2024/10/health-protocols.webp',
+  massage: 'https://www.thelifeco.com/wp-content/uploads/2024/10/spa-and-beauty.jpg',
+  beauty: 'https://www.thelifeco.com/wp-content/uploads/2021/09/lipoliz.jpg',
+  clinical: 'https://www.thelifeco.com/wp-content/uploads/2024/10/well-aging-therapies.webp',
+  mind: 'https://www.thelifeco.com/wp-content/uploads/2019/10/flexibility-and-mind.jpg'
 };
 
 // =============================================================
@@ -3303,6 +3449,106 @@ var CATEGORY_COUNTS = {};
 EXPLORE_CATEGORIES.forEach(function(cat) {
   CATEGORY_COUNTS[cat.id] = cat.therapies.length + ' therapies';
 });
+
+// =============================================================
+// THERAPY IMAGES
+// =============================================================
+
+var THERAPY_IMAGES = {
+  // Bio-Hacking — TheLifeCo images where available
+  'PEMF Therapy (HU-GO)': 'https://www.thelifeco.com/wp-content/uploads/2019/09/per2000.jpg',
+  'Hyperbaric Chamber': 'https://www.thelifeco.com/wp-content/uploads/2024/10/well-aging-therapies.webp',
+  'EMS Magnetic Chair': 'https://www.thelifeco.com/wp-content/uploads/2019/09/matrix-rhythm-therapy.jpg',
+  'Carol Bike': 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&h=400&fit=crop',
+  'Cold Plunge': 'https://www.thelifeco.com/wp-content/uploads/2024/08/cold-plunge-simay-campaign.jpg',
+  'RedLight Bed': 'https://www.thelifeco.com/wp-content/uploads/2022/11/red_light_therapy_bed.jpg',
+  'REAX Board': 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&h=400&fit=crop',
+  'Braintap': 'https://www.thelifeco.com/wp-content/uploads/2022/11/braintap.jpg',
+  'Pulsetto': 'https://www.thelifeco.com/wp-content/uploads/2022/11/sensate_therapy.jpg',
+  'Neurofeedback Wall': 'https://www.thelifeco.com/wp-content/uploads/2019/09/alpha-stim-therapy.jpg',
+  // IV Infusions — TheLifeCo images
+  'NAD+ IV Infusion (500mg)': 'https://www.thelifeco.com/wp-content/uploads/2022/03/NAD-IV-Therapy.jpg',
+  'Liver Support Protocol': 'https://www.thelifeco.com/wp-content/uploads/2019/09/liver-support-protocol.jpg',
+  'Brain Protocol': 'https://www.thelifeco.com/wp-content/uploads/2019/09/brain-health-protocol.jpg',
+  'Anti-Stress Protocol': 'https://www.thelifeco.com/wp-content/uploads/2019/09/anti-stress.jpg',
+  'Sugar Balance': 'https://www.thelifeco.com/wp-content/uploads/2019/09/anti-aging-protocol.jpg',
+  'Immune Support Protocol': 'https://www.thelifeco.com/wp-content/uploads/2019/09/immune-support-protocol.jpg',
+  'Vitamin C High-Dose (25g)': 'https://www.thelifeco.com/wp-content/uploads/2019/09/immune-cocktail.jpg',
+  'Curcumin + Resveratrol IV': 'https://www.thelifeco.com/wp-content/uploads/2019/09/anti-fatigue-protocol.jpg',
+  'Mineral IV Infusion': 'https://www.thelifeco.com/wp-content/uploads/2021/01/biotin_therapy-1.png',
+  // Massage & Body — TheLifeCo + quality stock
+  'Thai Massage': 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&h=400&fit=crop',
+  'Aromatherapy Massage': 'https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=600&h=400&fit=crop',
+  'Shiatsu Massage': 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=600&h=400&fit=crop',
+  'Chi Nei Tsang Abdominal': 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=600&h=400&fit=crop',
+  'Biomeridian Massage': 'https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=600&h=400&fit=crop',
+  'Turkish Bath Scrub & Foam Massage': 'https://www.thelifeco.com/wp-content/uploads/2024/10/spa-and-beauty.jpg',
+  'Thalasso Therapy': 'https://images.unsplash.com/photo-1540555700478-4be289fbec6c?w=600&h=400&fit=crop',
+  'Therapeutic Foot Reflexology': 'https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=600&h=400&fit=crop',
+  // Beauty & Reshaping — TheLifeCo
+  'Selenia Body Reshaping': 'https://www.thelifeco.com/wp-content/uploads/2021/09/lipoliz.jpg',
+  'EMSculpt': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop',
+  'Hydrafacial': 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=600&h=400&fit=crop',
+  'Pressotherapy Lymphatic Drainage': 'https://www.thelifeco.com/wp-content/uploads/2020/03/lymphatic_drainage_therapy.jpg',
+  // Clinical — TheLifeCo
+  'Blood Ozone IV Therapy': 'https://www.thelifeco.com/wp-content/uploads/2019/09/ozone-therapy.jpg',
+  'Multipass Medozone Therapy': 'https://www.thelifeco.com/wp-content/uploads/2023/01/multipass_ozone-768x430.jpg',
+  'Ozone Sauna': 'https://www.thelifeco.com/wp-content/uploads/2024/08/Ozone-Sauna_Threapy-768x512.jpg',
+  'Stem Cell Therapy': 'https://www.thelifeco.com/wp-content/uploads/2019/09/glutathione-therapy.jpg',
+  'Hypoxia Therapy': 'https://www.thelifeco.com/wp-content/uploads/2019/09/oxygen-therapy.jpg',
+  'Coffee Enema': 'https://www.thelifeco.com/wp-content/uploads/2019/09/coffee-enema.jpg',
+  // Mind & Meditation
+  'Private Guided Meditation': 'https://www.thelifeco.com/wp-content/uploads/2019/10/flexibility-and-mind.jpg',
+  'Neurofeedback Sessions': 'https://www.thelifeco.com/wp-content/uploads/2019/09/alpha-stim-therapy.jpg',
+  'Private Psychology Session': 'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=600&h=400&fit=crop'
+};
+
+// =============================================================
+// THERAPY PRICES
+// =============================================================
+
+var THERAPY_PRICES = {
+  'PEMF Therapy (HU-GO)': { price: 85, duration: '30 min' },
+  'Hyperbaric Chamber': { price: 150, duration: '60 min' },
+  'EMS Magnetic Chair': { price: 75, duration: '30 min' },
+  'Carol Bike': { price: 45, duration: '15 min' },
+  'Cold Plunge': { price: 35, duration: '15 min' },
+  'RedLight Bed': { price: 65, duration: '20 min' },
+  'REAX Board': { price: 55, duration: '30 min' },
+  'Braintap': { price: 40, duration: '20 min' },
+  'Pulsetto': { price: 50, duration: '20 min' },
+  'Neurofeedback Wall': { price: 95, duration: '45 min' },
+  'NAD+ IV Infusion (500mg)': { price: 350, duration: '90 min' },
+  'Liver Support Protocol': { price: 195, duration: '60 min' },
+  'Brain Protocol': { price: 220, duration: '60 min' },
+  'Anti-Stress Protocol': { price: 185, duration: '60 min' },
+  'Sugar Balance': { price: 175, duration: '60 min' },
+  'Immune Support Protocol': { price: 195, duration: '60 min' },
+  'Vitamin C High-Dose (25g)': { price: 165, duration: '45 min' },
+  'Curcumin + Resveratrol IV': { price: 245, duration: '60 min' },
+  'Mineral IV Infusion': { price: 120, duration: '45 min' },
+  'Thai Massage': { price: 120, duration: '60 min' },
+  'Aromatherapy Massage': { price: 135, duration: '60 min' },
+  'Shiatsu Massage': { price: 130, duration: '60 min' },
+  'Chi Nei Tsang Abdominal': { price: 140, duration: '45 min' },
+  'Biomeridian Massage': { price: 125, duration: '60 min' },
+  'Turkish Bath Scrub & Foam Massage': { price: 95, duration: '45 min' },
+  'Thalasso Therapy': { price: 155, duration: '60 min' },
+  'Therapeutic Foot Reflexology': { price: 85, duration: '45 min' },
+  'Selenia Body Reshaping': { price: 175, duration: '30 min' },
+  'EMSculpt': { price: 200, duration: '30 min' },
+  'Hydrafacial': { price: 185, duration: '45 min' },
+  'Pressotherapy Lymphatic Drainage': { price: 95, duration: '45 min' },
+  'Blood Ozone IV Therapy': { price: 250, duration: '60 min' },
+  'Multipass Medozone Therapy': { price: 450, duration: '90 min' },
+  'Ozone Sauna': { price: 85, duration: '30 min' },
+  'Stem Cell Therapy': { price: 1200, duration: '120 min' },
+  'Hypoxia Therapy': { price: 110, duration: '45 min' },
+  'Coffee Enema': { price: 65, duration: '30 min' },
+  'Private Guided Meditation': { price: 120, duration: '60 min' },
+  'Neurofeedback Sessions': { price: 150, duration: '45 min' },
+  'Private Psychology Session': { price: 180, duration: '60 min' }
+};
 
 // =============================================================
 // DOM HELPERS
@@ -4738,18 +4984,32 @@ function initExplore() {
     var recCards = h('div', 'recommendation-cards');
     recommendations.forEach(function(therapy) {
       var recCard = h('div', 'recommendation-card');
-      appendTo(recCard, h('h4', null, therapy.name));
-      var snippet = therapy.desc.length > 120 ? therapy.desc.substring(0, 120) + '...' : therapy.desc;
-      appendTo(recCard, h('p', null, snippet));
-      if (therapy.popular) appendTo(recCard, h('span', 'badge badge-popular', 'Popular'));
-      else if (therapy.recommended) appendTo(recCard, h('span', 'badge badge-included', 'Recommended'));
+      // Image
+      var recImgUrl = THERAPY_IMAGES[therapy.name] || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop';
+      var recImg = document.createElement('img');
+      recImg.className = 'recommendation-card-img';
+      recImg.src = recImgUrl;
+      recImg.alt = therapy.name;
+      appendTo(recCard, recImg);
+      // Body
+      var recBody = h('div', 'recommendation-card-body');
+      appendTo(recBody, h('h4', null, therapy.name));
+      var snippet = therapy.desc.length > 70 ? therapy.desc.substring(0, 70) + '...' : therapy.desc;
+      appendTo(recBody, h('p', null, snippet));
+      // Price footer
+      var recPriceInfo = THERAPY_PRICES[therapy.name];
+      if (recPriceInfo) {
+        var recFooter = h('div', 'recommendation-card-footer');
+        appendTo(recFooter, h('span', 'therapy-price', '$' + recPriceInfo.price));
+        appendTo(recFooter, h('span', 'therapy-duration', recPriceInfo.duration));
+        appendTo(recBody, recFooter);
+      }
+      if (therapy.popular) appendTo(recBody, h('span', 'badge badge-popular', 'Popular'));
+      else if (therapy.recommended) appendTo(recBody, h('span', 'badge badge-included', 'Recommended'));
+      appendTo(recCard, recBody);
       recCard.addEventListener('click', function() {
         logEvent('explore', 'recommendation', therapy.name);
-        categoriesContainer.classList.add('hidden');
-        if (therapiesContainer) therapiesContainer.classList.remove('hidden');
-        if (backBtn) backBtn.classList.remove('hidden');
-        while (therapiesContainer.firstChild) therapiesContainer.removeChild(therapiesContainer.firstChild);
-        appendTo(therapiesContainer, buildSingleTherapyCard(therapy));
+        openTherapyDetail(therapy);
       });
       appendTo(recCards, recCard);
     });
@@ -4809,12 +5069,42 @@ function initExplore() {
 function buildSingleTherapyCard(therapy) {
   var card = h('div', 'therapy-card');
   card.setAttribute('data-name', therapy.name);
-  logEvent('explore', 'therapy', therapy.name);
-  addRecent(therapy.name);
 
+  // Image
+  var imgUrl = THERAPY_IMAGES[therapy.name] || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop';
+  var img = document.createElement('img');
+  img.className = 'therapy-card-img';
+  img.src = imgUrl;
+  img.alt = therapy.name;
+  appendTo(card, img);
+
+  // Badge on image
+  if (therapy.popular) {
+    appendTo(card, h('span', 'badge badge-popular', t('popular')));
+  } else if (therapy.recommended) {
+    appendTo(card, h('span', 'badge badge-included', t('recommended')));
+  }
+
+  // Body
   var body = h('div', 'therapy-card-body');
-  var cardHeader = h('div', 'flex items-center justify-between');
-  appendTo(cardHeader, h('h4', null, therapy.name));
+  appendTo(body, h('h4', null, therapy.name));
+
+  // Snippet
+  var snippet = therapy.desc.length > 80 ? therapy.desc.substring(0, 80) + '...' : therapy.desc;
+  appendTo(body, h('p', 'therapy-card-snippet', snippet));
+
+  // Footer with price + duration
+  var priceInfo = THERAPY_PRICES[therapy.name];
+  if (priceInfo) {
+    var footer = h('div', 'therapy-card-footer');
+    appendTo(footer, h('span', 'therapy-price', '$' + priceInfo.price));
+    appendTo(footer, h('span', 'therapy-duration', priceInfo.duration));
+    appendTo(body, footer);
+  }
+
+  appendTo(card, body);
+
+  // Favorite button (top-right)
   var favBtn = h('button', 'fav-btn' + (isFavorite(therapy.name) ? ' active' : ''));
   favBtn.setAttribute('type', 'button');
   favBtn.setAttribute('aria-label', 'Favorite');
@@ -4826,59 +5116,151 @@ function buildSingleTherapyCard(therapy) {
     while (favBtn.firstChild) favBtn.removeChild(favBtn.firstChild);
     favBtn.appendChild(createHeartSvg(nowFav));
   });
-  appendTo(cardHeader, favBtn);
-  appendTo(body, cardHeader);
+  appendTo(card, favBtn);
 
-  // Description with read more / read less toggle
-  var descP = h('p');
-  var fullDesc = therapy.desc;
-  var truncated = fullDesc.length > 150;
-  descP.textContent = truncated ? fullDesc.substring(0, 150) + '...' : fullDesc;
-  appendTo(body, descP);
+  // Whole card clickable -> detail page
+  card.addEventListener('click', function() {
+    logEvent('explore', 'therapy', therapy.name);
+    addRecent(therapy.name);
+    openTherapyDetail(therapy);
+  });
 
-  if (truncated) {
-    var expanded = false;
-    var toggle = h('span', 'therapy-read-more', t('readMore'));
-    toggle.addEventListener('click', function(e) {
-      e.stopPropagation();
-      expanded = !expanded;
-      descP.textContent = expanded ? fullDesc : fullDesc.substring(0, 150) + '...';
-      toggle.textContent = expanded ? t('readLess') : t('readMore');
-    });
-    appendTo(body, toggle);
-  }
+  return card;
+}
 
-  var meta = h('div', 'therapy-card-meta');
+// =============================================================
+// THERAPY DETAIL PAGE
+// =============================================================
+
+var _therapyDetailEl = null;
+
+function openTherapyDetail(therapy) {
+  if (_therapyDetailEl) closeTherapyDetail();
+
+  var priceInfo = THERAPY_PRICES[therapy.name] || { price: 0, duration: '' };
+  var imgUrl = THERAPY_IMAGES[therapy.name] || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop';
+
+  // Push history state for back button
+  history.pushState({ therapyDetail: true }, '');
+
+  var overlay = h('div', 'therapy-detail');
+
+  // Hero image
+  var hero = h('div', 'therapy-detail-hero');
+  var heroImg = document.createElement('img');
+  heroImg.src = imgUrl;
+  heroImg.alt = therapy.name;
+  appendTo(hero, heroImg);
+  appendTo(overlay, hero);
+
+  // Back button
+  var backBtn = h('button', 'therapy-detail-back');
+  backBtn.setAttribute('type', 'button');
+  backBtn.setAttribute('aria-label', 'Back');
+  backBtn.textContent = '\u2190';
+  backBtn.addEventListener('click', function() {
+    history.back();
+  });
+  appendTo(overlay, backBtn);
+
+  // Content area
+  var content = h('div', 'therapy-detail-content');
+
+  // Title
+  appendTo(content, h('h2', null, therapy.name));
+
+  // Badge
   if (therapy.popular) {
-    appendTo(meta, h('span', 'badge badge-popular', t('popular')));
+    appendTo(content, h('span', 'badge badge-popular', t('popular')));
   } else if (therapy.recommended) {
-    appendTo(meta, h('span', 'badge badge-included', t('recommended')));
+    appendTo(content, h('span', 'badge badge-included', t('recommended')));
   } else {
-    appendTo(meta, h('span', 'badge badge-optional', t('optional')));
+    appendTo(content, h('span', 'badge badge-optional', t('optional')));
   }
-  appendTo(body, meta);
 
-  // WhatsApp book link
+  // Price + Duration row
+  var priceRow = h('div', 'therapy-detail-price-row');
+  priceRow.style.marginTop = '12px';
+  appendTo(priceRow, h('span', 'therapy-detail-price', '$' + priceInfo.price));
+  appendTo(priceRow, h('span', 'therapy-detail-dur', '\u00B7 ' + priceInfo.duration));
+  appendTo(content, priceRow);
+
+  // Divider
+  appendTo(content, h('div', 'therapy-detail-divider'));
+
+  // About section
+  appendTo(content, h('div', 'therapy-detail-label', 'About this therapy'));
+  appendTo(content, h('p', 'therapy-detail-desc', therapy.desc));
+
+  // Divider
+  appendTo(content, h('div', 'therapy-detail-divider'));
+
+  // What to expect
+  appendTo(content, h('div', 'therapy-detail-label', 'What to expect'));
+  var expectList = h('ul', 'therapy-detail-expect');
+
+  var durItem = h('li');
+  durItem.textContent = 'Session duration: ' + priceInfo.duration;
+  appendTo(expectList, durItem);
+
+  var certItem = h('li');
+  certItem.textContent = 'Performed by certified therapists';
+  appendTo(expectList, certItem);
+
+  // Context-aware third point
+  var thirdPoint = 'No downtime required';
+  var nameLower = therapy.name.toLowerCase();
+  if (nameLower.indexOf('iv') !== -1 || nameLower.indexOf('infusion') !== -1 || nameLower.indexOf('nad') !== -1) {
+    thirdPoint = 'Relax in a comfortable recliner during treatment';
+  } else if (nameLower.indexOf('massage') !== -1 || nameLower.indexOf('reflexology') !== -1) {
+    thirdPoint = 'Wear comfortable clothing; oils provided';
+  } else if (nameLower.indexOf('sauna') !== -1 || nameLower.indexOf('plunge') !== -1 || nameLower.indexOf('bath') !== -1) {
+    thirdPoint = 'Towels and robes provided';
+  } else if (nameLower.indexOf('meditation') !== -1 || nameLower.indexOf('psychology') !== -1 || nameLower.indexOf('braintap') !== -1) {
+    thirdPoint = 'Quiet, private setting for deep focus';
+  } else if (nameLower.indexOf('stem cell') !== -1 || nameLower.indexOf('ozone') !== -1 || nameLower.indexOf('blood') !== -1) {
+    thirdPoint = 'Medical supervision throughout the session';
+  }
+  var thirdItem = h('li');
+  thirdItem.textContent = thirdPoint;
+  appendTo(expectList, thirdItem);
+
+  appendTo(content, expectList);
+  appendTo(overlay, content);
+
+  // Sticky bottom bar
+  var stickyBar = h('div', 'therapy-detail-sticky');
+  var stickyPriceEl = h('div', 'therapy-detail-sticky-price', '$' + priceInfo.price);
+  var perSession = h('span');
+  perSession.textContent = ' / session';
+  appendTo(stickyPriceEl, perSession);
+  appendTo(stickyBar, stickyPriceEl);
+
   var waMsg = encodeURIComponent('Hi, I\'d like to book ' + therapy.name + ' please.');
-  var waLink = h('a', 'btn-whatsapp-book');
-  var waSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  waSvg.setAttribute('viewBox', '0 0 24 24');
-  waSvg.setAttribute('fill', 'currentColor');
-  var waPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  waPath.setAttribute('d', 'M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z');
-  waSvg.appendChild(waPath);
-  waLink.appendChild(waSvg);
-  waLink.appendChild(document.createTextNode(t('bookViaWhatsapp')));
-  waLink.href = GUEST.waBase + '&text=' + waMsg;
-  waLink.target = '_blank';
-  waLink.rel = 'noopener noreferrer';
-  waLink.addEventListener('click', function() {
+  var bookBtn = h('a', 'therapy-detail-book');
+  bookBtn.href = GUEST.waBase + '&text=' + waMsg;
+  bookBtn.target = '_blank';
+  bookBtn.rel = 'noopener noreferrer';
+  bookBtn.textContent = 'Book Now';
+  bookBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
     logEvent('booking', 'whatsapp', therapy.name);
   });
-  appendTo(body, waLink);
+  appendTo(stickyBar, bookBtn);
 
-  appendTo(card, body);
-  return card;
+  appendTo(overlay, stickyBar);
+
+  document.body.appendChild(overlay);
+  _therapyDetailEl = overlay;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeTherapyDetail() {
+  if (_therapyDetailEl) {
+    document.body.removeChild(_therapyDetailEl);
+    _therapyDetailEl = null;
+    document.body.style.overflow = '';
+  }
 }
 
 function buildTherapyCards(cat) {
@@ -5353,6 +5735,11 @@ function switchTab(tabId, skipHistory) {
 
 // Browser back/forward support (change #9)
 window.addEventListener('popstate', function(e) {
+  // Close therapy detail page on back
+  if (_therapyDetailEl) {
+    closeTherapyDetail();
+    return;
+  }
   if (e.state && e.state.tab) {
     switchTab(e.state.tab, true);
   } else {
