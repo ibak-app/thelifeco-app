@@ -2529,12 +2529,427 @@ ul, ol {
   background-size: 200% 200%; animation: shimmer 1.5s infinite;
 }
 
+/* ============================================================
+   WELLNESS SCORE DASHBOARD
+   ============================================================ */
+.wellness-score {
+  margin: 0 20px 16px;
+  padding: 24px 20px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.wellness-gauge {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 12px;
+}
+.wellness-gauge svg {
+  width: 120px;
+  height: 120px;
+  transform: rotate(-90deg);
+}
+.wellness-gauge .gauge-bg {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 8;
+}
+.wellness-gauge .gauge-fill {
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.2s var(--ease);
+}
+.wellness-gauge .gauge-value {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+.wellness-gauge .gauge-value small {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-3);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.wellness-score-label {
+  font-size: 13px;
+  color: var(--text-3);
+  margin-top: 4px;
+}
+[data-theme="dark"] .wellness-score { background: var(--surface); }
+
+/* ============================================================
+   ACHIEVEMENT BADGES
+   ============================================================ */
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 0 20px;
+  margin-bottom: 16px;
+}
+.badge-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 8px 12px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.badge-item.unlocked {
+  background: linear-gradient(135deg, #E0F7FA, #FFF5ED);
+  box-shadow: var(--shadow);
+}
+.badge-item.locked {
+  opacity: 0.5;
+  filter: grayscale(0.8);
+}
+.badge-item .badge-emoji {
+  font-size: 28px;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+.badge-item .badge-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+.badge-item .badge-date {
+  font-size: 10px;
+  color: var(--text-3);
+  margin-top: 4px;
+}
+[data-theme="dark"] .badge-item { background: #1e2a3a; }
+[data-theme="dark"] .badge-item.unlocked { background: linear-gradient(135deg, #1a3a4a, #2a2a1a); }
+
+/* ============================================================
+   DAILY WELLNESS TIP
+   ============================================================ */
+.wellness-tip-card {
+  margin: 0 20px;
+  padding: 16px 16px 16px 20px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border-left: 4px solid transparent;
+  border-image: linear-gradient(180deg, var(--teal), var(--warm)) 1;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+.wellness-tip-card .tip-icon {
+  font-size: 20px;
+  margin-bottom: 6px;
+  display: block;
+}
+.wellness-tip-card .tip-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.wellness-tip-card .tip-text {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+[data-theme="dark"] .wellness-tip-card { background: #1e2a3a; }
+
+/* ============================================================
+   GUEST FEEDBACK FORM
+   ============================================================ */
+.feedback-card {
+  margin: 0 20px;
+  padding: 20px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+.feedback-card .feedback-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.feedback-emojis {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 12px;
+}
+.feedback-emoji {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface-2);
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease);
+  cursor: pointer;
+}
+.feedback-emoji:active { transform: scale(0.9); }
+.feedback-emoji.selected {
+  border-color: var(--teal);
+  background: var(--teal-light);
+  transform: scale(1.1);
+}
+.feedback-card textarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  resize: vertical;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+.feedback-card textarea:focus { outline: none; border-color: var(--teal); }
+.feedback-actions {
+  display: flex;
+  gap: 8px;
+}
+.feedback-actions button {
+  flex: 1;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.2s var(--ease);
+}
+.feedback-save-btn {
+  background: var(--teal);
+  color: #fff;
+}
+.feedback-save-btn:active { background: var(--teal-dark); }
+.feedback-wa-btn {
+  background: var(--whatsapp-green);
+  color: #fff;
+}
+.feedback-wa-btn:active { background: #1ebe5d; }
+.feedback-submitted {
+  text-align: center;
+  padding: 12px;
+  font-size: 13px;
+  color: var(--teal);
+  font-weight: 500;
+}
+[data-theme="dark"] .feedback-card { background: var(--surface); }
+[data-theme="dark"] .feedback-card textarea { background: #1e2a3a; border-color: #2a3a4a; }
+[data-theme="dark"] .feedback-emoji { background: #1e2a3a; border-color: #2a3a4a; }
+[data-theme="dark"] .feedback-emoji.selected { background: #1a3a4a; border-color: var(--teal); }
+
+/* ============================================================
+   WHATSAPP QUICK MESSAGES
+   ============================================================ */
+.quick-msg-menu {
+  position: fixed;
+  right: 20px;
+  bottom: calc(var(--nav-height) + var(--safe-bottom) + 80px);
+  z-index: 799;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease);
+}
+.quick-msg-menu.open {
+  pointer-events: auto;
+  opacity: 1;
+}
+.quick-msg-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  transform: translateY(10px) scale(0.9);
+  opacity: 0;
+  transition: transform 0.25s var(--ease), opacity 0.25s var(--ease);
+  cursor: pointer;
+}
+.quick-msg-menu.open .quick-msg-item {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+.quick-msg-menu.open .quick-msg-item:nth-child(1) { transition-delay: 0ms; }
+.quick-msg-menu.open .quick-msg-item:nth-child(2) { transition-delay: 50ms; }
+.quick-msg-menu.open .quick-msg-item:nth-child(3) { transition-delay: 100ms; }
+.quick-msg-menu.open .quick-msg-item:nth-child(4) { transition-delay: 150ms; }
+.quick-msg-item:active { transform: scale(0.95); }
+.quick-msg-item .qm-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--teal-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+@media (min-width: 480px) {
+  .quick-msg-menu { right: calc(50% - 240px + 20px); }
+}
+[data-theme="dark"] .quick-msg-item { background: #1e2a3a; }
+
+/* ============================================================
+   ACTIVITY DURATION BADGE
+   ============================================================ */
+.duration-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--surface-2);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-3);
+  margin-left: 6px;
+  vertical-align: middle;
+}
+[data-theme="dark"] .duration-badge { background: #1e2a3a; }
+
+/* ============================================================
+   DAILY SUMMARY CARD
+   ============================================================ */
+.day-summary {
+  margin: 16px 20px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, var(--blue-light), var(--teal-light));
+  border-radius: var(--radius);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-around;
+}
+.day-summary-stat {
+  text-align: center;
+  min-width: 60px;
+}
+.day-summary-stat .summary-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--blue);
+}
+.day-summary-stat .summary-label {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+[data-theme="dark"] .day-summary { background: linear-gradient(135deg, #1a3a4a, #1a3a3a); }
+[data-theme="dark"] .day-summary-stat .summary-value { color: var(--teal); }
+
+
+/* Photo Journal */
+.photo-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: transparent; border: none; cursor: pointer;
+  color: var(--text-4); padding: 0; flex-shrink: 0;
+  transition: color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.photo-btn:hover, .photo-btn:active { background: var(--surface-2); color: var(--text-2); }
+.photo-btn.has-photo { color: var(--teal); }
+.photo-btn svg { width: 16px; height: 16px; }
+.photo-thumb { margin-top: 6px; display: inline-block; }
+.photo-thumb img { width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+
+/* Schedule Conflict Detection */
+.timeline-item.conflict {
+  border-left: 3px solid #F6A358; background: rgba(246, 163, 88, 0.06);
+  margin: 0 -20px; padding: 14px 20px; border-radius: var(--radius);
+}
+.conflict-badge {
+  display: inline-block; font-size: 0.625rem; font-weight: 700; color: #E67E22;
+  background: rgba(246, 163, 88, 0.15); padding: 1px 6px; border-radius: 4px;
+  letter-spacing: 0.04em; margin-left: 6px; vertical-align: middle;
+}
+
+/* Confetti */
+.confetti-particle {
+  position: fixed; top: -10px; width: 8px; height: 8px;
+  border-radius: 2px; z-index: 9999; pointer-events: none;
+  animation: confettiFall 3s ease-in forwards;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 1; }
+  20% { opacity: 1; }
+  50% { transform: translateY(50vh) rotate(360deg) translateX(30px); }
+  100% { transform: translateY(100vh) rotate(720deg) translateX(-20px); opacity: 0; }
+}
+
+/* Parallax targets */
+.today-hero, .page-header, .info-header { will-change: transform; }
+
+/* Data export/clear buttons */
+.data-actions { display: flex; flex-direction: column; gap: 10px; padding: 16px 20px; }
+.data-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 12px 16px; font-size: 0.875rem; font-weight: 600;
+  border-radius: var(--radius); cursor: pointer;
+  transition: background 0.2s var(--ease), transform 0.1s var(--ease);
+}
+.data-btn:active { transform: scale(0.97); }
+.data-btn.export-btn { background: var(--blue); color: #fff; border: none; }
+.data-btn.clear-btn { background: transparent; color: #E53E3E; border: 1.5px solid #E53E3E; }
+
+/* Sound toggle */
+.sound-toggle {
+  position: absolute; top: 16px; right: 66px; z-index: 2;
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #fff; padding: 0;
+  transition: background 0.2s var(--ease);
+}
+.sound-toggle:hover { background: rgba(255, 255, 255, 0.25); }
+.sound-toggle svg { width: 18px; height: 18px; }
+.sound-toggle.sound-on { background: rgba(0, 190, 214, 0.3); border-color: rgba(0, 190, 214, 0.5); }
+
+@media (prefers-reduced-motion: reduce) {
+  .today-hero, .page-header, .info-header { will-change: auto; }
+  .confetti-particle { animation: none; display: none; }
+}
+
+[data-theme="dark"] .photo-btn { color: var(--text-3); }
+[data-theme="dark"] .photo-btn.has-photo { color: var(--teal); }
+[data-theme="dark"] .timeline-item.conflict { background: rgba(246, 163, 88, 0.1); }
+[data-theme="dark"] .data-btn.export-btn { background: var(--blue-dark); }
+[data-theme="dark"] .data-btn.clear-btn { color: #FC8181; border-color: #FC8181; }
+
 /* Print stylesheet */
 @media print {
   #bottom-nav, #help-btn, .scroll-top-btn, .compare-bar,
   #auth-gate, #splash, .offline-banner, .install-banner,
   .dark-mode-toggle, .pull-indicator, .emergency-bar,
-  .note-btn, .timeline-cal-btn, .compare-overlay { display: none !important; }
+  .note-btn, .timeline-cal-btn, .compare-overlay,
+  .photo-btn, .sound-toggle, .data-actions { display: none !important; }
   #app { max-width: 100%; padding-bottom: 0; box-shadow: none; border: none; }
   .tab-panel { display: block !important; page-break-after: always; }
   body { background: #fff !important; color: #000 !important; }
@@ -2580,6 +2995,7 @@ ul, ol {
   <div id="tab-today" class="tab-panel active">
 
     <div class="today-hero">
+      <button class="sound-toggle" id="sound-toggle" type="button" aria-label="Toggle sound"></button>
       <button class="dark-mode-toggle" id="dark-mode-toggle" type="button" aria-label="Toggle dark mode"></button>
       <span class="greeting-label" id="greeting-label"></span>
       <span class="greeting-name" id="greeting-name"></span>
@@ -2602,6 +3018,8 @@ ul, ol {
 
     <div id="next-activity" class="next-activity-banner" style="display:none"></div>
 
+    <div id="wellness-score" class="wellness-score" style="display:none"></div>
+
     <div class="content-section">
       <div class="today-section-header">
         <div class="section-title" id="today-section-title"></div>
@@ -2609,6 +3027,8 @@ ul, ol {
       </div>
       <div class="timeline" id="today-timeline"></div>
     </div>
+
+    <div id="feedback-section" class="content-section" style="display:none"></div>
 
     <div class="content-section">
       <div class="section-title">Your Resort</div>
@@ -2647,6 +3067,8 @@ ul, ol {
         </div>
       </div>
     </div>
+
+    <div id="wellness-tip" class="content-section" style="display:none"></div>
 
     <div class="content-section">
       <div class="section-title">Nutrition Today</div>
@@ -2777,10 +3199,13 @@ ul, ol {
   </button>
 </nav>
 
+<!-- ==================== WHATSAPP QUICK MESSAGE MENU ==================== -->
+<div id="quick-msg-menu" class="quick-msg-menu"></div>
+
 <!-- ==================== FLOATING WHATSAPP BUTTON ==================== -->
-<a id="help-btn" style="display:none" href="https://wa.me/17582861869" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Help">
+<button id="help-btn" type="button" style="display:none" aria-label="WhatsApp Help">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-</a>
+</button>
 <script>
 'use strict';
 
@@ -3516,7 +3941,185 @@ function setNote(key, text) {
       delete notes[key];
     }
     localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+    // Badge: journaler — 5+ notes
+    var noteCount = 0;
+    var nk;
+    for (nk in notes) { if (notes[nk] && notes[nk].trim()) noteCount++; }
+    if (noteCount >= 5) unlockBadge('journaler');
   } catch(e) {}
+}
+
+// =============================================================
+// PHOTO JOURNAL
+// =============================================================
+
+var PHOTOS_KEY = 'tlc_photos';
+var MAX_PHOTOS = 10;
+
+function getPhotos() {
+  try { return JSON.parse(localStorage.getItem(PHOTOS_KEY)) || {}; } catch(e) { return {}; }
+}
+
+function setPhoto(key, dataUrl) {
+  try {
+    var photos = getPhotos();
+    photos[key] = dataUrl;
+    // Enforce FIFO limit
+    var keys = Object.keys(photos);
+    while (keys.length > MAX_PHOTOS) {
+      delete photos[keys.shift()];
+    }
+    localStorage.setItem(PHOTOS_KEY, JSON.stringify(photos));
+  } catch(e) {
+    showToast('Storage full. Remove some photos.');
+  }
+}
+
+function resizeImageToDataUrl(file, maxWidth, callback) {
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var img = new Image();
+    img.onload = function() {
+      var w = img.width;
+      var ht = img.height;
+      if (w > maxWidth) {
+        ht = Math.round(ht * (maxWidth / w));
+        w = maxWidth;
+      }
+      var canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = ht;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, ht);
+      callback(canvas.toDataURL('image/jpeg', 0.7));
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// =============================================================
+// ANIMATED COUNTER
+// =============================================================
+
+function animateCountUp(element, target, duration, suffix) {
+  if (!element || isNaN(target)) return;
+  var start = 0;
+  var startTime = null;
+  suffix = suffix || '';
+  function step(timestamp) {
+    if (!startTime) startTime = timestamp;
+    var progress = Math.min((timestamp - startTime) / duration, 1);
+    var current = Math.round(progress * target);
+    element.textContent = current + suffix;
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      element.textContent = target + suffix;
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+// =============================================================
+// CONFETTI
+// =============================================================
+
+function triggerConfetti() {
+  try {
+    if (sessionStorage.getItem('tlc_confetti_shown') === '1') return;
+    sessionStorage.setItem('tlc_confetti_shown', '1');
+  } catch(e) {}
+  var colors = ['#00BED6', '#1B5E7B', '#D4956A', '#48BB78', '#ECC94B', '#F687B3'];
+  for (var i = 0; i < 30; i++) {
+    var particle = document.createElement('div');
+    particle.className = 'confetti-particle';
+    particle.style.left = (Math.random() * 100) + 'vw';
+    particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    particle.style.animationDelay = (Math.random() * 0.8) + 's';
+    particle.style.animationDuration = (2 + Math.random() * 2) + 's';
+    var size = 6 + Math.round(Math.random() * 6);
+    particle.style.width = size + 'px';
+    particle.style.height = size + 'px';
+    document.body.appendChild(particle);
+  }
+  setTimeout(function() {
+    var particles = document.querySelectorAll('.confetti-particle');
+    for (var j = 0; j < particles.length; j++) {
+      if (particles[j].parentNode) particles[j].parentNode.removeChild(particles[j]);
+    }
+  }, 3500);
+}
+
+// =============================================================
+// NOTIFICATION SOUND (Web Audio API)
+// =============================================================
+
+var SOUND_KEY = 'tlc_sound';
+
+function getSoundPref() {
+  try { return localStorage.getItem(SOUND_KEY) === 'on'; } catch(e) { return false; }
+}
+
+function playChime() {
+  if (!getSoundPref()) return;
+  try {
+    var AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    var ctx = new AudioCtx();
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = 440;
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.2);
+  } catch(e) {}
+}
+
+// =============================================================
+// EXPORT / CLEAR DATA
+// =============================================================
+
+function exportAllData() {
+  try {
+    var data = { guest: GUEST.firstName + ' ' + GUEST.lastName, exportDate: new Date().toISOString(), appVersion: 'v3' };
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && k.indexOf('tlc_') === 0) {
+        try { data[k] = JSON.parse(localStorage.getItem(k)); } catch(e2) { data[k] = localStorage.getItem(k); }
+      }
+    }
+    var json = JSON.stringify(data, null, 2);
+    var blob = new Blob([json], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    var d = new Date();
+    a.download = 'thelifeco-data-' + d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0') + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Data exported successfully');
+    logEvent('data', 'export', 'json');
+  } catch(e) {
+    showToast('Export failed');
+  }
+}
+
+function clearAllData() {
+  var keys = [];
+  try {
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && k.indexOf('tlc_') === 0) keys.push(k);
+    }
+    keys.forEach(function(k) { localStorage.removeItem(k); });
+  } catch(e) {}
+  showToast('All data cleared');
+  logEvent('data', 'clear', keys.length + ' keys');
 }
 
 // =============================================================
@@ -3525,6 +4128,7 @@ function setNote(key, text) {
 
 function shareSchedule(dateStr) {
   logEvent('schedule', 'share', dateStr);
+  unlockBadge('socialButterfly');
   var activities = SCHEDULE[dateStr] || [];
   var dayName = getDayName(dateStr);
   var text = '\uD83C\uDF3F TheLifeCo St. Lucia \u2014 ' + dayName + '\n\n';
@@ -3714,6 +4318,80 @@ function setRating(dateStr, activityName, stars) {
   ratings[key] = stars;
   try { localStorage.setItem(RATINGS_KEY, JSON.stringify(ratings)); } catch(e) {}
   if (navigator.vibrate) navigator.vibrate(30);
+  // Badge: zenMaster — rated 10+ activities
+  var ratedCount = Object.keys(ratings).length;
+  if (ratedCount >= 10) unlockBadge('zenMaster');
+}
+
+// =============================================================
+// ACHIEVEMENT BADGES
+// =============================================================
+
+var BADGES_KEY = 'tlc_badges';
+
+var BADGE_DEFS = [
+  { id: 'earlyBird', emoji: '\uD83C\uDF05', name: 'Early Bird', desc: 'Completed morning activity before 8am' },
+  { id: 'explorer', emoji: '\uD83E\uDDED', name: 'Explorer', desc: 'Viewed all 6 explore categories' },
+  { id: 'socialButterfly', emoji: '\uD83E\uDD8B', name: 'Social Butterfly', desc: 'Shared your schedule' },
+  { id: 'zenMaster', emoji: '\uD83E\uDDD8', name: 'Zen Master', desc: 'Rated 10+ activities' },
+  { id: 'journaler', emoji: '\uD83D\uDCD3', name: 'Journaler', desc: 'Wrote 5+ activity notes' },
+  { id: 'dedicated', emoji: '\uD83C\uDFC6', name: 'Dedicated', desc: 'Completed all activities in a day' }
+];
+
+function getBadges() {
+  try { return JSON.parse(localStorage.getItem(BADGES_KEY)) || {}; } catch(e) { return {}; }
+}
+
+function unlockBadge(id) {
+  try {
+    var badges = getBadges();
+    if (badges[id] && badges[id].unlocked) return;
+    badges[id] = { unlocked: true, date: Date.now() };
+    localStorage.setItem(BADGES_KEY, JSON.stringify(badges));
+    var def = null;
+    for (var i = 0; i < BADGE_DEFS.length; i++) {
+      if (BADGE_DEFS[i].id === id) { def = BADGE_DEFS[i]; break; }
+    }
+    if (def) showToast(def.emoji + ' Badge unlocked: ' + def.name);
+    logEvent('badge', 'unlock', id);
+  } catch(e) {}
+}
+
+function checkBadges() {
+  // zenMaster: check rated count
+  var ratings = getRatings();
+  if (Object.keys(ratings).length >= 10) unlockBadge('zenMaster');
+  // journaler: check notes count
+  var notes = getNotes();
+  var noteCount = 0;
+  var nk;
+  for (nk in notes) {
+    if (notes[nk] && notes[nk].trim()) noteCount++;
+  }
+  if (noteCount >= 5) unlockBadge('journaler');
+  // explorer: check viewed categories
+  try {
+    var viewed = JSON.parse(localStorage.getItem('tlc_viewed_cats')) || [];
+    if (viewed.length >= 6) unlockBadge('explorer');
+  } catch(e) {}
+}
+
+// =============================================================
+// GUEST FEEDBACK
+// =============================================================
+
+var FEEDBACK_KEY = 'tlc_feedback';
+
+function getFeedback() {
+  try { return JSON.parse(localStorage.getItem(FEEDBACK_KEY)) || {}; } catch(e) { return {}; }
+}
+
+function setFeedback(dateStr, emoji, text) {
+  try {
+    var fb = getFeedback();
+    fb[dateStr] = { emoji: emoji, text: text || '' };
+    localStorage.setItem(FEEDBACK_KEY, JSON.stringify(fb));
+  } catch(e) {}
 }
 
 function buildRatingStars(dateStr, activityName) {
@@ -3869,11 +4547,13 @@ function getNowMinutes() {
   return now.getHours() * 60 + now.getMinutes();
 }
 
-function buildTimelineItem(activity, dateStr, currentMinutes, isToday, nowMarkedRef) {
+function buildTimelineItem(activity, dateStr, currentMinutes, isToday, nowMarkedRef, allActivities) {
   var item = h('div', 'timeline-item');
   var activityMinutes = parseTimeMinutes(activity.time);
   if (isToday && activityMinutes < currentMinutes) {
     item.className += ' completed';
+    // Badge: earlyBird — completed morning activity before 8am
+    if (activityMinutes < 480) unlockBadge('earlyBird');
   } else if (isToday && !nowMarkedRef.value) {
     item.className += ' now';
     nowMarkedRef.value = true;
@@ -3882,6 +4562,22 @@ function buildTimelineItem(activity, dateStr, currentMinutes, isToday, nowMarked
   colorBar.setAttribute('aria-hidden', 'true');
   appendTo(item, colorBar);
   var timeEl = h('div', 'timeline-time', activity.time);
+  // Duration badge
+  if (allActivities) {
+    var actIdx = -1;
+    for (var ai = 0; ai < allActivities.length; ai++) {
+      if (allActivities[ai].time === activity.time && allActivities[ai].name === activity.name) { actIdx = ai; break; }
+    }
+    if (actIdx >= 0 && actIdx < allActivities.length - 1) {
+      var curMin = parseTimeMinutes(allActivities[actIdx].time);
+      var nxtMin = parseTimeMinutes(allActivities[actIdx + 1].time);
+      var dur = nxtMin - curMin;
+      if (dur > 0) {
+        var durText = dur >= 60 ? Math.floor(dur / 60) + 'h' + (dur % 60 > 0 ? ' ' + (dur % 60) + 'm' : '') : dur + 'm';
+        appendTo(timeEl, h('span', 'duration-badge', durText));
+      }
+    }
+  }
   appendTo(item, timeEl);
   var content = h('div', 'timeline-content');
   var nameEl = h('h4', null, activity.name);
@@ -3952,11 +4648,78 @@ function buildTimelineItem(activity, dateStr, currentMinutes, isToday, nowMarked
   if (desc) {
     item.style.cursor = 'pointer';
     item.addEventListener('click', function(e) {
-      if (e.target.closest && (e.target.closest('.timeline-cal-btn') || e.target.closest('.note-btn') || e.target.closest('.note-area'))) return;
+      if (e.target.closest && (e.target.closest('.timeline-cal-btn') || e.target.closest('.note-btn') || e.target.closest('.note-area') || e.target.closest('.photo-btn'))) return;
       item.classList.toggle('expanded');
     });
   }
   appendTo(item, noteBtn);
+
+  // Photo button
+  var photoKey = dateStr + '_' + activity.time + '_' + activity.name;
+  var photoBtn = h('button', 'photo-btn');
+  photoBtn.setAttribute('type', 'button');
+  photoBtn.setAttribute('aria-label', 'Add photo');
+  var camSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  camSvg.setAttribute('viewBox', '0 0 24 24');
+  camSvg.setAttribute('fill', 'none');
+  camSvg.setAttribute('stroke', 'currentColor');
+  camSvg.setAttribute('stroke-width', '2');
+  camSvg.setAttribute('stroke-linecap', 'round');
+  camSvg.setAttribute('stroke-linejoin', 'round');
+  var camPath1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  camPath1.setAttribute('d', 'M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z');
+  camSvg.appendChild(camPath1);
+  var camCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  camCircle.setAttribute('cx', '12'); camCircle.setAttribute('cy', '13'); camCircle.setAttribute('r', '4');
+  camSvg.appendChild(camCircle);
+  photoBtn.appendChild(camSvg);
+
+  var existingPhoto = getPhotos()[photoKey];
+  if (existingPhoto) photoBtn.classList.add('has-photo');
+
+  // Photo thumbnail display
+  var photoThumbEl = null;
+  if (existingPhoto) {
+    photoThumbEl = h('div', 'photo-thumb');
+    var thumbImg = document.createElement('img');
+    thumbImg.src = existingPhoto;
+    thumbImg.alt = 'Photo';
+    photoThumbEl.appendChild(thumbImg);
+    appendTo(content, photoThumbEl);
+  }
+
+  // Hidden file input
+  var fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/*';
+  fileInput.style.display = 'none';
+  fileInput.addEventListener('change', function() {
+    if (fileInput.files && fileInput.files[0]) {
+      resizeImageToDataUrl(fileInput.files[0], 200, function(dataUrl) {
+        setPhoto(photoKey, dataUrl);
+        photoBtn.classList.add('has-photo');
+        // Add or replace thumbnail
+        var existing = content.querySelector('.photo-thumb');
+        if (existing) existing.parentNode.removeChild(existing);
+        var newThumb = h('div', 'photo-thumb');
+        var newImg = document.createElement('img');
+        newImg.src = dataUrl;
+        newImg.alt = 'Photo';
+        newThumb.appendChild(newImg);
+        appendTo(content, newThumb);
+        showToast('Photo saved');
+        logEvent('photo', 'capture', activity.name);
+      });
+    }
+  });
+  item.appendChild(fileInput);
+
+  photoBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    fileInput.click();
+  });
+
+  appendTo(item, photoBtn);
   appendTo(item, createCalBtn(activity.name, dateStr, activity.time));
   return item;
 }
@@ -3992,6 +4755,7 @@ function buildNextActivityBanner(activities) {
   if (diff <= 15 && diff > 0 && _lastRemindedActivity !== reminderKey) {
     _lastRemindedActivity = reminderKey;
     showToast('Starting in ' + diff + ' min: ' + nextActivity.name);
+    playChime();
     logEvent('reminder', 'toast', nextActivity.name);
   }
 }
@@ -4127,10 +4891,42 @@ function initToday() {
     var currentMinutes = getNowMinutes();
     var nowMarkedRef = { value: false };
     activities.forEach(function(activity) {
-      appendTo(timelineContainer, buildTimelineItem(activity, todayStr, currentMinutes, true, nowMarkedRef));
+      appendTo(timelineContainer, buildTimelineItem(activity, todayStr, currentMinutes, true, nowMarkedRef, activities));
     });
     if (activities.length === 0) {
       appendTo(timelineContainer, h('div', 'empty-state', 'No activities scheduled for today.'));
+    }
+    // Conflict detection for today timeline
+    if (activities.length > 1) {
+      var todayTlItems = timelineContainer.querySelectorAll('.timeline-item');
+      for (var cj = 0; cj < activities.length - 1; cj++) {
+        if (activities[cj].time === activities[cj + 1].time) {
+          if (todayTlItems[cj]) {
+            todayTlItems[cj].classList.add('conflict');
+            var cbadge1 = h('span', 'conflict-badge', 'Conflict');
+            var ch4a = todayTlItems[cj].querySelector('h4');
+            if (ch4a && ch4a.parentNode) ch4a.parentNode.insertBefore(cbadge1, ch4a.nextSibling);
+          }
+          if (todayTlItems[cj + 1]) {
+            todayTlItems[cj + 1].classList.add('conflict');
+            var cbadge2 = h('span', 'conflict-badge', 'Conflict');
+            var ch4b = todayTlItems[cj + 1].querySelector('h4');
+            if (ch4b && ch4b.parentNode) ch4b.parentNode.insertBefore(cbadge2, ch4b.nextSibling);
+          }
+        }
+      }
+    }
+  }
+
+  // Badge: dedicated — completed all activities in a day
+  if (activities.length > 0) {
+    var allCompleted = true;
+    for (var ci = 0; ci < activities.length; ci++) {
+      if (parseTimeMinutes(activities[ci].time) >= getNowMinutes()) { allCompleted = false; break; }
+    }
+    if (allCompleted) {
+      unlockBadge('dedicated');
+      triggerConfetti();
     }
   }
 
@@ -4238,6 +5034,179 @@ function initToday() {
     }
   })();
 
+
+  // =============================================================
+  // WELLNESS SCORE DASHBOARD
+  // =============================================================
+  (function buildWellnessScore() {
+    var scoreEl = document.getElementById('wellness-score');
+    if (!scoreEl) return;
+    while (scoreEl.firstChild) scoreEl.removeChild(scoreEl.firstChild);
+    var completedCount = 0;
+    var totalCount = activities.length;
+    var currentMin = getNowMinutes();
+    for (var si = 0; si < activities.length; si++) {
+      if (parseTimeMinutes(activities[si].time) < currentMin) completedCount++;
+    }
+    var completionPct = totalCount > 0 ? completedCount / totalCount : 0;
+    var allRatings = getRatings();
+    var ratingSum = 0;
+    var ratingCount = 0;
+    var rk;
+    for (rk in allRatings) {
+      if (rk.indexOf(todayStr) === 0) { ratingSum += allRatings[rk]; ratingCount++; }
+    }
+    var avgRating = ratingCount > 0 ? ratingSum / (ratingCount * 5) : 0;
+    var favCount = getFavorites().length;
+    var favScore = Math.min(favCount / 10, 1);
+    var wsScore = Math.round(completionPct * 40 + avgRating * 40 + favScore * 20);
+    if (wsScore < 0) wsScore = 0;
+    if (wsScore > 100) wsScore = 100;
+    var wsGauge = h('div', 'wellness-gauge');
+    var wsSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    wsSvg.setAttribute('viewBox', '0 0 120 120');
+    var wsR = 50;
+    var wsC = 2 * Math.PI * wsR;
+    var wsBg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    wsBg.setAttribute('cx', '60'); wsBg.setAttribute('cy', '60'); wsBg.setAttribute('r', String(wsR));
+    wsBg.setAttribute('class', 'gauge-bg');
+    wsSvg.appendChild(wsBg);
+    var wsFill = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    wsFill.setAttribute('cx', '60'); wsFill.setAttribute('cy', '60'); wsFill.setAttribute('r', String(wsR));
+    wsFill.setAttribute('class', 'gauge-fill');
+    wsFill.setAttribute('stroke-dasharray', String(wsC));
+    wsFill.setAttribute('stroke-dashoffset', String(wsC));
+    wsSvg.appendChild(wsFill);
+    wsGauge.appendChild(wsSvg);
+    var wsValDiv = h('div', 'gauge-value');
+    var wsNumSpan = h('span', null, '0');
+    appendTo(wsValDiv, wsNumSpan);
+    appendTo(wsValDiv, h('small', null, 'Wellness'));
+    appendTo(wsGauge, wsValDiv);
+    appendTo(scoreEl, wsGauge);
+    var wsLbl = h('div', 'wellness-score-label');
+    if (wsScore >= 80) wsLbl.textContent = 'Excellent progress today!';
+    else if (wsScore >= 50) wsLbl.textContent = 'Good progress \u2014 keep going!';
+    else wsLbl.textContent = 'Your wellness journey is underway';
+    appendTo(scoreEl, wsLbl);
+    scoreEl.style.display = '';
+    setTimeout(function() {
+      wsFill.setAttribute('stroke-dashoffset', String(wsC - (wsScore / 100) * wsC));
+      var wsT0 = Date.now();
+      function wsAnim() {
+        var el = Date.now() - wsT0;
+        var p = Math.min(el / 1200, 1);
+        wsNumSpan.textContent = String(Math.round((1 - Math.pow(1 - p, 3)) * wsScore));
+        if (p < 1) requestAnimationFrame(wsAnim);
+      }
+      wsAnim();
+    }, 200);
+  })();
+
+  // =============================================================
+  // DAILY WELLNESS TIP
+  // =============================================================
+  (function buildWellnessTip() {
+    var tipEl = document.getElementById('wellness-tip');
+    if (!tipEl) return;
+    while (tipEl.firstChild) tipEl.removeChild(tipEl.firstChild);
+    var wtTips = [
+      'Stay hydrated \u2014 aim for 2-3 liters of water today',
+      'Listen to your body. Light headaches are normal during detox',
+      'Try a 10-minute meditation to complement your cleanse',
+      'You are halfway! Your body is adjusting beautifully',
+      'Gentle walking or yoga enhances lymphatic drainage',
+      'Journal your energy levels \u2014 you may notice improvements',
+      'Congratulations on completing your cleanse journey!'
+    ];
+    var wtIdx = dayNum - 1;
+    if (wtIdx < 0) wtIdx = 0;
+    if (wtIdx >= wtTips.length) wtIdx = wtTips.length - 1;
+    var wtCard = h('div', 'wellness-tip-card');
+    appendTo(wtCard, h('span', 'tip-icon', '\uD83C\uDF3F'));
+    appendTo(wtCard, h('div', 'tip-label', 'Day ' + dayNum + ' Tip'));
+    appendTo(wtCard, h('div', 'tip-text', wtTips[wtIdx]));
+    appendTo(tipEl, wtCard);
+    tipEl.style.display = '';
+  })();
+
+  // =============================================================
+  // GUEST FEEDBACK FORM
+  // =============================================================
+  (function buildFeedbackForm() {
+    var fbSec = document.getElementById('feedback-section');
+    if (!fbSec) return;
+    while (fbSec.firstChild) fbSec.removeChild(fbSec.firstChild);
+    var allFb = getFeedback();
+    var curFb = allFb[todayStr];
+    var fbCard = h('div', 'feedback-card');
+    appendTo(fbCard, h('div', 'feedback-title', 'How was your day?'));
+    if (curFb) {
+      var fbIconList = ['\uD83D\uDE29', '\uD83D\uDE1F', '\uD83D\uDE10', '\uD83D\uDE0A', '\uD83E\uDD29'];
+      var fbDoneEl = h('div', 'feedback-submitted');
+      fbDoneEl.textContent = 'You rated today ' + (fbIconList[curFb.emoji - 1] || '') + (curFb.text ? ' \u2014 ' + curFb.text : '');
+      appendTo(fbCard, fbDoneEl);
+      appendTo(fbSec, fbCard);
+      fbSec.style.display = '';
+      return;
+    }
+    var fbEmojiDiv = h('div', 'feedback-emojis');
+    var fbEmojiData = [
+      { val: 1, icon: '\uD83D\uDE29', label: 'Terrible' },
+      { val: 2, icon: '\uD83D\uDE1F', label: 'Bad' },
+      { val: 3, icon: '\uD83D\uDE10', label: 'Okay' },
+      { val: 4, icon: '\uD83D\uDE0A', label: 'Good' },
+      { val: 5, icon: '\uD83E\uDD29', label: 'Amazing' }
+    ];
+    var fbSelEmoji = 0;
+    fbEmojiData.forEach(function(ed) {
+      var eBtn = h('button', 'feedback-emoji');
+      eBtn.setAttribute('type', 'button');
+      eBtn.setAttribute('aria-label', ed.label);
+      eBtn.textContent = ed.icon;
+      eBtn.addEventListener('click', function() {
+        fbSelEmoji = ed.val;
+        fbEmojiDiv.querySelectorAll('.feedback-emoji').forEach(function(b) { b.classList.remove('selected'); });
+        eBtn.classList.add('selected');
+      });
+      appendTo(fbEmojiDiv, eBtn);
+    });
+    appendTo(fbCard, fbEmojiDiv);
+    var fbTxt = document.createElement('textarea');
+    fbTxt.placeholder = 'Any comments? (optional)';
+    fbCard.appendChild(fbTxt);
+    var fbActs = h('div', 'feedback-actions');
+    var fbSaveBtn = h('button', 'feedback-save-btn', 'Save');
+    fbSaveBtn.setAttribute('type', 'button');
+    fbSaveBtn.addEventListener('click', function() {
+      if (!fbSelEmoji) { showToast('Please select a rating'); return; }
+      setFeedback(todayStr, fbSelEmoji, fbTxt.value);
+      logEvent('feedback', 'save', String(fbSelEmoji));
+      showToast('Feedback saved!');
+      while (fbCard.firstChild) fbCard.removeChild(fbCard.firstChild);
+      appendTo(fbCard, h('div', 'feedback-title', 'How was your day?'));
+      appendTo(fbCard, h('div', 'feedback-submitted', 'Thank you for your feedback!'));
+    });
+    appendTo(fbActs, fbSaveBtn);
+    var fbWaBtn = h('button', 'feedback-wa-btn', 'Send via WhatsApp');
+    fbWaBtn.setAttribute('type', 'button');
+    fbWaBtn.addEventListener('click', function() {
+      if (!fbSelEmoji) { showToast('Please select a rating'); return; }
+      setFeedback(todayStr, fbSelEmoji, fbTxt.value);
+      var eLbl = fbEmojiData[fbSelEmoji - 1] ? fbEmojiData[fbSelEmoji - 1].icon + ' ' + fbEmojiData[fbSelEmoji - 1].label : '';
+      var fbMsg = 'Day ' + dayNum + ' Feedback: ' + eLbl;
+      if (fbTxt.value.trim()) fbMsg += '\n' + fbTxt.value.trim();
+      window.open(GUEST.waBase + '?text=' + encodeURIComponent(fbMsg), '_blank');
+      logEvent('feedback', 'whatsapp', String(fbSelEmoji));
+    });
+    appendTo(fbActs, fbWaBtn);
+    appendTo(fbCard, fbActs);
+    appendTo(fbSec, fbCard);
+    fbSec.style.display = '';
+  })();
+
+  checkBadges();
+
   // Today updated - dynamic
   var updatedEl = document.getElementById('today-updated');
   if (updatedEl) {
@@ -4332,7 +5301,7 @@ function loadScheduleDay(dateStr) {
   var nowMarkedRef = { value: false };
 
   activities.forEach(function(activity) {
-    var item = buildTimelineItem(activity, dateStr, currentMinutes, isToday, nowMarkedRef);
+    var item = buildTimelineItem(activity, dateStr, currentMinutes, isToday, nowMarkedRef, activities);
     // Add rating stars for completed schedule items
     var activityMinutes = parseTimeMinutes(activity.time);
     var isCompletedSched = isToday && activityMinutes < currentMinutes;
@@ -4346,6 +5315,63 @@ function loadScheduleDay(dateStr) {
   if (activities.length === 0) {
     var empty = h('div', 'empty-state', t('noActivities'));
     appendTo(timelineContainer, empty);
+  }
+
+  // Conflict detection
+  if (activities.length > 1) {
+    var tlItems = timelineContainer.querySelectorAll('.timeline-item');
+    for (var ci = 0; ci < activities.length - 1; ci++) {
+      if (activities[ci].time === activities[ci + 1].time) {
+        if (tlItems[ci]) {
+          tlItems[ci].classList.add('conflict');
+          var badge1 = h('span', 'conflict-badge', 'Conflict');
+          var h4a = tlItems[ci].querySelector('h4');
+          if (h4a && h4a.parentNode) h4a.parentNode.insertBefore(badge1, h4a.nextSibling);
+        }
+        if (tlItems[ci + 1]) {
+          tlItems[ci + 1].classList.add('conflict');
+          var badge2 = h('span', 'conflict-badge', 'Conflict');
+          var h4b = tlItems[ci + 1].querySelector('h4');
+          if (h4b && h4b.parentNode) h4b.parentNode.insertBefore(badge2, h4b.nextSibling);
+        }
+      }
+    }
+  }
+
+  // Daily Summary Card
+  if (activities.length > 0) {
+    var summaryCard = h('div', 'day-summary');
+    // Total activities
+    var sumStat1 = h('div', 'day-summary-stat');
+    appendTo(sumStat1, h('div', 'summary-value', String(activities.length)));
+    appendTo(sumStat1, h('div', 'summary-label', 'Activities'));
+    appendTo(summaryCard, sumStat1);
+    // Type breakdown
+    var typeCounts = {};
+    activities.forEach(function(a) {
+      var label = TYPE_LABELS[a.type] || a.type;
+      typeCounts[label] = (typeCounts[label] || 0) + 1;
+    });
+    var breakdownParts = [];
+    var tk;
+    for (tk in typeCounts) {
+      breakdownParts.push(typeCounts[tk] + ' ' + tk.toLowerCase());
+    }
+    var sumStat2 = h('div', 'day-summary-stat');
+    appendTo(sumStat2, h('div', 'summary-value', breakdownParts.join(', ')));
+    appendTo(sumStat2, h('div', 'summary-label', 'Breakdown'));
+    sumStat2.querySelector('.summary-value').style.fontSize = '13px';
+    appendTo(summaryCard, sumStat2);
+    // Total hours
+    var firstMin = parseTimeMinutes(activities[0].time);
+    var lastMin = parseTimeMinutes(activities[activities.length - 1].time);
+    var totalMin = lastMin - firstMin;
+    var totalHrs = totalMin >= 60 ? Math.floor(totalMin / 60) + 'h ' + (totalMin % 60) + 'm' : totalMin + 'm';
+    var sumStat3 = h('div', 'day-summary-stat');
+    appendTo(sumStat3, h('div', 'summary-value', totalHrs));
+    appendTo(sumStat3, h('div', 'summary-label', 'Total Span'));
+    appendTo(summaryCard, sumStat3);
+    appendTo(timelineContainer, summaryCard);
   }
 }
 
@@ -4410,6 +5436,15 @@ function initExplore() {
 
     card.addEventListener('click', function() {
       logEvent('explore', 'category', cat.title);
+      // Badge: explorer — track viewed categories
+      try {
+        var viewedCats = JSON.parse(localStorage.getItem('tlc_viewed_cats')) || [];
+        if (viewedCats.indexOf(cat.id) === -1) {
+          viewedCats.push(cat.id);
+          localStorage.setItem('tlc_viewed_cats', JSON.stringify(viewedCats));
+          if (viewedCats.length >= 6) unlockBadge('explorer');
+        }
+      } catch(e) {}
       categoriesContainer.classList.add('hidden');
       if (therapiesContainer) therapiesContainer.classList.remove('hidden');
       if (backBtn) backBtn.classList.remove('hidden');
@@ -4664,6 +5699,30 @@ function initInfo() {
 
   accordion.parentNode.insertBefore(emergencySection, accordion);
 
+  // Achievement Badges section
+  (function buildBadgesSection() {
+    var badgesData = getBadges();
+    var badgeSection = h('div', 'content-section');
+    badgeSection.style.padding = '0 0 8px';
+    appendTo(badgeSection, h('div', 'section-title', 'Your Achievements'));
+    var grid = h('div', 'badge-grid');
+    BADGE_DEFS.forEach(function(def) {
+      var isUnlocked = badgesData[def.id] && badgesData[def.id].unlocked;
+      var bItem = h('div', 'badge-item ' + (isUnlocked ? 'unlocked' : 'locked'));
+      appendTo(bItem, h('div', 'badge-emoji', def.emoji));
+      appendTo(bItem, h('div', 'badge-name', def.name));
+      if (isUnlocked && badgesData[def.id].date) {
+        var d = new Date(badgesData[def.id].date);
+        appendTo(bItem, h('div', 'badge-date', d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })));
+      } else {
+        appendTo(bItem, h('div', 'badge-date', 'Locked'));
+      }
+      appendTo(grid, bItem);
+    });
+    appendTo(badgeSection, grid);
+    accordion.parentNode.insertBefore(badgeSection, accordion);
+  })();
+
   INFO_SECTIONS.forEach(function(section) {
     var item = h('div', 'accordion-item');
 
@@ -4699,6 +5758,22 @@ function initInfo() {
     appendTo(item, content);
     appendTo(accordion, item);
   });
+
+  // Export/Clear data buttons
+  var dataSection = h('div', 'data-actions');
+  var exportBtn = h('button', 'data-btn export-btn', 'Export My Data');
+  exportBtn.setAttribute('type', 'button');
+  exportBtn.addEventListener('click', function() { exportAllData(); });
+  appendTo(dataSection, exportBtn);
+  var clearBtn = h('button', 'data-btn clear-btn', 'Clear My Data');
+  clearBtn.setAttribute('type', 'button');
+  clearBtn.addEventListener('click', function() {
+    if (confirm('Are you sure you want to clear all your data? This includes notes, photos, favorites, and preferences.')) {
+      clearAllData();
+    }
+  });
+  appendTo(dataSection, clearBtn);
+  accordion.parentNode.appendChild(dataSection);
 }
 
 function buildInfoContent(id) {
@@ -5089,6 +6164,180 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
 })();
 
 // =============================================================
+// SESSION TIMEOUT
+// =============================================================
+
+(function initSessionTimeout() {
+  var TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
+  var WARNING_MS = 25 * 60 * 1000; // 25 minutes
+  var _sessionTimer = null;
+  var _warningTimer = null;
+
+  function resetSessionTimer() {
+    if (_sessionTimer) clearTimeout(_sessionTimer);
+    if (_warningTimer) clearTimeout(_warningTimer);
+    _warningTimer = setTimeout(function() {
+      showToast('Session expires in 5 minutes');
+    }, WARNING_MS);
+    _sessionTimer = setTimeout(function() {
+      try { sessionStorage.removeItem(AUTH_KEY); } catch(e) {}
+      location.reload();
+    }, TIMEOUT_MS);
+  }
+
+  resetSessionTimer();
+  ['click', 'touchstart', 'keydown'].forEach(function(evt) {
+    document.addEventListener(evt, resetSessionTimer, { passive: true });
+  });
+})();
+
+// =============================================================
+// SOUND TOGGLE
+// =============================================================
+
+(function initSoundToggle() {
+  var btn = document.getElementById('sound-toggle');
+  if (!btn) return;
+
+  function setSoundIcon(isOn) {
+    while (btn.firstChild) btn.removeChild(btn.firstChild);
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '2');
+    svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round');
+    if (isOn) {
+      var p1 = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      p1.setAttribute('points', '11 5 6 9 2 9 2 15 6 15 11 19 11 5');
+      svg.appendChild(p1);
+      var p2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p2.setAttribute('d', 'M19.07 4.93a10 10 0 0 1 0 14.14');
+      svg.appendChild(p2);
+      var p3 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p3.setAttribute('d', 'M15.54 8.46a5 5 0 0 1 0 7.07');
+      svg.appendChild(p3);
+    } else {
+      var p4 = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      p4.setAttribute('points', '11 5 6 9 2 9 2 15 6 15 11 19 11 5');
+      svg.appendChild(p4);
+      var l1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      l1.setAttribute('x1', '23'); l1.setAttribute('y1', '9');
+      l1.setAttribute('x2', '17'); l1.setAttribute('y2', '15');
+      svg.appendChild(l1);
+      var l2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      l2.setAttribute('x1', '17'); l2.setAttribute('y1', '9');
+      l2.setAttribute('x2', '23'); l2.setAttribute('y2', '15');
+      svg.appendChild(l2);
+    }
+    btn.appendChild(svg);
+    btn.classList.toggle('sound-on', isOn);
+  }
+
+  var isOn = getSoundPref();
+  setSoundIcon(isOn);
+
+  btn.addEventListener('click', function() {
+    var current = getSoundPref();
+    var next = !current;
+    try { localStorage.setItem(SOUND_KEY, next ? 'on' : 'off'); } catch(e) {}
+    setSoundIcon(next);
+    if (next) playChime();
+    logEvent('settings', 'sound', next ? 'on' : 'off');
+  });
+})();
+
+// =============================================================
+// PARALLAX SCROLL
+// =============================================================
+
+(function initParallax() {
+  var mql = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (mql.matches) return;
+
+  var parallaxEls = [];
+  var selectors = ['.today-hero', '.page-header', '.info-header'];
+  selectors.forEach(function(sel) {
+    var els = document.querySelectorAll(sel);
+    for (var i = 0; i < els.length; i++) parallaxEls.push(els[i]);
+  });
+
+  if (parallaxEls.length === 0) return;
+  var ticking = false;
+
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function() {
+      var scrollY = window.scrollY || window.pageYOffset;
+      parallaxEls.forEach(function(el) {
+        var rect = el.getBoundingClientRect();
+        if (rect.bottom > 0 && rect.top < window.innerHeight) {
+          var offset = scrollY * 0.4;
+          el.style.transform = 'translateY(' + (offset * 0.3) + 'px)';
+        }
+      });
+      ticking = false;
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+})();
+
+// =============================================================
+// ANIMATED COUNTER (IntersectionObserver)
+// =============================================================
+
+(function initAnimatedCounters() {
+  if (!('IntersectionObserver' in window)) return;
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !entry.target.getAttribute('data-counted')) {
+        entry.target.setAttribute('data-counted', '1');
+        var text = entry.target.textContent;
+        var numMatch = text.match(/(\d+)/);
+        if (numMatch) {
+          var target = parseInt(numMatch[1], 10);
+          var suffix = text.replace(numMatch[1], '');
+          animateCountUp(entry.target, target, 800, suffix);
+        }
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  // Observe progress percentage
+  var pctEl = document.getElementById('progress-pct');
+  if (pctEl) {
+    pctEl.classList.add('animate-count');
+    observer.observe(pctEl);
+  }
+
+  // Observe stat numbers
+  function observeStatNums() {
+    var statNums = document.querySelectorAll('.stat-num');
+    statNums.forEach(function(el) {
+      if (!el.getAttribute('data-counted') && !el.classList.contains('animate-count')) {
+        el.classList.add('animate-count');
+        observer.observe(el);
+      }
+    });
+  }
+
+  // Run initially and on mutation for dynamically built content
+  observeStatNums();
+  var appEl = document.getElementById('app');
+  if (appEl && window.MutationObserver) {
+    var mo = new MutationObserver(function() {
+      observeStatNums();
+    });
+    mo.observe(appEl, { childList: true, subtree: true });
+  }
+})();
+
+// =============================================================
 // BOOT
 // =============================================================
 
@@ -5102,9 +6351,47 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
     switchTab(hash, true);
   }
 
-  // WhatsApp bounce animation
+  // WhatsApp FAB with Quick Messages
   var helpBtn = document.getElementById('help-btn');
-  if (helpBtn) {
+  var quickMenu = document.getElementById('quick-msg-menu');
+  if (helpBtn && quickMenu) {
+    // Build quick message items
+    var quickMsgs = [
+      { icon: '\uD83D\uDCAC', label: 'Chat on WhatsApp', msg: '' },
+      { icon: '\u23F0', label: 'Running late', msg: 'Hi, I am running a bit late for my next session. Please let the team know.' },
+      { icon: '\uD83D\uDE4B', label: 'Need assistance', msg: 'Hi, I need some assistance at the resort. Could someone help me?' },
+      { icon: '\uD83C\uDF7D\uFE0F', label: 'Room service', msg: 'Hi, I would like to request room service. Please let me know the available options.' }
+    ];
+    quickMsgs.forEach(function(qm) {
+      var qmItem = h('div', 'quick-msg-item');
+      appendTo(qmItem, h('span', 'qm-icon', qm.icon));
+      appendTo(qmItem, h('span', null, qm.label));
+      qmItem.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var url = GUEST.waBase;
+        if (qm.msg) url += '?text=' + encodeURIComponent(qm.msg);
+        window.open(url, '_blank');
+        quickMenu.classList.remove('open');
+        logEvent('whatsapp', 'quick-msg', qm.label);
+      });
+      appendTo(quickMenu, qmItem);
+    });
+
+    var qmOpen = false;
+    helpBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      qmOpen = !qmOpen;
+      quickMenu.classList.toggle('open', qmOpen);
+    });
+    document.addEventListener('click', function(e) {
+      if (qmOpen && !quickMenu.contains(e.target) && e.target !== helpBtn) {
+        qmOpen = false;
+        quickMenu.classList.remove('open');
+      }
+    });
+
+    // Bounce animation
     setTimeout(function() {
       helpBtn.classList.add('bounce');
       function onBounceEnd() {
