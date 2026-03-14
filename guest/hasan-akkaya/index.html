@@ -324,7 +324,13 @@ ul, ol {
 
 .tab-panel.active {
   display: block;
-  animation: fadeInUp 0.3s ease forwards;
+  animation: fadeInUp 0.3s var(--ease) forwards;
+}
+.tab-panel.active.slide-left {
+  animation: slideInLeft 0.3s var(--ease) forwards;
+}
+.tab-panel.active.slide-right {
+  animation: slideInRight 0.3s var(--ease) forwards;
 }
 
 @keyframes fadeInUp {
@@ -1436,9 +1442,223 @@ ul, ol {
   border-radius: var(--radius-sm);
 }
 
+.skeleton-line {
+  height: 14px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--border) 50%, var(--surface-2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-line:nth-child(2) { width: 85%; }
+.skeleton-line:nth-child(3) { width: 70%; }
+.skeleton-line:nth-child(4) { width: 90%; }
+
+.skeleton-block {
+  padding: 20px;
+}
+
+.skeleton-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+}
+
+.skeleton-card .skeleton-line:last-child {
+  margin-bottom: 0;
+}
+
 @keyframes shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
+}
+
+/* Pull-to-refresh indicator */
+#pull-indicator {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50px);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: transform 0.2s var(--ease), opacity 0.2s var(--ease);
+  opacity: 0;
+  pointer-events: none;
+}
+
+#pull-indicator.visible {
+  opacity: 1;
+}
+
+#pull-indicator.refreshing {
+  transform: translateX(-50%) translateY(20px);
+  opacity: 1;
+}
+
+#pull-indicator svg {
+  width: 20px;
+  height: 20px;
+  color: var(--teal);
+  transition: transform 0.2s var(--ease);
+}
+
+#pull-indicator.ready svg {
+  transform: rotate(180deg);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+#pull-indicator.refreshing svg {
+  animation: spin 0.8s linear infinite;
+}
+
+/* Scroll-to-top button */
+.scroll-top-btn {
+  position: fixed;
+  bottom: calc(var(--nav-height) + var(--safe-bottom) + 16px);
+  right: 16px;
+  z-index: 80;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: #fff;
+  border: none;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.7) translateY(10px);
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+  pointer-events: none;
+}
+
+.scroll-top-btn.visible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+}
+
+.scroll-top-btn:active {
+  transform: scale(0.92) translateY(0);
+}
+
+.scroll-top-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Progress ring */
+.progress-ring-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.progress-ring-circle-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 3;
+}
+
+.progress-ring-circle {
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s var(--ease);
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+/* Activity notes */
+.note-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-4);
+  padding: 0;
+  flex-shrink: 0;
+  transition: color 0.2s var(--ease), background 0.2s var(--ease);
+}
+
+.note-btn:hover,
+.note-btn:active {
+  background: var(--surface-2);
+  color: var(--text-2);
+}
+
+.note-btn.has-note {
+  color: var(--warm);
+}
+
+.note-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.note-area {
+  display: none;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.note-area.open {
+  display: block;
+}
+
+.note-area textarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--text);
+  background: var(--surface);
+  resize: vertical;
+  line-height: 1.5;
+  outline: none;
+  transition: border-color 0.2s var(--ease);
+}
+
+.note-area textarea:focus {
+  border-color: var(--teal);
+}
+
+.note-saved-indicator {
+  font-size: 11px;
+  color: var(--teal);
+  margin-top: 4px;
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
+}
+
+.note-saved-indicator.show {
+  opacity: 1;
 }
 
 /* Transitions */
@@ -1763,6 +1983,27 @@ ul, ol {
 }
 [data-theme="dark"] .schedule-legend .legend-item {
   color: var(--text-2);
+}
+[data-theme="dark"] #pull-indicator {
+  background: var(--surface);
+}
+[data-theme="dark"] .scroll-top-btn {
+  background: var(--teal-dark);
+}
+[data-theme="dark"] .note-area textarea {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--text);
+}
+[data-theme="dark"] .note-btn {
+  color: var(--text-3);
+}
+[data-theme="dark"] .note-btn.has-note {
+  color: var(--warm);
+}
+[data-theme="dark"] .skeleton-card {
+  background: var(--surface);
+  border-color: var(--border);
 }
 @media (prefers-color-scheme: dark) {
   html:not([data-theme="light"]):not([data-theme="dark"]) {
@@ -2092,6 +2333,214 @@ ul, ol {
 .rating-star:hover { transform: scale(1.2); }
 .rating-star.active { color: #F59E0B; }
 .rating-label { font-size: 11px; color: var(--text-4); margin-left: 8px; }
+
+/* ============================================================
+   RECENTLY VIEWED PILLS
+   ============================================================ */
+.recent-section { padding: 0 20px 8px; }
+.recent-section .section-label { margin-bottom: 6px; }
+.recent-pills {
+  display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none;
+  -webkit-overflow-scrolling: touch; padding-bottom: 4px;
+}
+.recent-pills::-webkit-scrollbar { display: none; }
+.recent-pill {
+  flex-shrink: 0; padding: 6px 14px; font-size: 0.75rem; font-weight: 500;
+  border-radius: var(--radius-full); background: var(--teal-light); color: var(--teal-dark);
+  white-space: nowrap; cursor: pointer; transition: background 0.2s var(--ease), transform 0.15s var(--ease);
+}
+.recent-pill:active { transform: scale(0.95); background: var(--teal); color: #fff; }
+
+/* ============================================================
+   COMPARE MODE
+   ============================================================ */
+.compare-toggle {
+  padding: 6px 14px; font-size: 0.75rem; font-weight: 600; border-radius: var(--radius-full);
+  background: var(--surface-2); color: var(--text-2); border: 1.5px solid var(--border);
+  transition: all 0.2s var(--ease); cursor: pointer; margin-left: 8px;
+}
+.compare-toggle.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+.therapy-card.compare-selected { border: 2px solid var(--teal); box-shadow: 0 0 0 3px rgba(0, 190, 214, 0.15); }
+.compare-bar {
+  position: fixed; bottom: calc(var(--nav-height) + var(--safe-bottom) + 8px);
+  left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 448px;
+  background: var(--surface); border: 1.5px solid var(--teal); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg); z-index: 850; padding: 12px 16px; display: none;
+}
+.compare-bar.show { display: block; }
+.compare-bar-items { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.compare-bar-chip {
+  display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;
+  font-size: 0.6875rem; font-weight: 500; background: var(--teal-light);
+  color: var(--teal-dark); border-radius: var(--radius-full);
+}
+.compare-bar-chip .remove-chip { cursor: pointer; font-weight: 700; margin-left: 2px; opacity: 0.6; }
+.compare-bar-chip .remove-chip:hover { opacity: 1; }
+.compare-bar-actions { display: flex; gap: 8px; }
+.compare-bar-actions .btn { flex: 1; padding: 8px; font-size: 0.8125rem; }
+.compare-overlay {
+  position: fixed; inset: 0; z-index: 950; background: rgba(0,0,0,0.5);
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.compare-sheet {
+  width: 100%; max-width: 480px; max-height: 85vh; background: var(--surface);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0; overflow-y: auto; padding: 20px;
+  animation: slideUp 0.3s var(--ease);
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.compare-sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.compare-sheet-header h3 { font-size: 1.125rem; font-weight: 700; }
+.compare-sheet-close {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--surface-2);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  font-size: 18px; color: var(--text-3);
+}
+.compare-grid { display: grid; gap: 12px; }
+.compare-col { background: var(--surface-2); border-radius: var(--radius); padding: 14px; }
+.compare-col h4 { font-size: 0.9375rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.compare-col p { font-size: 0.8125rem; color: var(--text-3); line-height: 1.5; margin-bottom: 8px; }
+.compare-col .badge { margin-right: 4px; }
+
+/* ============================================================
+   SMART RECOMMENDATIONS
+   ============================================================ */
+.recommendations-section { padding: 16px 20px 8px; }
+.recommendations-section .section-title { margin-bottom: 4px; }
+.recommendations-label { font-size: 0.6875rem; color: var(--text-4); margin-bottom: 10px; }
+.recommendation-cards {
+  display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none;
+  -webkit-overflow-scrolling: touch; padding-bottom: 4px;
+}
+.recommendation-cards::-webkit-scrollbar { display: none; }
+.recommendation-card {
+  flex-shrink: 0; width: 200px; background: var(--surface); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 14px; cursor: pointer; transition: transform 0.2s var(--ease);
+}
+.recommendation-card:active { transform: scale(0.97); }
+.recommendation-card h4 { font-size: 0.8125rem; font-weight: 600; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
+.recommendation-card p {
+  font-size: 0.6875rem; color: var(--text-3); line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.recommendation-card .badge { margin-top: 8px; }
+
+/* ============================================================
+   EMERGENCY QUICK-DIAL
+   ============================================================ */
+.emergency-section { padding: 16px 20px 8px; }
+.emergency-btn {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 18px;
+  background: linear-gradient(135deg, #EF4444, #F97316); border-radius: var(--radius);
+  color: #fff; font-size: 0.9375rem; font-weight: 600; text-decoration: none;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+.emergency-btn:active { transform: scale(0.97); }
+.emergency-btn svg { width: 24px; height: 24px; flex-shrink: 0; }
+.emergency-wa-btn {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 18px;
+  background: var(--whatsapp-green); border-radius: var(--radius); color: #fff;
+  font-size: 0.875rem; font-weight: 600; text-decoration: none; margin-top: 8px;
+  transition: transform 0.15s var(--ease);
+}
+.emergency-wa-btn:active { transform: scale(0.97); }
+.emergency-wa-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+/* ============================================================
+   FAQ SUB-ACCORDION
+   ============================================================ */
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-item:last-child { border-bottom: none; }
+.faq-question {
+  display: flex; align-items: center; justify-content: space-between; width: 100%;
+  padding: 12px 0; font-size: 0.875rem; font-weight: 600; color: var(--text);
+  cursor: pointer; text-align: left; background: none; border: none;
+}
+.faq-question .faq-chevron {
+  width: 14px; height: 14px; flex-shrink: 0; transition: transform 0.25s var(--ease); color: var(--text-4);
+}
+.faq-item.open .faq-chevron { transform: rotate(180deg); color: var(--teal); }
+.faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s var(--ease); }
+.faq-item.open .faq-answer { max-height: 500px; }
+.faq-answer p { padding: 0 0 12px; font-size: 0.8125rem; color: var(--text-2); line-height: 1.6; }
+
+/* ============================================================
+   WEATHER WIDGET ENHANCED
+   ============================================================ */
+.weather-css-icon { width: 48px; height: 48px; position: relative; flex-shrink: 0; }
+.weather-css-icon .sun-body {
+  width: 24px; height: 24px; background: #F59E0B; border-radius: 50%;
+  position: absolute; top: 12px; left: 12px;
+}
+.weather-css-icon .sun-ray {
+  position: absolute; width: 3px; height: 8px; background: #F59E0B; border-radius: 2px;
+  top: 2px; left: 22.5px; transform-origin: 1.5px 22px;
+}
+.weather-css-icon .sun-ray:nth-child(2) { transform: rotate(45deg); }
+.weather-css-icon .sun-ray:nth-child(3) { transform: rotate(90deg); }
+.weather-css-icon .sun-ray:nth-child(4) { transform: rotate(135deg); }
+.weather-css-icon .sun-ray:nth-child(5) { transform: rotate(180deg); }
+.weather-css-icon .sun-ray:nth-child(6) { transform: rotate(225deg); }
+.weather-css-icon .sun-ray:nth-child(7) { transform: rotate(270deg); }
+.weather-css-icon .sun-ray:nth-child(8) { transform: rotate(315deg); }
+.weather-css-icon .cloud-body {
+  position: absolute; bottom: 0; left: 4px; width: 36px; height: 16px;
+  background: #94A3B8; border-radius: 8px;
+}
+.weather-css-icon .cloud-puff1 {
+  position: absolute; bottom: 10px; left: 10px; width: 20px; height: 20px;
+  background: #94A3B8; border-radius: 50%;
+}
+.weather-css-icon .cloud-puff2 {
+  position: absolute; bottom: 6px; left: 22px; width: 16px; height: 16px;
+  background: #94A3B8; border-radius: 50%;
+}
+.weather-sunrise-info { display: flex; gap: 16px; margin-top: 6px; }
+.weather-sunrise-item { font-size: 11px; color: var(--text-3); }
+.weather-sunrise-item strong { color: var(--text-2); }
+
+/* ============================================================
+   PAGE TRANSITION ANIMATIONS
+   ============================================================ */
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.tab-panel.slide-left { animation: slideInLeft 0.3s var(--ease) forwards; }
+.tab-panel.slide-right { animation: slideInRight 0.3s var(--ease) forwards; }
+
+/* ============================================================
+   IMAGE LAZY LOADING
+   ============================================================ */
+.lazy-img-wrapper {
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, var(--surface-2), var(--border));
+}
+.lazy-img-wrapper img { transition: opacity 0.4s var(--ease), filter 0.4s var(--ease); }
+.lazy-img-wrapper img.lazy-loading { opacity: 0; filter: blur(10px); }
+.lazy-img-wrapper img.lazy-loaded { opacity: 1; filter: blur(0); }
+.lazy-placeholder {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--surface-2) 0%, var(--border) 50%, var(--surface-2) 100%);
+  background-size: 200% 200%; animation: shimmer 1.5s infinite;
+}
+
+/* Print stylesheet */
+@media print {
+  #bottom-nav, #help-btn, .scroll-top-btn, .compare-bar,
+  #auth-gate, #splash, .offline-banner, .install-banner,
+  .dark-mode-toggle, .pull-indicator, .emergency-bar,
+  .note-btn, .timeline-cal-btn, .compare-overlay { display: none !important; }
+  #app { max-width: 100%; padding-bottom: 0; box-shadow: none; border: none; }
+  .tab-panel { display: block !important; page-break-after: always; }
+  body { background: #fff !important; color: #000 !important; }
+  .timeline-item { break-inside: avoid; }
+  .today-hero { background: #1B5E7B !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
   </style>
 </head>
 <body>
@@ -2124,6 +2573,8 @@ ul, ol {
 
 <!-- ==================== APP CONTAINER ==================== -->
 <div id="app" style="display:none">
+
+  <div id="pull-indicator" aria-hidden="true"></div>
 
   <!-- ========== TODAY TAB ========== -->
   <div id="tab-today" class="tab-panel active">
@@ -2230,6 +2681,13 @@ ul, ol {
 
     <div class="timeline" id="schedule-timeline"></div>
 
+    <div id="schedule-skeleton" class="skeleton-block">
+      <div class="skeleton-card"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width:35%"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width:50%"></div><div class="skeleton-line"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width:45%"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+    </div>
+
   </div>
 
   <!-- ========== EXPLORE TAB ========== -->
@@ -2255,6 +2713,12 @@ ul, ol {
       <a class="btn btn-outline btn-sm" onclick="showExploreCategories()">&larr; Back to categories</a>
     </div>
 
+    <div id="explore-skeleton" class="skeleton-block">
+      <div class="skeleton-card"><div class="skeleton-line" style="width:60%"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width:50%"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width:55%"></div><div class="skeleton-line"></div></div>
+    </div>
+
   </div>
 
   <!-- ========== INFO TAB ========== -->
@@ -2268,6 +2732,13 @@ ul, ol {
     </div>
 
     <div class="accordion" id="info-accordion"></div>
+
+    <div id="info-skeleton" class="skeleton-block">
+      <div class="skeleton-card"><div class="skeleton-line" style="width:70%"></div><div class="skeleton-line"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width:55%"></div><div class="skeleton-line"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width:65%"></div><div class="skeleton-line"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width:45%"></div><div class="skeleton-line"></div></div>
+    </div>
 
   </div>
 
@@ -2891,6 +3362,164 @@ function updateFavoritesCount() {
 }
 
 // =============================================================
+// RECENTLY VIEWED
+// =============================================================
+
+var RECENT_KEY = 'tlc_recent';
+
+function getRecent() {
+  try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; } catch(e) { return []; }
+}
+
+function addRecent(therapyName) {
+  try {
+    var recent = getRecent();
+    var idx = recent.indexOf(therapyName);
+    if (idx !== -1) recent.splice(idx, 1);
+    recent.unshift(therapyName);
+    if (recent.length > 5) recent = recent.slice(0, 5);
+    localStorage.setItem(RECENT_KEY, JSON.stringify(recent));
+  } catch(e) {}
+}
+
+// =============================================================
+// COMPARE MODE
+// =============================================================
+
+var compareMode = false;
+var compareList = [];
+
+function toggleCompareMode() {
+  compareMode = !compareMode;
+  var btn = document.getElementById('compare-toggle-btn');
+  if (btn) btn.classList.toggle('active', compareMode);
+  if (!compareMode) {
+    compareList = [];
+    updateCompareBar();
+    document.querySelectorAll('.therapy-card.compare-selected').forEach(function(c) {
+      c.classList.remove('compare-selected');
+    });
+  }
+}
+
+function addToCompare(therapyName, cardEl) {
+  if (!compareMode) return false;
+  var idx = compareList.indexOf(therapyName);
+  if (idx !== -1) {
+    compareList.splice(idx, 1);
+    if (cardEl) cardEl.classList.remove('compare-selected');
+  } else {
+    if (compareList.length >= 3) {
+      showToast('Max 3 therapies to compare');
+      return true;
+    }
+    compareList.push(therapyName);
+    if (cardEl) cardEl.classList.add('compare-selected');
+  }
+  updateCompareBar();
+  return true;
+}
+
+function updateCompareBar() {
+  var bar = document.getElementById('compare-bar');
+  if (!bar) return;
+  if (compareList.length === 0) {
+    bar.classList.remove('show');
+    return;
+  }
+  bar.classList.add('show');
+  var itemsEl = bar.querySelector('.compare-bar-items');
+  while (itemsEl.firstChild) itemsEl.removeChild(itemsEl.firstChild);
+  compareList.forEach(function(name) {
+    var chip = h('span', 'compare-bar-chip');
+    chip.textContent = name;
+    var removeBtn = h('span', 'remove-chip', '\u00D7');
+    removeBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var i = compareList.indexOf(name);
+      if (i !== -1) compareList.splice(i, 1);
+      document.querySelectorAll('.therapy-card').forEach(function(c) {
+        if (c.getAttribute('data-name') === name) c.classList.remove('compare-selected');
+      });
+      updateCompareBar();
+    });
+    appendTo(chip, removeBtn);
+    appendTo(itemsEl, chip);
+  });
+}
+
+function findTherapyByName(name) {
+  for (var i = 0; i < EXPLORE_CATEGORIES.length; i++) {
+    for (var j = 0; j < EXPLORE_CATEGORIES[i].therapies.length; j++) {
+      if (EXPLORE_CATEGORIES[i].therapies[j].name === name) return EXPLORE_CATEGORIES[i].therapies[j];
+    }
+  }
+  return null;
+}
+
+function showCompareOverlay() {
+  if (compareList.length < 2) {
+    showToast('Select at least 2 therapies');
+    return;
+  }
+  logEvent('explore', 'compare', compareList.join(' vs '));
+  var overlay = h('div', 'compare-overlay');
+  var sheet = h('div', 'compare-sheet');
+  var header = h('div', 'compare-sheet-header');
+  appendTo(header, h('h3', null, 'Compare Therapies'));
+  var closeBtn = h('button', 'compare-sheet-close', '\u00D7');
+  closeBtn.setAttribute('type', 'button');
+  closeBtn.addEventListener('click', function() { overlay.parentNode.removeChild(overlay); });
+  appendTo(header, closeBtn);
+  appendTo(sheet, header);
+  var grid = h('div', 'compare-grid');
+  compareList.forEach(function(name) {
+    var therapy = findTherapyByName(name);
+    if (!therapy) return;
+    var col = h('div', 'compare-col');
+    appendTo(col, h('h4', null, therapy.name));
+    var snippet = therapy.desc.length > 200 ? therapy.desc.substring(0, 200) + '...' : therapy.desc;
+    appendTo(col, h('p', null, snippet));
+    var badges = h('div');
+    if (therapy.popular) appendTo(badges, h('span', 'badge badge-popular', 'Popular'));
+    if (therapy.recommended) appendTo(badges, h('span', 'badge badge-included', 'Recommended'));
+    if (!therapy.popular && !therapy.recommended) appendTo(badges, h('span', 'badge badge-optional', 'Optional'));
+    appendTo(col, badges);
+    appendTo(grid, col);
+  });
+  appendTo(sheet, grid);
+  appendTo(overlay, sheet);
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) overlay.parentNode.removeChild(overlay);
+  });
+  document.body.appendChild(overlay);
+}
+
+// =============================================================
+// ACTIVITY NOTES
+// =============================================================
+
+var NOTES_KEY = 'tlc_notes';
+
+function getNotes() {
+  try {
+    return JSON.parse(localStorage.getItem(NOTES_KEY)) || {};
+  } catch(e) { return {}; }
+}
+
+function setNote(key, text) {
+  try {
+    var notes = getNotes();
+    if (text && text.trim()) {
+      notes[key] = text.trim();
+    } else {
+      delete notes[key];
+    }
+    localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+  } catch(e) {}
+}
+
+// =============================================================
 // SHARE SCHEDULE
 // =============================================================
 
@@ -3267,14 +3896,67 @@ function buildTimelineItem(activity, dateStr, currentMinutes, isToday, nowMarked
     appendTo(content, expandBtn);
     appendTo(content, h('p', null, desc));
   }
+  // Note button
+  var noteKey = dateStr + '_' + activity.time + '_' + activity.name;
+  var noteBtn = h('button', 'note-btn');
+  noteBtn.setAttribute('type', 'button');
+  noteBtn.setAttribute('aria-label', 'Add note');
+  var noteSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  noteSvg.setAttribute('viewBox', '0 0 24 24');
+  noteSvg.setAttribute('fill', 'none');
+  noteSvg.setAttribute('stroke', 'currentColor');
+  noteSvg.setAttribute('stroke-width', '2');
+  noteSvg.setAttribute('stroke-linecap', 'round');
+  noteSvg.setAttribute('stroke-linejoin', 'round');
+  var notePath1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  notePath1.setAttribute('d', 'M12 20h9');
+  noteSvg.appendChild(notePath1);
+  var notePath2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  notePath2.setAttribute('d', 'M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z');
+  noteSvg.appendChild(notePath2);
+  noteBtn.appendChild(noteSvg);
+  var existingNote = getNotes()[noteKey];
+  if (existingNote) noteBtn.classList.add('has-note');
+
+  var noteArea = h('div', 'note-area');
+  var noteTextarea = document.createElement('textarea');
+  noteTextarea.placeholder = 'Add a personal note...';
+  noteTextarea.value = existingNote || '';
+  noteArea.appendChild(noteTextarea);
+  var noteSavedMsg = h('div', 'note-saved-indicator', 'Saved');
+  noteArea.appendChild(noteSavedMsg);
+
+  var noteSaveTimer = null;
+  noteTextarea.addEventListener('input', function() {
+    clearTimeout(noteSaveTimer);
+    noteSaveTimer = setTimeout(function() {
+      setNote(noteKey, noteTextarea.value);
+      noteBtn.classList.toggle('has-note', !!noteTextarea.value.trim());
+      noteSavedMsg.classList.add('show');
+      setTimeout(function() { noteSavedMsg.classList.remove('show'); }, 1500);
+    }, 400);
+  });
+
+  noteBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    noteArea.classList.toggle('open');
+    if (noteArea.classList.contains('open')) {
+      noteTextarea.focus();
+    }
+  });
+
+  noteTextarea.addEventListener('click', function(e) { e.stopPropagation(); });
+
+  appendTo(content, noteArea);
   appendTo(item, content);
   if (desc) {
     item.style.cursor = 'pointer';
     item.addEventListener('click', function(e) {
-      if (e.target.closest && e.target.closest('.timeline-cal-btn')) return;
+      if (e.target.closest && (e.target.closest('.timeline-cal-btn') || e.target.closest('.note-btn') || e.target.closest('.note-area'))) return;
       item.classList.toggle('expanded');
     });
   }
+  appendTo(item, noteBtn);
   appendTo(item, createCalBtn(activity.name, dateStr, activity.time));
   return item;
 }
@@ -3304,9 +3986,18 @@ function buildNextActivityBanner(activities) {
   var ct = '';
   if (diff >= 60) { var hrs = Math.floor(diff / 60); var mins = diff % 60; ct = hrs + 'h' + (mins > 0 ? ' ' + mins + 'm' : ''); } else { ct = diff + 'm'; }
   appendTo(banner, h('div', 'next-activity-countdown', ct));
+
+  // Session reminder toast when activity is within 15 minutes
+  var reminderKey = nextActivity.time + '_' + nextActivity.name;
+  if (diff <= 15 && diff > 0 && _lastRemindedActivity !== reminderKey) {
+    _lastRemindedActivity = reminderKey;
+    showToast('Starting in ' + diff + ' min: ' + nextActivity.name);
+    logEvent('reminder', 'toast', nextActivity.name);
+  }
 }
 
 var _nextActivityInterval = null;
+var _lastRemindedActivity = '';
 
 function initToday() {
   var todayStr = getTodayStr();
@@ -3372,7 +4063,41 @@ function initToday() {
   if (pct < 0) pct = 0;
   if (pct > 100) pct = 100;
   var pctEl = document.getElementById('progress-pct');
-  if (pctEl) pctEl.textContent = pct + '%';
+  if (pctEl) {
+    pctEl.textContent = pct + '%';
+    // Add progress ring next to percentage
+    var existingRing = pctEl.querySelector('.progress-ring-wrap');
+    if (!existingRing) {
+      var ringWrap = document.createElement('span');
+      ringWrap.className = 'progress-ring-wrap';
+      var ringSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      ringSvg.setAttribute('width', '24');
+      ringSvg.setAttribute('height', '24');
+      ringSvg.setAttribute('viewBox', '0 0 24 24');
+      var bgCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      bgCircle.setAttribute('cx', '12');
+      bgCircle.setAttribute('cy', '12');
+      bgCircle.setAttribute('r', '10');
+      bgCircle.setAttribute('class', 'progress-ring-circle-bg');
+      ringSvg.appendChild(bgCircle);
+      var fgCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      fgCircle.setAttribute('cx', '12');
+      fgCircle.setAttribute('cy', '12');
+      fgCircle.setAttribute('r', '10');
+      fgCircle.setAttribute('class', 'progress-ring-circle');
+      var circumference = 2 * Math.PI * 10;
+      fgCircle.setAttribute('stroke-dasharray', String(circumference));
+      fgCircle.setAttribute('stroke-dashoffset', String(circumference));
+      ringSvg.appendChild(fgCircle);
+      ringWrap.appendChild(ringSvg);
+      pctEl.appendChild(ringWrap);
+      // Animate ring after brief delay
+      setTimeout(function() {
+        var offset = circumference - (pct / 100) * circumference;
+        fgCircle.setAttribute('stroke-dashoffset', String(offset));
+      }, 200);
+    }
+  }
   setTimeout(function() { var barEl = document.getElementById('progress-bar'); if (barEl) barEl.style.width = pct + '%'; }, 120);
 
   var sectionTitle = document.getElementById('today-section-title');
@@ -3455,6 +4180,64 @@ function initToday() {
     }
   }
 
+  // Weather widget enhancement
+  (function initWeather() {
+    var CLIMATE = {
+      1:  { temp: 27, desc: 'Warm & breezy', cond: 'cloud', hum: 77, sunrise: '6:15', sunset: '5:55' },
+      2:  { temp: 27, desc: 'Warm & dry',    cond: 'sun',   hum: 74, sunrise: '6:10', sunset: '6:05' },
+      3:  { temp: 29, desc: 'Sunny & warm',  cond: 'sun',   hum: 75, sunrise: '6:05', sunset: '6:12' },
+      4:  { temp: 30, desc: 'Hot & sunny',   cond: 'sun',   hum: 76, sunrise: '5:55', sunset: '6:18' },
+      5:  { temp: 31, desc: 'Hot & humid',   cond: 'cloud', hum: 78, sunrise: '5:48', sunset: '6:22' },
+      6:  { temp: 31, desc: 'Tropical heat', cond: 'cloud', hum: 80, sunrise: '5:45', sunset: '6:28' },
+      7:  { temp: 31, desc: 'Warm & humid',  cond: 'cloud', hum: 82, sunrise: '5:48', sunset: '6:30' },
+      8:  { temp: 31, desc: 'Warm & rainy',  cond: 'cloud', hum: 83, sunrise: '5:55', sunset: '6:25' },
+      9:  { temp: 31, desc: 'Tropical rain',cond: 'cloud', hum: 84, sunrise: '5:58', sunset: '6:12' },
+      10: { temp: 30, desc: 'Rainy season', cond: 'cloud', hum: 83, sunrise: '5:55', sunset: '5:55' },
+      11: { temp: 29, desc: 'Cooling off',  cond: 'cloud', hum: 80, sunrise: '5:58', sunset: '5:45' },
+      12: { temp: 28, desc: 'Pleasant',     cond: 'sun',   hum: 77, sunrise: '6:08', sunset: '5:48' }
+    };
+    var month = new Date().getMonth() + 1;
+    var data = CLIMATE[month] || CLIMATE[3];
+    var iconEl = document.getElementById('weather-icon');
+    var tempEl = document.getElementById('weather-temp');
+    var descEl = document.getElementById('weather-desc');
+    if (tempEl) tempEl.textContent = data.temp + '\u00B0C';
+    if (descEl) descEl.textContent = data.desc;
+    if (iconEl) {
+      while (iconEl.firstChild) iconEl.removeChild(iconEl.firstChild);
+      iconEl.className = 'weather-css-icon';
+      if (data.cond === 'sun') {
+        appendTo(iconEl, h('div', 'sun-body'));
+        for (var r = 0; r < 8; r++) appendTo(iconEl, h('div', 'sun-ray'));
+      } else {
+        appendTo(iconEl, h('div', 'cloud-body'));
+        appendTo(iconEl, h('div', 'cloud-puff1'));
+        appendTo(iconEl, h('div', 'cloud-puff2'));
+      }
+    }
+    // Add sunrise/sunset info
+    var weatherCard = document.querySelector('.weather-card');
+    if (weatherCard) {
+      var existingExtra = weatherCard.querySelector('.weather-extra');
+      // Update humidity
+      if (existingExtra) {
+        var items = existingExtra.querySelectorAll('.weather-extra-item');
+        if (items[0]) { while (items[0].firstChild) items[0].removeChild(items[0].firstChild); items[0].textContent = 'Humidity: '; var s0 = h('strong', null, data.hum + '%'); appendTo(items[0], s0); }
+      }
+      var sunInfo = h('div', 'weather-sunrise-info');
+      var sr = h('span', 'weather-sunrise-item');
+      sr.textContent = 'Sunrise: ';
+      appendTo(sr, h('strong', null, data.sunrise + ' AM'));
+      appendTo(sunInfo, sr);
+      var ss = h('span', 'weather-sunrise-item');
+      ss.textContent = 'Sunset: ';
+      appendTo(ss, h('strong', null, data.sunset + ' PM'));
+      appendTo(sunInfo, ss);
+      var details = weatherCard.querySelector('.weather-details');
+      if (details) appendTo(details, sunInfo);
+    }
+  })();
+
   // Today updated - dynamic
   var updatedEl = document.getElementById('today-updated');
   if (updatedEl) {
@@ -3467,6 +4250,8 @@ function initToday() {
 // =============================================================
 
 function initSchedule() {
+  var skelSchedule = document.getElementById('schedule-skeleton');
+  if (skelSchedule) skelSchedule.parentNode.removeChild(skelSchedule);
   var dateScroll = document.getElementById('date-picker');
   if (!dateScroll) return;
   var todayStr = getTodayStr();
@@ -3569,6 +4354,8 @@ function loadScheduleDay(dateStr) {
 // =============================================================
 
 function initExplore() {
+  var skelExplore = document.getElementById('explore-skeleton');
+  if (skelExplore) skelExplore.parentNode.removeChild(skelExplore);
   var categoriesContainer = document.getElementById('explore-categories');
   var therapiesContainer = document.getElementById('explore-therapies');
   var backBtn = document.getElementById('explore-back');
@@ -3576,14 +4363,45 @@ function initExplore() {
 
   if (!categoriesContainer) return;
 
+  // Recently Viewed section
+  var recent = getRecent();
+  if (recent.length > 0) {
+    var recentSection = h('div', 'recent-section');
+    appendTo(recentSection, h('div', 'section-label', 'Recently Viewed'));
+    var pillsContainer = h('div', 'recent-pills');
+    recent.forEach(function(name) {
+      var pill = h('button', 'recent-pill', name);
+      pill.setAttribute('type', 'button');
+      pill.addEventListener('click', function() {
+        logEvent('explore', 'recent-click', name);
+        categoriesContainer.classList.add('hidden');
+        if (therapiesContainer) therapiesContainer.classList.remove('hidden');
+        if (backBtn) backBtn.classList.remove('hidden');
+        while (therapiesContainer.firstChild) therapiesContainer.removeChild(therapiesContainer.firstChild);
+        var therapy = findTherapyByName(name);
+        if (therapy) appendTo(therapiesContainer, buildSingleTherapyCard(therapy));
+        else appendTo(therapiesContainer, h('div', 'empty-state', 'Therapy not found'));
+      });
+      appendTo(pillsContainer, pill);
+    });
+    appendTo(recentSection, pillsContainer);
+    categoriesContainer.parentNode.insertBefore(recentSection, categoriesContainer);
+  }
+
   // Build category cards
   EXPLORE_CATEGORIES.forEach(function(cat) {
     var card = h('div', 'category-card');
 
+    var imgWrapper = h('div', 'lazy-img-wrapper');
+    imgWrapper.style.cssText = 'width:100%;height:100%;';
+    var placeholder = h('div', 'lazy-placeholder');
+    appendTo(imgWrapper, placeholder);
     var img = document.createElement('img');
-    img.src = CATEGORY_IMAGES[cat.id] || '';
+    img.className = 'lazy-loading';
+    img.setAttribute('data-src', CATEGORY_IMAGES[cat.id] || '');
     img.alt = cat.title;
-    appendTo(card, img);
+    appendTo(imgWrapper, img);
+    appendTo(card, imgWrapper);
 
     var cardContent = h('div', 'category-card-content');
     appendTo(cardContent, h('h3', null, cat.title));
@@ -3600,6 +4418,74 @@ function initExplore() {
 
     appendTo(categoriesContainer, card);
   });
+
+  // Smart Recommendations section
+  (function buildRecommendations() {
+    var scheduledNames = {};
+    var dates = Object.keys(SCHEDULE);
+    dates.forEach(function(dateStr) {
+      SCHEDULE[dateStr].forEach(function(a) {
+        scheduledNames[a.name] = true;
+      });
+    });
+    // Find therapy types from schedule that match explore categories
+    var scheduledKeywords = [];
+    Object.keys(scheduledNames).forEach(function(name) {
+      var lower = name.toLowerCase();
+      if (lower.indexOf('yoga') !== -1) scheduledKeywords.push('yoga');
+      if (lower.indexOf('massage') !== -1) scheduledKeywords.push('massage');
+      if (lower.indexOf('meditation') !== -1 || lower.indexOf('breathwork') !== -1) scheduledKeywords.push('meditation');
+      if (lower.indexOf('bio-hacking') !== -1 || lower.indexOf('pemf') !== -1 || lower.indexOf('ems') !== -1) scheduledKeywords.push('biohacking');
+      if (lower.indexOf('pressotherapy') !== -1 || lower.indexOf('lymphatic') !== -1) scheduledKeywords.push('lymphatic');
+      if (lower.indexOf('mindful') !== -1) scheduledKeywords.push('mind');
+      if (lower.indexOf('immune') !== -1 || lower.indexOf('alkalize') !== -1) scheduledKeywords.push('immune');
+      if (lower.indexOf('blood') !== -1) scheduledKeywords.push('clinical');
+    });
+    // Find related therapies not in schedule
+    var recommendations = [];
+    EXPLORE_CATEGORIES.forEach(function(cat) {
+      cat.therapies.forEach(function(therapy) {
+        if (scheduledNames[therapy.name]) return;
+        var tLower = therapy.name.toLowerCase() + ' ' + therapy.desc.toLowerCase();
+        var relevant = false;
+        scheduledKeywords.forEach(function(kw) {
+          if (tLower.indexOf(kw) !== -1) relevant = true;
+        });
+        if (therapy.popular || therapy.recommended) relevant = true;
+        if (relevant && recommendations.length < 4) {
+          recommendations.push(therapy);
+        }
+      });
+    });
+    if (recommendations.length === 0) return;
+    var recSection = h('div', 'recommendations-section');
+    appendTo(recSection, h('div', 'section-title', 'Recommended For You'));
+    appendTo(recSection, h('div', 'recommendations-label', 'Based on your schedule'));
+    var recCards = h('div', 'recommendation-cards');
+    recommendations.forEach(function(therapy) {
+      var recCard = h('div', 'recommendation-card');
+      appendTo(recCard, h('h4', null, therapy.name));
+      var snippet = therapy.desc.length > 120 ? therapy.desc.substring(0, 120) + '...' : therapy.desc;
+      appendTo(recCard, h('p', null, snippet));
+      if (therapy.popular) appendTo(recCard, h('span', 'badge badge-popular', 'Popular'));
+      else if (therapy.recommended) appendTo(recCard, h('span', 'badge badge-included', 'Recommended'));
+      recCard.addEventListener('click', function() {
+        logEvent('explore', 'recommendation', therapy.name);
+        categoriesContainer.classList.add('hidden');
+        if (therapiesContainer) therapiesContainer.classList.remove('hidden');
+        if (backBtn) backBtn.classList.remove('hidden');
+        while (therapiesContainer.firstChild) therapiesContainer.removeChild(therapiesContainer.firstChild);
+        appendTo(therapiesContainer, buildSingleTherapyCard(therapy));
+      });
+      appendTo(recCards, recCard);
+    });
+    appendTo(recSection, recCards);
+    // Insert after categories
+    categoriesContainer.parentNode.insertBefore(recSection, categoriesContainer.nextSibling);
+  })();
+
+  // Init lazy loading for category images
+  initLazyImages();
 
   // Back button
   if (backBtn) {
@@ -3650,6 +4536,14 @@ function buildSingleTherapyCard(therapy) {
   var card = h('div', 'therapy-card');
   card.setAttribute('data-name', therapy.name);
   logEvent('explore', 'therapy', therapy.name);
+  addRecent(therapy.name);
+
+  // Compare mode click handler
+  card.addEventListener('click', function() {
+    if (compareMode) {
+      addToCompare(therapy.name, card);
+    }
+  });
 
   var body = h('div', 'therapy-card-body');
   var cardHeader = h('div', 'flex items-center justify-between');
@@ -3727,8 +4621,48 @@ function buildTherapyCards(cat) {
 // =============================================================
 
 function initInfo() {
+  var skelInfo = document.getElementById('info-skeleton');
+  if (skelInfo) skelInfo.parentNode.removeChild(skelInfo);
   var accordion = document.getElementById('info-accordion');
   if (!accordion) return;
+
+  // Emergency Quick-Dial section at the top
+  var emergencySection = h('div', 'emergency-section');
+  var emergencyLink = h('a', 'emergency-btn');
+  emergencyLink.href = 'tel:+17582861869';
+  // Phone SVG
+  var phoneSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  phoneSvg.setAttribute('viewBox', '0 0 24 24');
+  phoneSvg.setAttribute('fill', 'none');
+  phoneSvg.setAttribute('stroke', 'currentColor');
+  phoneSvg.setAttribute('stroke-width', '2');
+  phoneSvg.setAttribute('stroke-linecap', 'round');
+  phoneSvg.setAttribute('stroke-linejoin', 'round');
+  var phonePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  phonePath.setAttribute('d', 'M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z');
+  phoneSvg.appendChild(phonePath);
+  emergencyLink.appendChild(phoneSvg);
+  appendTo(emergencyLink, h('span', null, 'Emergency: Call Now'));
+  emergencyLink.addEventListener('click', function() { logEvent('info', 'emergency-call', 'phone'); });
+  appendTo(emergencySection, emergencyLink);
+
+  // WhatsApp secondary button
+  var waBtn = h('a', 'emergency-wa-btn');
+  waBtn.href = GUEST.waBase;
+  waBtn.target = '_blank';
+  waBtn.rel = 'noopener noreferrer';
+  var waSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  waSvg.setAttribute('viewBox', '0 0 24 24');
+  waSvg.setAttribute('fill', 'currentColor');
+  var waPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  waPath.setAttribute('d', 'M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z');
+  waSvg.appendChild(waPath);
+  waBtn.appendChild(waSvg);
+  appendTo(waBtn, h('span', null, 'Resort WhatsApp'));
+  waBtn.addEventListener('click', function() { logEvent('info', 'emergency-wa', 'whatsapp'); });
+  appendTo(emergencySection, waBtn);
+
+  accordion.parentNode.insertBefore(emergencySection, accordion);
 
   INFO_SECTIONS.forEach(function(section) {
     var item = h('div', 'accordion-item');
@@ -3913,8 +4847,26 @@ function buildInfoContent(id) {
 
   } else if (id === 'faq') {
     INFO_CONTENT.faq.forEach(function(faqItem) {
-      appendTo(wrapper, h('strong', null, faqItem.q));
-      appendTo(wrapper, h('p', null, faqItem.a));
+      var faqEl = h('div', 'faq-item');
+      var qBtn = h('button', 'faq-question');
+      qBtn.setAttribute('type', 'button');
+      appendTo(qBtn, h('span', null, faqItem.q));
+      var chevSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      chevSvg.setAttribute('class', 'faq-chevron');
+      chevSvg.setAttribute('viewBox', '0 0 24 24');
+      chevSvg.setAttribute('fill', 'none');
+      chevSvg.setAttribute('stroke', 'currentColor');
+      chevSvg.setAttribute('stroke-width', '2');
+      var chevPoly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+      chevPoly.setAttribute('points', '6 9 12 15 18 9');
+      chevSvg.appendChild(chevPoly);
+      qBtn.appendChild(chevSvg);
+      appendTo(faqEl, qBtn);
+      var ansDiv = h('div', 'faq-answer');
+      appendTo(ansDiv, h('p', null, faqItem.a));
+      appendTo(faqEl, ansDiv);
+      qBtn.addEventListener('click', function() { faqEl.classList.toggle('open'); });
+      appendTo(wrapper, faqEl);
     });
 
   } else if (id === 'contact') {
@@ -3947,6 +4899,50 @@ function buildInfoContent(id) {
 }
 
 // =============================================================
+// IMAGE LAZY LOADING
+// =============================================================
+
+function initLazyImages() {
+  if (!('IntersectionObserver' in window)) {
+    // Fallback: load all immediately
+    document.querySelectorAll('img[data-src]').forEach(function(img) {
+      img.src = img.getAttribute('data-src');
+      img.classList.remove('lazy-loading');
+      img.classList.add('lazy-loaded');
+      var placeholder = img.parentNode.querySelector('.lazy-placeholder');
+      if (placeholder) placeholder.style.display = 'none';
+    });
+    return;
+  }
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var img = entry.target;
+        var src = img.getAttribute('data-src');
+        if (src) {
+          img.src = src;
+          img.removeAttribute('data-src');
+          img.addEventListener('load', function() {
+            img.classList.remove('lazy-loading');
+            img.classList.add('lazy-loaded');
+            var placeholder = img.parentNode.querySelector('.lazy-placeholder');
+            if (placeholder) placeholder.style.display = 'none';
+          });
+          img.addEventListener('error', function() {
+            img.classList.remove('lazy-loading');
+            img.classList.add('lazy-loaded');
+          });
+        }
+        observer.unobserve(img);
+      }
+    });
+  }, { rootMargin: '100px' });
+  document.querySelectorAll('img[data-src]').forEach(function(img) {
+    observer.observe(img);
+  });
+}
+
+// =============================================================
 // TAB SWITCHING
 // =============================================================
 
@@ -3957,16 +4953,32 @@ var tabs = {
   info:     { initialized: false }
 };
 
+var TAB_ORDER = ['today', 'schedule', 'explore', 'info'];
+var _previousTabIndex = 0;
+
 function switchTab(tabId, skipHistory) {
   logEvent('nav', 'tab', tabId);
+  var newIndex = TAB_ORDER.indexOf(tabId);
+  if (newIndex === -1) newIndex = 0;
+
   // Hide all tab panels
   document.querySelectorAll('.tab-panel').forEach(function(panel) {
     panel.classList.remove('active');
+    panel.classList.remove('slide-left');
+    panel.classList.remove('slide-right');
   });
 
-  // Show selected
+  // Show selected with directional animation
   var selectedPanel = document.getElementById('tab-' + tabId);
-  if (selectedPanel) selectedPanel.classList.add('active');
+  if (selectedPanel) {
+    if (newIndex > _previousTabIndex) {
+      selectedPanel.classList.add('slide-right');
+    } else if (newIndex < _previousTabIndex) {
+      selectedPanel.classList.add('slide-left');
+    }
+    selectedPanel.classList.add('active');
+  }
+  _previousTabIndex = newIndex;
 
   // Update nav active state
   document.querySelectorAll('.nav-item').forEach(function(btn) {
@@ -4230,6 +5242,160 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
       }
     });
   }
+
+  // Compare toggle button in Explore header
+  var favHeader = document.getElementById('favorites-header');
+  if (favHeader) {
+    var compareBtn = h('button', 'compare-toggle', 'Compare');
+    compareBtn.setAttribute('type', 'button');
+    compareBtn.id = 'compare-toggle-btn';
+    compareBtn.addEventListener('click', function() { toggleCompareMode(); });
+    favHeader.appendChild(compareBtn);
+  }
+
+  // Compare bar (appended to body)
+  var compareBar = h('div', 'compare-bar');
+  compareBar.id = 'compare-bar';
+  var barItems = h('div', 'compare-bar-items');
+  appendTo(compareBar, barItems);
+  var barActions = h('div', 'compare-bar-actions');
+  var compareNowBtn = h('button', 'btn btn-teal', 'Compare');
+  compareNowBtn.setAttribute('type', 'button');
+  compareNowBtn.addEventListener('click', function() { showCompareOverlay(); });
+  appendTo(barActions, compareNowBtn);
+  var cancelCompareBtn = h('button', 'btn btn-outline', 'Cancel');
+  cancelCompareBtn.setAttribute('type', 'button');
+  cancelCompareBtn.addEventListener('click', function() { toggleCompareMode(); });
+  appendTo(barActions, cancelCompareBtn);
+  appendTo(compareBar, barActions);
+  document.body.appendChild(compareBar);
+
+  // Resort gallery lazy loading
+  var galleryImgs = document.querySelectorAll('.resort-gallery-card img');
+  galleryImgs.forEach(function(img) {
+    var parent = img.parentNode;
+    parent.classList.add('lazy-img-wrapper');
+    var placeholder = h('div', 'lazy-placeholder');
+    parent.insertBefore(placeholder, img);
+    var realSrc = img.getAttribute('src');
+    img.setAttribute('data-src', realSrc);
+    img.removeAttribute('src');
+    img.className = 'lazy-loading';
+  });
+  initLazyImages();
+
+  // =============================================================
+  // PULL-TO-REFRESH
+  // =============================================================
+  (function initPullToRefresh() {
+    var pullIndicator = document.getElementById('pull-indicator');
+    if (!pullIndicator) return;
+
+    // Build refresh arrow SVG inside indicator
+    var arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    arrowSvg.setAttribute('viewBox', '0 0 24 24');
+    arrowSvg.setAttribute('fill', 'none');
+    arrowSvg.setAttribute('stroke', 'currentColor');
+    arrowSvg.setAttribute('stroke-width', '2');
+    arrowSvg.setAttribute('stroke-linecap', 'round');
+    arrowSvg.setAttribute('stroke-linejoin', 'round');
+    var arrowPath1 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    arrowPath1.setAttribute('points', '23 4 23 10 17 10');
+    arrowSvg.appendChild(arrowPath1);
+    var arrowPath2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    arrowPath2.setAttribute('d', 'M20.49 15a9 9 0 1 1-2.12-9.36L23 10');
+    arrowSvg.appendChild(arrowPath2);
+    pullIndicator.appendChild(arrowSvg);
+
+    var startY = 0;
+    var pulling = false;
+    var threshold = 60;
+
+    var appContainer = document.getElementById('app');
+
+    appContainer.addEventListener('touchstart', function(e) {
+      if (window.scrollY === 0) {
+        startY = e.touches[0].clientY;
+        pulling = true;
+      }
+    }, { passive: true });
+
+    appContainer.addEventListener('touchmove', function(e) {
+      if (!pulling) return;
+      if (window.scrollY > 0) {
+        pulling = false;
+        pullIndicator.classList.remove('visible', 'ready');
+        pullIndicator.style.transform = 'translateX(-50%) translateY(-50px)';
+        return;
+      }
+      var dy = e.touches[0].clientY - startY;
+      if (dy < 0) return;
+      var progress = Math.min(dy / threshold, 1.5);
+      var translateY = Math.min(dy * 0.4, 60) - 50;
+      pullIndicator.style.transform = 'translateX(-50%) translateY(' + translateY + 'px)';
+      pullIndicator.classList.add('visible');
+      if (dy > threshold) {
+        pullIndicator.classList.add('ready');
+      } else {
+        pullIndicator.classList.remove('ready');
+      }
+    }, { passive: true });
+
+    appContainer.addEventListener('touchend', function() {
+      if (!pulling) return;
+      pulling = false;
+      if (pullIndicator.classList.contains('ready')) {
+        pullIndicator.classList.remove('ready');
+        pullIndicator.classList.add('refreshing');
+        pullIndicator.style.transform = 'translateX(-50%) translateY(20px)';
+        logEvent('app', 'pull-to-refresh', '');
+        setTimeout(function() { location.reload(); }, 600);
+      } else {
+        pullIndicator.classList.remove('visible');
+        pullIndicator.style.transform = 'translateX(-50%) translateY(-50px)';
+      }
+    }, { passive: true });
+  })();
+
+  // =============================================================
+  // SCROLL-TO-TOP BUTTON
+  // =============================================================
+  (function initScrollToTop() {
+    var btn = h('button', 'scroll-top-btn');
+    btn.setAttribute('type', 'button');
+    btn.setAttribute('aria-label', 'Scroll to top');
+    var svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svgEl.setAttribute('viewBox', '0 0 24 24');
+    svgEl.setAttribute('fill', 'none');
+    svgEl.setAttribute('stroke', 'currentColor');
+    svgEl.setAttribute('stroke-width', '2.5');
+    svgEl.setAttribute('stroke-linecap', 'round');
+    svgEl.setAttribute('stroke-linejoin', 'round');
+    var line1 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    line1.setAttribute('points', '18 15 12 9 6 15');
+    svgEl.appendChild(line1);
+    btn.appendChild(svgEl);
+    var appEl = document.getElementById('app');
+    if (appEl) appEl.appendChild(btn);
+
+    var scrollTimer = null;
+    window.addEventListener('scroll', function() {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function() {
+        if (window.scrollY > 300) {
+          btn.classList.add('visible');
+        } else {
+          btn.classList.remove('visible');
+        }
+      }, 50);
+    }, { passive: true });
+
+    btn.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      logEvent('nav', 'scroll-to-top', '');
+    });
+  })();
+
 })();
 
 </script>
