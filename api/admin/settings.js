@@ -1,5 +1,9 @@
 import { supabaseAdmin, handleCors, requireAuth } from '../_lib/supabase.js';
 
+function validateString(val, maxLen = 500) {
+  return typeof val === 'string' && val.length <= maxLen;
+}
+
 export default async function handler(req, res) {
   if (handleCors(req, res)) return;
 
@@ -48,6 +52,20 @@ async function handlePut(req, res, user) {
 
   if (Object.keys(updates).length === 0) {
     return res.status(400).json({ error: 'No fields to update' });
+  }
+
+  // Input validation for freetext fields
+  const validationRules = {
+    resortName: 200,
+    whatsappNumber: 20,
+    welcomeMsg: 2000,
+    portalBaseUrl: 500,
+  };
+
+  for (const [field, maxLen] of Object.entries(validationRules)) {
+    if (updates[field] !== undefined && updates[field] !== null && !validateString(updates[field], maxLen)) {
+      return res.status(400).json({ error: `${field} must be a string up to ${maxLen} characters` });
+    }
   }
 
   // Map camelCase to snake_case
@@ -108,7 +126,8 @@ async function handlePut(req, res, user) {
       action: 'settings_updated',
       details: `Updated settings: ${Object.keys(updates).join(', ')}`,
       user_display: user.email,
-    });
+    })
+    .catch(err => console.error('Activity log error:', err));
 
   return res.status(200).json({ success: true, settings: data });
 }

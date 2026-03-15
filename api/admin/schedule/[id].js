@@ -109,6 +109,12 @@ async function handlePut(guestId, req, res, user) {
     }
   }
 
+  // Save existing data for atomic rollback
+  const { data: oldData } = await supabaseAdmin
+    .from('schedule_activities')
+    .select('*')
+    .eq('guest_id', guestId);
+
   // Delete existing schedule
   const { error: deleteError } = await supabaseAdmin
     .from('schedule_activities')
@@ -137,7 +143,11 @@ async function handlePut(guestId, req, res, user) {
 
     if (insertError) {
       console.error('Schedule insert error:', insertError);
-      return res.status(500).json({ error: 'Failed to insert schedule' });
+      // Attempt to restore old data
+      if (oldData && oldData.length > 0) {
+        await supabaseAdmin.from('schedule_activities').insert(oldData);
+      }
+      return res.status(500).json({ error: 'Failed to save schedule' });
     }
   }
 
@@ -148,7 +158,8 @@ async function handlePut(guestId, req, res, user) {
       action: 'schedule_updated',
       details: `Updated schedule for ${guest.first_name} ${guest.last_name} (${activities.length} activities)`,
       user_display: user.email,
-    });
+    })
+    .catch(err => console.error('Activity log error:', err));
 
   return res.status(200).json({
     success: true,

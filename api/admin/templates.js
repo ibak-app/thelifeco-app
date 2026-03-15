@@ -1,5 +1,9 @@
 import { supabaseAdmin, handleCors, requireAuth } from '../_lib/supabase.js';
 
+function validateString(val, maxLen = 500) {
+  return typeof val === 'string' && val.length <= maxLen;
+}
+
 export default async function handler(req, res) {
   if (handleCors(req, res)) return;
 
@@ -43,6 +47,14 @@ async function handlePost(req, res, user) {
     return res.status(400).json({ error: 'Missing required fields: name, programme' });
   }
 
+  // Input validation
+  if (!validateString(name, 200)) {
+    return res.status(400).json({ error: 'name must be a string up to 200 characters' });
+  }
+  if (!validateString(programme, 100)) {
+    return res.status(400).json({ error: 'programme must be a string up to 100 characters' });
+  }
+
   const { data, error } = await supabaseAdmin
     .from('programme_templates')
     .insert({
@@ -66,7 +78,8 @@ async function handlePost(req, res, user) {
       action: 'template_created',
       details: `Created template "${name}" for programme "${programme}"`,
       user_display: user.email,
-    });
+    })
+    .catch(err => console.error('Activity log error:', err));
 
   return res.status(201).json({ success: true, template: data });
 }
@@ -106,7 +119,8 @@ async function handleDelete(req, res, user) {
       action: 'template_deleted',
       details: `Deleted template "${template.name}"`,
       user_display: user.email,
-    });
+    })
+    .catch(err => console.error('Activity log error:', err));
 
   return res.status(200).json({ success: true });
 }

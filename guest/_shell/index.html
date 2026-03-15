@@ -817,10 +817,10 @@ ul, ol {
   flex-shrink: 0;
 }
 
-.legend-dot.group { background: var(--text-4); }
-.legend-dot.food { background: #48BB78; }
-.legend-dot.clinic { background: #ECC94B; }
-.legend-dot.extra { background: #F687B3; }
+.legend-dot.group { background: var(--teal); }
+.legend-dot.food { background: var(--warm); }
+.legend-dot.clinic { background: var(--blue); }
+.legend-dot.extra { background: #9F7AEA; }
 
 /* Integrations list */
 .integrations-list {
@@ -2898,6 +2898,16 @@ if (!SLUG) {
 }
 var API_BASE = '/api/guest/' + SLUG;
 var AUTH_KEY = 'tlc_auth_' + window.location.pathname;
+
+function guestFetch(url, options) {
+  options = options || {};
+  options.headers = options.headers || {};
+  var token = sessionStorage.getItem('tlc_guest_token');
+  if (token) {
+    options.headers['Authorization'] = 'Bearer ' + token;
+  }
+  return fetch(url, options);
+}
 // Set manifest href dynamically for PWA installability
 var manifestLink = document.getElementById('manifest-link');
 if (manifestLink && SLUG) manifestLink.href = '/api/guest/manifest?slug=' + SLUG;
@@ -2915,7 +2925,9 @@ function unlockApp() {
 }
 
 (function initAuth() {
-  if (sessionStorage.getItem(AUTH_KEY) === '1') {
+  // If we have a session token, skip auth gate entirely
+  var existingToken = sessionStorage.getItem('tlc_guest_token');
+  if (existingToken || sessionStorage.getItem(AUTH_KEY) === '1') {
     document.getElementById('auth-gate').style.display = 'none';
     document.getElementById('app').style.display = '';
     document.getElementById('help-btn').style.display = '';
@@ -2944,6 +2956,9 @@ function unlockApp() {
           body: JSON.stringify({ pin: pin })
         }).then(function(r) { return r.json(); }).then(function(result) {
           if (result.valid) {
+            if (result.token) {
+              sessionStorage.setItem('tlc_guest_token', result.token);
+            }
             inputs.forEach(function(inp) { inp.disabled = true; });
             unlockApp();
           } else {
@@ -2997,6 +3012,8 @@ var GUEST = {};
 var SETTINGS = {};
 var NUTRITION_PLANS = [];
 var DATA_LOADED = false;
+var FAVORITES_KEY = 'tlc_favorites';
+var RATINGS_KEY = 'tlc_ratings';
 
 // Use current date in St. Lucia timezone (UTC-4, no DST)
 function getStLuciaDate() {
@@ -3026,7 +3043,11 @@ var THERAPY_IMAGES = {};
 var THERAPY_PRICES = {};
 
 function loadGuestData() {
-  return fetch(API_BASE).then(function(r) {
+  return guestFetch(API_BASE).then(function(r) {
+    if (r.status === 401) {
+      sessionStorage.removeItem('tlc_guest_token');
+      throw new Error('Unauthorized');
+    }
     if (!r.ok) throw new Error('Guest not found');
     return r.json();
   }).then(function(data) {
@@ -3166,8 +3187,6 @@ function showToast(msg) {
 // FAVORITES
 // =============================================================
 
-var FAVORITES_KEY = 'tlc_favorites';
-
 function getFavorites() {
   try {
     return JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
@@ -3189,7 +3208,7 @@ function toggleFavorite(name) {
   logEvent('explore', 'favorite', name);
   // Sync to server (fire-and-forget)
   try {
-    fetch('/api/guest/favorites', {
+    guestFetch('/api/guest/favorites', {
       method: adding ? 'POST' : 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ slug: SLUG, therapyName: name })
@@ -3481,8 +3500,6 @@ function logEvent(category, action, label) {
 // RATINGS
 // =============================================================
 
-var RATINGS_KEY = 'tlc_ratings';
-
 function getRatings() {
   try { return JSON.parse(localStorage.getItem(RATINGS_KEY)) || {}; } catch(e) { return {}; }
 }
@@ -3495,7 +3512,7 @@ function setRating(dateStr, activityName, stars) {
   if (navigator.vibrate) navigator.vibrate(30);
   // Sync to server (fire-and-forget)
   try {
-    fetch('/api/guest/ratings', {
+    guestFetch('/api/guest/ratings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ slug: SLUG, activityName: activityName, rating: stars })
@@ -3582,7 +3599,7 @@ function getDayNum(dateStr) {
 }
 
 function getGreeting() {
-  var hr = new Date().getHours();
+  var hr = getStLuciaDate().getHours();
   if (hr < 12) return t('goodMorning');
   if (hr < 17) return t('goodAfternoon');
   return t('goodEvening');
@@ -3614,8 +3631,8 @@ function getDayOfMonth(dateStr) {
 
 
 function getNowMinutes() {
-  var now = new Date();
-  return now.getHours() * 60 + now.getMinutes();
+  var stLucia = getStLuciaDate();
+  return stLucia.getHours() * 60 + stLucia.getMinutes();
 }
 
 function mergeHydrationItems(activities) {
@@ -4063,11 +4080,17 @@ function initToday() {
       'You are halfway! Your body is adjusting beautifully',
       'Gentle walking or yoga enhances lymphatic drainage',
       'Journal your energy levels \u2014 you may notice improvements',
-      'Congratulations on completing your cleanse journey!'
+      'Congratulations on completing your cleanse journey!',
+      'Take a mindful walk on the beach \u2014 feel the sand beneath your feet',
+      'Deep breathing exercises can reduce stress and boost immunity',
+      'Spend 15 minutes in nature without your phone today',
+      'Try dry brushing before your shower to stimulate circulation',
+      'A warm herbal tea before bed promotes restful sleep',
+      'Practice gratitude \u2014 write down three things you are thankful for',
+      'Cold water exposure can boost alertness and reduce inflammation'
     ];
-    var wtIdx = dayNum - 1;
+    var wtIdx = (dayNum - 1) % wtTips.length;
     if (wtIdx < 0) wtIdx = 0;
-    if (wtIdx >= wtTips.length) wtIdx = wtTips.length - 1;
     var wtCard = h('div', 'wellness-tip-card');
     appendTo(wtCard, h('span', 'tip-icon', '\uD83C\uDF3F'));
     appendTo(wtCard, h('div', 'tip-label', 'Day ' + dayNum + ' Tip'));
@@ -4134,18 +4157,28 @@ function initToday() {
       if (fbTxt.value.trim()) fbMsg += '\n' + fbTxt.value.trim();
       // Save feedback to server API
       try {
-        fetch('/api/guest/feedback', {
+        guestFetch('/api/guest/feedback', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ slug: SLUG, category: 'daily', content: fbMsg })
         }).catch(function() {});
       } catch(e) {}
       showToast('Feedback saved! Thank you.');
-      // Also send via WhatsApp as secondary action
-      window.open(GUEST.waBase + '&text=' + encodeURIComponent(fbMsg), '_blank');
       logEvent('feedback', 'submit', String(fbSelEmoji));
     });
     appendTo(fbActs, fbWaBtn);
+    // Optional WhatsApp button
+    var fbWaLink = h('button', 'feedback-wa-btn', 'Also send via WhatsApp');
+    fbWaLink.setAttribute('type', 'button');
+    fbWaLink.style.background = 'var(--whatsapp-green)';
+    fbWaLink.addEventListener('click', function() {
+      if (!fbSelEmoji) { showToast('Please select a rating first'); return; }
+      var eLbl2 = fbEmojiData[fbSelEmoji - 1] ? fbEmojiData[fbSelEmoji - 1].icon + ' ' + fbEmojiData[fbSelEmoji - 1].label : '';
+      var waMsg2 = 'Day ' + dayNum + ' Feedback: ' + eLbl2;
+      if (fbTxt.value.trim()) waMsg2 += '\n' + fbTxt.value.trim();
+      window.open(GUEST.waBase + '&text=' + encodeURIComponent(waMsg2), '_blank');
+    });
+    appendTo(fbActs, fbWaLink);
     appendTo(fbCard, fbActs);
     appendTo(fbSec, fbCard);
     fbSec.style.display = '';
@@ -4307,6 +4340,15 @@ function loadScheduleDay(dateStr) {
 // initExplore
 // =============================================================
 
+function showExploreCategories() {
+  var categoriesContainer = document.getElementById('explore-categories');
+  var therapiesContainer = document.getElementById('explore-therapies');
+  var backBtn = document.getElementById('explore-back');
+  if (categoriesContainer) categoriesContainer.classList.remove('hidden');
+  if (therapiesContainer) therapiesContainer.classList.add('hidden');
+  if (backBtn) backBtn.classList.add('hidden');
+}
+
 function initExplore() {
   var skelExplore = document.getElementById('explore-skeleton');
   if (skelExplore) skelExplore.parentNode.removeChild(skelExplore);
@@ -4394,7 +4436,7 @@ function initExplore() {
     recommendations.forEach(function(therapy) {
       var recCard = h('div', 'recommendation-card');
       // Image
-      var recImgUrl = THERAPY_IMAGES[therapy.name] || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop';
+      var recImgUrl = THERAPY_IMAGES[therapy.name] || '/guest/_shared/images/therapy-default.jpg';
       var recImg = document.createElement('img');
       recImg.className = 'recommendation-card-img';
       recImg.src = recImgUrl;
@@ -4528,7 +4570,7 @@ function buildSingleTherapyCard(therapy) {
   card.setAttribute('data-name', therapy.name);
 
   // Image
-  var imgUrl = THERAPY_IMAGES[therapy.name] || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop';
+  var imgUrl = THERAPY_IMAGES[therapy.name] || '/guest/_shared/images/therapy-default.jpg';
   var img = document.createElement('img');
   img.className = 'therapy-card-img';
   img.src = imgUrl;
@@ -4595,7 +4637,7 @@ function openTherapyDetail(therapy) {
   if (_therapyDetailEl) closeTherapyDetail();
 
   var priceInfo = THERAPY_PRICES[therapy.name] || { price: 0, duration: '' };
-  var imgUrl = THERAPY_IMAGES[therapy.name] || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop';
+  var imgUrl = THERAPY_IMAGES[therapy.name] || '/guest/_shared/images/therapy-default.jpg';
 
   // Push history state for back button
   history.pushState({ therapyDetail: true }, '');
@@ -4710,7 +4752,7 @@ function openTherapyDetail(therapy) {
         similar.forEach(function(sim) {
           var simCard = h('div', 'similar-card');
           var simImg = document.createElement('img');
-          simImg.src = THERAPY_IMAGES[sim.name] || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop';
+          simImg.src = THERAPY_IMAGES[sim.name] || '/guest/_shared/images/therapy-default.jpg';
           simImg.alt = sim.name;
           appendTo(simCard, simImg);
           var simBody = h('div', 'similar-card-body');
@@ -5370,6 +5412,22 @@ function startSessionTimeout() {
       }, remaining);
     }
   }).catch(function(err) {
+    // If unauthorized, clear token and show auth gate
+    if (err && err.message === 'Unauthorized') {
+      sessionStorage.removeItem('tlc_guest_token');
+      sessionStorage.removeItem(AUTH_KEY);
+      var splash2 = document.getElementById('splash');
+      if (splash2) { splash2.style.opacity = '0'; setTimeout(function() { splash2.style.display = 'none'; }, 500); }
+      var authGate = document.getElementById('auth-gate');
+      if (authGate) { authGate.style.display = ''; authGate.classList.remove('authenticated'); }
+      document.getElementById('app').style.display = 'none';
+      document.getElementById('bottom-nav').style.display = 'none';
+      document.getElementById('help-btn').style.display = 'none';
+      var inputs2 = document.querySelectorAll('.pin-inputs input');
+      inputs2.forEach(function(inp) { inp.disabled = false; inp.value = ''; });
+      if (inputs2[0]) inputs2[0].focus();
+      return;
+    }
     var splash = document.getElementById('splash');
     if (splash) {
       while (splash.firstChild) splash.removeChild(splash.firstChild);
@@ -5377,6 +5435,11 @@ function startSessionTimeout() {
       errMsg.textContent = 'Unable to load guest data. Please check your connection.';
       errMsg.style.cssText = 'color:#ffffff;font-size:16px;padding:20px;text-align:center';
       splash.appendChild(errMsg);
+      var retryBtn = document.createElement('button');
+      retryBtn.textContent = 'Retry';
+      retryBtn.style.cssText = 'margin-top:16px;padding:10px 24px;background:#fff;color:#00609C;border:none;border-radius:8px;font-weight:600;cursor:pointer';
+      retryBtn.onclick = function() { location.reload(); };
+      splash.appendChild(retryBtn);
       splash.style.opacity = '1';
     }
     console.error('Failed to load guest data:', err);

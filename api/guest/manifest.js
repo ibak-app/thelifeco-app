@@ -13,6 +13,10 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing slug parameter' });
   }
 
+  if (!/^[a-z0-9][a-z0-9-]{1,60}$/.test(slug)) {
+    return res.status(400).json({ error: 'Invalid slug format' });
+  }
+
   const manifest = {
     name: 'TheLifeCo \u00b7 Guest Portal',
     short_name: 'TheLifeCo',

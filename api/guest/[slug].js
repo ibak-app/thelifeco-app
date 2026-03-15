@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import { supabaseAdmin, handleCors } from '../_lib/supabase.js';
+import { createGuestToken, requireGuestAuth } from '../_lib/guest-auth.js';
 
 export default async function handler(req, res) {
   if (handleCors(req, res)) return;
@@ -16,6 +17,9 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
+      const authSlug = requireGuestAuth(req, res);
+      if (!authSlug) return;
+      if (authSlug !== slug) return res.status(403).json({ error: 'Token does not match slug' });
       return await handleGet(slug, res);
     } else if (req.method === 'POST') {
       return await handlePost(slug, req, res);
@@ -72,7 +76,8 @@ async function handleGet(slug, res) {
 
     supabaseAdmin
       .from('nutrition_plans')
-      .select('name, calories, description'),
+      .select('name, calories, description')
+      .order('sort_order', { ascending: true }),
 
     supabaseAdmin
       .from('settings')
@@ -172,7 +177,9 @@ async function handleGet(slug, res) {
     hydration: hydrationResult.data || [],
     infoContent,
     nutritionPlans: nutritionPlansResult.data || [],
-    settings: settingsResult.data || { resort_name: 'TheLifeCo', whatsapp_number: '' },
+    settings: settingsResult.data
+      ? { resortName: settingsResult.data.resort_name, whatsappNumber: settingsResult.data.whatsapp_number }
+      : { resortName: 'TheLifeCo', whatsappNumber: '' },
     favorites,
   });
 }
@@ -201,7 +208,11 @@ async function handlePost(slug, req, res) {
     .update(String(pin))
     .digest('hex');
 
-  const valid = inputHash === guest.pin_hash;
+  const match = crypto.timingSafeEqual(Buffer.from(inputHash), Buffer.from(guest.pin_hash));
 
-  return res.status(200).json({ valid });
+  if (!match) {
+    return res.status(200).json({ valid: false });
+  }
+
+  return res.status(200).json({ valid: true, token: createGuestToken(slug) });
 }

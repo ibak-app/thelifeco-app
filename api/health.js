@@ -2,11 +2,10 @@ import { supabaseAdmin } from './_lib/supabase.js';
 
 export default async function handler(req, res) {
   try {
-    const { data, error } = await supabaseAdmin
+    const { error } = await supabaseAdmin
       .from('settings')
       .select('id')
-      .limit(1)
-      .single();
+      .limit(1);
 
     if (error) {
       return res.status(503).json({ status: 'unhealthy', error: 'Database unreachable' });

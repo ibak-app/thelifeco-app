@@ -1,16 +1,20 @@
 import { supabaseAdmin, handleCors } from '../_lib/supabase.js';
+import { requireGuestAuth } from '../_lib/guest-auth.js';
 
 export default async function handler(req, res) {
   if (handleCors(req, res)) return;
 
+  const slug = requireGuestAuth(req, res);
+  if (!slug) return;
+
   try {
     switch (req.method) {
       case 'GET':
-        return await handleGet(req, res);
+        return await handleGet(slug, res);
       case 'POST':
-        return await handlePost(req, res);
+        return await handlePost(slug, req, res);
       case 'DELETE':
-        return await handleDelete(req, res);
+        return await handleDelete(slug, req, res);
       default:
         return res.status(405).json({ error: 'Method not allowed' });
     }
@@ -31,13 +35,7 @@ async function getGuestId(slug) {
   return data.id;
 }
 
-async function handleGet(req, res) {
-  const { slug } = req.query;
-
-  if (!slug) {
-    return res.status(400).json({ error: 'Missing slug parameter' });
-  }
-
+async function handleGet(slug, res) {
   const guestId = await getGuestId(slug);
   if (!guestId) {
     return res.status(404).json({ error: 'Guest not found' });
@@ -56,11 +54,15 @@ async function handleGet(req, res) {
   return res.status(200).json({ favorites: data || [] });
 }
 
-async function handlePost(req, res) {
-  const { slug, therapyName } = req.body || {};
+async function handlePost(slug, req, res) {
+  const { therapyName } = req.body || {};
 
-  if (!slug || !therapyName) {
-    return res.status(400).json({ error: 'Missing slug or therapyName' });
+  if (!therapyName) {
+    return res.status(400).json({ error: 'Missing therapyName' });
+  }
+
+  if (String(therapyName).length > 200) {
+    return res.status(400).json({ error: 'therapyName too long' });
   }
 
   const guestId = await getGuestId(slug);
@@ -84,11 +86,15 @@ async function handlePost(req, res) {
   return res.status(200).json({ success: true, favorite: data });
 }
 
-async function handleDelete(req, res) {
-  const { slug, therapyName } = req.body || {};
+async function handleDelete(slug, req, res) {
+  const { therapyName } = req.body || {};
 
-  if (!slug || !therapyName) {
-    return res.status(400).json({ error: 'Missing slug or therapyName' });
+  if (!therapyName) {
+    return res.status(400).json({ error: 'Missing therapyName' });
+  }
+
+  if (String(therapyName).length > 200) {
+    return res.status(400).json({ error: 'therapyName too long' });
   }
 
   const guestId = await getGuestId(slug);

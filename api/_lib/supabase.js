@@ -4,6 +4,10 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
+if (!supabaseUrl || !supabaseServiceKey) {
+  console.error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
+}
+
 // Service role client (bypasses RLS - for server-side operations)
 export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
@@ -20,7 +24,11 @@ const ALLOWED_ORIGINS = ['https://thelifeco.app', 'https://www.thelifeco.app'];
 
 export function getCorsHeaders(req) {
   const origin = req?.headers?.origin || '';
-  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : '';
+  if (!allowedOrigin) return {
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  };
   return {
     'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -41,7 +49,7 @@ export function handleCors(req, res) {
   return false;
 }
 
-// Check admin auth - returns user or sends 401
+// Check admin auth - returns user or sends 401/403
 export async function requireAuth(req, res) {
   const token = req.headers.authorization?.replace('Bearer ', '');
   if (!token) {
@@ -55,6 +63,16 @@ export async function requireAuth(req, res) {
   if (error || !user) {
     res.status(401).json({ error: 'Invalid or expired token' });
     return null;
+  }
+
+  // Role check: if ADMIN_EMAILS is set, verify user is in the list
+  const adminEmails = process.env.ADMIN_EMAILS;
+  if (adminEmails) {
+    const allowed = adminEmails.split(',').map(e => e.trim().toLowerCase());
+    if (!allowed.includes(user.email.toLowerCase())) {
+      res.status(403).json({ error: 'Insufficient permissions' });
+      return null;
+    }
   }
 
   return user;

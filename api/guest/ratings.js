@@ -1,4 +1,5 @@
 import { supabaseAdmin, handleCors } from '../_lib/supabase.js';
+import { requireGuestAuth } from '../_lib/guest-auth.js';
 
 export default async function handler(req, res) {
   if (handleCors(req, res)) return;
@@ -7,11 +8,18 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  try {
-    const { slug, activityName, rating } = req.body || {};
+  const slug = requireGuestAuth(req, res);
+  if (!slug) return;
 
-    if (!slug || !activityName || rating === undefined) {
-      return res.status(400).json({ error: 'Missing slug, activityName, or rating' });
+  try {
+    const { activityName, rating } = req.body || {};
+
+    if (!activityName || rating === undefined) {
+      return res.status(400).json({ error: 'Missing activityName or rating' });
+    }
+
+    if (String(activityName).length > 200) {
+      return res.status(400).json({ error: 'activityName too long' });
     }
 
     const ratingNum = Number(rating);

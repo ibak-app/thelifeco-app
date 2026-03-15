@@ -1,4 +1,7 @@
 import { supabaseAdmin, handleCors } from '../_lib/supabase.js';
+import { requireGuestAuth } from '../_lib/guest-auth.js';
+
+const ALLOWED_CATEGORIES = ['daily', 'general', 'suggestion', 'complaint'];
 
 export default async function handler(req, res) {
   if (handleCors(req, res)) return;
@@ -7,11 +10,18 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  try {
-    const { slug, category, content } = req.body || {};
+  const slug = requireGuestAuth(req, res);
+  if (!slug) return;
 
-    if (!slug || !category || !content) {
-      return res.status(400).json({ error: 'Missing slug, category, or content' });
+  try {
+    const { category, content } = req.body || {};
+
+    if (!category || !content) {
+      return res.status(400).json({ error: 'Missing category or content' });
+    }
+
+    if (!ALLOWED_CATEGORIES.includes(category)) {
+      return res.status(400).json({ error: 'Invalid category' });
     }
 
     if (String(content).length > 5000) {
@@ -41,6 +51,6 @@ export default async function handler(req, res) {
     return res.status(201).json({ success: true, feedback: data });
   } catch (err) {
     console.error('Feedback API error:', err);
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 }

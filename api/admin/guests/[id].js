@@ -1,5 +1,9 @@
 import { supabaseAdmin, handleCors, requireAuth } from '../../_lib/supabase.js';
 
+function validateString(val, maxLen = 500) {
+  return typeof val === 'string' && val.length <= maxLen;
+}
+
 export default async function handler(req, res) {
   if (handleCors(req, res)) return;
 
@@ -92,6 +96,30 @@ async function handlePut(id, req, res, user) {
     return res.status(400).json({ error: 'No fields to update' });
   }
 
+  // Input validation for freetext fields
+  const validationRules = {
+    firstName: 100,
+    lastName: 100,
+    email: 254,
+    whatsapp: 20,
+    programme: 100,
+    room: 50,
+    notes: 2000,
+  };
+
+  for (const [field, maxLen] of Object.entries(validationRules)) {
+    if (updates[field] !== undefined && updates[field] !== null && !validateString(updates[field], maxLen)) {
+      return res.status(400).json({ error: `${field} must be a string up to ${maxLen} characters` });
+    }
+  }
+
+  if (updates.duration !== undefined) {
+    const durationNum = Number(updates.duration);
+    if (!Number.isInteger(durationNum) || durationNum < 1 || durationNum > 365) {
+      return res.status(400).json({ error: 'Duration must be 1-365 days' });
+    }
+  }
+
   // Map camelCase to snake_case for allowed fields
   const fieldMap = {
     firstName: 'first_name',
@@ -145,7 +173,8 @@ async function handlePut(id, req, res, user) {
       action: 'guest_updated',
       details: `Updated guest ${id}: ${Object.keys(updates).join(', ')}`,
       user_display: user.email,
-    });
+    })
+    .catch(err => console.error('Activity log error:', err));
 
   return res.status(200).json({ success: true, guest });
 }
@@ -188,7 +217,8 @@ async function handleDelete(id, res, user) {
       action: 'guest_deleted',
       details: `Deleted guest ${guest.first_name} ${guest.last_name} (${guest.slug})`,
       user_display: user.email,
-    });
+    })
+    .catch(err => console.error('Activity log error:', err));
 
   return res.status(200).json({ success: true });
 }

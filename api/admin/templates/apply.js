@@ -30,8 +30,21 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Template has no schedule data' });
   }
 
+  // Save existing data for atomic rollback
+  const { data: oldData } = await supabaseAdmin
+    .from('schedule_activities')
+    .select('*')
+    .eq('guest_id', guestId);
+
   // Delete existing schedule
-  await supabaseAdmin.from('schedule_activities').delete().eq('guest_id', guestId);
+  const { error: delErr } = await supabaseAdmin
+    .from('schedule_activities')
+    .delete()
+    .eq('guest_id', guestId);
+
+  if (delErr) {
+    return res.status(500).json({ error: 'Failed to clear schedule' });
+  }
 
   // Build activities from template schedule_data
   // schedule_data is expected to be an array of { day: 1, time: "07:00", name: "...", type: "group" }
@@ -52,14 +65,20 @@ export default async function handler(req, res) {
 
   if (rows.length > 0) {
     const { error: insertErr } = await supabaseAdmin.from('schedule_activities').insert(rows);
-    if (insertErr) return res.status(500).json({ error: 'Failed to create schedule' });
+    if (insertErr) {
+      // Attempt to restore old data
+      if (oldData && oldData.length > 0) {
+        await supabaseAdmin.from('schedule_activities').insert(oldData);
+      }
+      return res.status(500).json({ error: 'Failed to create schedule' });
+    }
   }
 
   await supabaseAdmin.from('activity_log').insert({
     action: 'template_applied',
     details: `Applied template to ${guest.first_name} ${guest.last_name} (${rows.length} activities)`,
     user_display: user.email,
-  });
+  }).catch(err => console.error('Activity log error:', err));
 
   return res.status(200).json({ success: true, count: rows.length });
 }
