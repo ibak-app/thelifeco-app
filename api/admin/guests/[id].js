@@ -42,19 +42,19 @@ async function handleGet(id, res) {
 
   // Fetch schedule grouped by date
   const { data: scheduleData, error: scheduleError } = await supabaseAdmin
-    .from('schedule')
-    .select('date, time, name, type')
+    .from('schedule_activities')
+    .select('activity_date, time, name, type')
     .eq('guest_id', id)
-    .order('date', { ascending: true })
-    .order('time', { ascending: true });
+    .order('activity_date', { ascending: true })
+    .order('sort_order', { ascending: true });
 
   const schedule = {};
   if (scheduleData) {
     for (const item of scheduleData) {
-      if (!schedule[item.date]) {
-        schedule[item.date] = [];
+      if (!schedule[item.activity_date]) {
+        schedule[item.activity_date] = [];
       }
-      schedule[item.date].push({
+      schedule[item.activity_date].push({
         time: item.time,
         name: item.name,
         type: item.type,
@@ -64,7 +64,7 @@ async function handleGet(id, res) {
 
   // Compute checkout and status
   const checkOutDate = new Date(guest.check_in);
-  checkOutDate.setDate(checkOutDate.getDate() + guest.total_days);
+  checkOutDate.setDate(checkOutDate.getDate() + guest.duration);
 
   const now = new Date();
   const daysLeft = Math.max(0, Math.ceil((checkOutDate - now) / (1000 * 60 * 60 * 24)));
@@ -98,8 +98,8 @@ async function handlePut(id, req, res, user) {
     email: 'email',
     whatsapp: 'whatsapp',
     checkIn: 'check_in',
-    duration: 'total_days',
-    totalDays: 'total_days',
+    duration: 'duration',
+    totalDays: 'duration',
     programme: 'programme',
     room: 'room',
     notes: 'notes',
@@ -142,7 +142,7 @@ async function handlePut(id, req, res, user) {
     .insert({
       action: 'guest_updated',
       details: `Updated guest ${id}: ${Object.keys(updates).join(', ')}`,
-      performed_by: user.email,
+      user_display: user.email,
     });
 
   return res.status(200).json({ success: true, guest });
@@ -162,10 +162,10 @@ async function handleDelete(id, res, user) {
 
   // Delete cascade: schedule, favorites, ratings, feedback first
   await Promise.all([
-    supabaseAdmin.from('schedule').delete().eq('guest_id', id),
-    supabaseAdmin.from('favorites').delete().eq('guest_id', id),
-    supabaseAdmin.from('ratings').delete().eq('guest_id', id),
-    supabaseAdmin.from('feedback').delete().eq('guest_id', id),
+    supabaseAdmin.from('schedule_activities').delete().eq('guest_id', id),
+    supabaseAdmin.from('guest_favorites').delete().eq('guest_id', id),
+    supabaseAdmin.from('guest_ratings').delete().eq('guest_id', id),
+    supabaseAdmin.from('guest_feedback').delete().eq('guest_id', id),
   ]);
 
   // Delete the guest
@@ -185,7 +185,7 @@ async function handleDelete(id, res, user) {
     .insert({
       action: 'guest_deleted',
       details: `Deleted guest ${guest.first_name} ${guest.last_name} (${guest.slug})`,
-      performed_by: user.email,
+      user_display: user.email,
     });
 
   return res.status(200).json({ success: true });

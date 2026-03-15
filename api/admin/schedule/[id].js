@@ -40,11 +40,11 @@ async function handleGet(guestId, res) {
   }
 
   const { data, error } = await supabaseAdmin
-    .from('schedule')
-    .select('id, date, time, name, type')
+    .from('schedule_activities')
+    .select('id, activity_date, time, name, type')
     .eq('guest_id', guestId)
-    .order('date', { ascending: true })
-    .order('time', { ascending: true });
+    .order('activity_date', { ascending: true })
+    .order('sort_order', { ascending: true });
 
   if (error) {
     return res.status(500).json({ error: 'Failed to fetch schedule' });
@@ -53,10 +53,10 @@ async function handleGet(guestId, res) {
   // Group by date
   const schedule = {};
   for (const item of data || []) {
-    if (!schedule[item.date]) {
+    if (!schedule[item.activity_date]) {
       schedule[item.date] = [];
     }
-    schedule[item.date].push({
+    schedule[item.activity_date].push({
       id: item.id,
       time: item.time,
       name: item.name,
@@ -99,7 +99,7 @@ async function handlePut(guestId, req, res, user) {
 
   // Delete existing schedule
   const { error: deleteError } = await supabaseAdmin
-    .from('schedule')
+    .from('schedule_activities')
     .delete()
     .eq('guest_id', guestId);
 
@@ -112,14 +112,14 @@ async function handlePut(guestId, req, res, user) {
   if (activities.length > 0) {
     const rows = activities.map(a => ({
       guest_id: guestId,
-      date: a.date,
+      activity_date: a.date,
       time: a.time,
       name: a.name,
       type: a.type || 'activity',
     }));
 
     const { error: insertError } = await supabaseAdmin
-      .from('schedule')
+      .from('schedule_activities')
       .insert(rows);
 
     if (insertError) {
@@ -134,7 +134,7 @@ async function handlePut(guestId, req, res, user) {
     .insert({
       action: 'schedule_updated',
       details: `Updated schedule for ${guest.first_name} ${guest.last_name} (${activities.length} activities)`,
-      performed_by: user.email,
+      user_display: user.email,
     });
 
   return res.status(200).json({

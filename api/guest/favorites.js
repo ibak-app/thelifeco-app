@@ -44,7 +44,7 @@ async function handleGet(req, res) {
   }
 
   const { data, error } = await supabaseAdmin
-    .from('favorites')
+    .from('guest_favorites')
     .select('therapy_name, created_at')
     .eq('guest_id', guestId)
     .order('created_at', { ascending: false });
@@ -69,7 +69,7 @@ async function handlePost(req, res) {
   }
 
   const { data, error } = await supabaseAdmin
-    .from('favorites')
+    .from('guest_favorites')
     .upsert(
       { guest_id: guestId, therapy_name: therapyName },
       { onConflict: 'guest_id, therapy_name' }
@@ -97,7 +97,7 @@ async function handleDelete(req, res) {
   }
 
   const { error } = await supabaseAdmin
-    .from('favorites')
+    .from('guest_favorites')
     .delete()
     .eq('guest_id', guestId)
     .eq('therapy_name', therapyName);

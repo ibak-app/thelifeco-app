@@ -65,7 +65,7 @@ async function handlePost(req, res, user) {
     .insert({
       action: 'template_created',
       details: `Created template "${name}" for programme "${programme}"`,
-      performed_by: user.email,
+      user_display: user.email,
     });
 
   return res.status(201).json({ success: true, template: data });
@@ -105,7 +105,7 @@ async function handleDelete(req, res, user) {
     .insert({
       action: 'template_deleted',
       details: `Deleted template "${template.name}"`,
-      performed_by: user.email,
+      user_display: user.email,
     });
 
   return res.status(200).json({ success: true });

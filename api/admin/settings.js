@@ -100,7 +100,7 @@ async function handlePut(req, res, user) {
     .insert({
       action: 'settings_updated',
       details: `Updated settings: ${Object.keys(updates).join(', ')}`,
-      performed_by: user.email,
+      user_display: user.email,
     });
 
   return res.status(200).json({ success: true, settings: data });

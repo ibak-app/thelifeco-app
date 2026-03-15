@@ -64,7 +64,7 @@ async function handleGet(req, res) {
   // Add computed fields
   const enriched = (guests || []).map(guest => {
     const checkOutDate = new Date(guest.check_in);
-    checkOutDate.setDate(checkOutDate.getDate() + guest.total_days);
+    checkOutDate.setDate(checkOutDate.getDate() + guest.duration);
 
     const now = new Date();
     const diffMs = checkOutDate - now;
@@ -74,7 +74,7 @@ async function handleGet(req, res) {
       ...guest,
       checkOut: checkOutDate.toISOString().split('T')[0],
       daysLeft,
-      status: computeStatus(guest.check_in, guest.total_days),
+      status: computeStatus(guest.check_in, guest.duration),
     };
   });
 
@@ -123,7 +123,7 @@ async function handlePost(req, res, user) {
       email: email || null,
       whatsapp: whatsapp || null,
       check_in: checkIn,
-      total_days: duration,
+      duration: duration,
       programme: programme || null,
       room: room || null,
       notes: notes || null,
@@ -145,7 +145,7 @@ async function handlePost(req, res, user) {
     .insert({
       action: 'guest_created',
       details: `Created guest ${firstName} ${lastName} (${finalSlug})`,
-      performed_by: user.email,
+      user_display: user.email,
     });
 
   return res.status(201).json({ success: true, guest });

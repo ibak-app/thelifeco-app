@@ -31,7 +31,7 @@ export default async function handler(req, res) {
 
     // Insert feedback
     const { data, error } = await supabaseAdmin
-      .from('feedback')
+      .from('guest_feedback')
       .insert({
         guest_id: guest.id,
         category,

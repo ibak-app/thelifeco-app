@@ -32,7 +32,7 @@ export default async function handler(req, res) {
 
     // Upsert rating
     const { data, error } = await supabaseAdmin
-      .from('ratings')
+      .from('guest_ratings')
       .upsert(
         {
           guest_id: guest.id,

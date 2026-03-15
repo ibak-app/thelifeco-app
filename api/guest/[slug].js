@@ -25,10 +25,9 @@ export default async function handler(req, res) {
 }
 
 async function handleGet(slug, res) {
-  // Fetch guest by slug
   const { data: guest, error: guestError } = await supabaseAdmin
     .from('guests')
-    .select('id, first_name, last_name, programme, check_in, total_days, wa_base, room, email')
+    .select('id, first_name, last_name, programme, check_in, duration, wa_base, room, email')
     .eq('slug', slug)
     .single();
 
@@ -36,13 +35,11 @@ async function handleGet(slug, res) {
     return res.status(404).json({ error: 'Guest not found' });
   }
 
-  // Fetch all related data in parallel
   const [
     scheduleResult,
     descriptionsResult,
     categoriesResult,
-    therapyImagesResult,
-    therapyPricesResult,
+    therapiesResult,
     hydrationResult,
     infoContentResult,
     nutritionPlansResult,
@@ -50,11 +47,11 @@ async function handleGet(slug, res) {
     favoritesResult,
   ] = await Promise.all([
     supabaseAdmin
-      .from('schedule')
-      .select('date, time, name, type')
+      .from('schedule_activities')
+      .select('activity_date, time, name, type')
       .eq('guest_id', guest.id)
-      .order('date', { ascending: true })
-      .order('time', { ascending: true }),
+      .order('activity_date', { ascending: true })
+      .order('sort_order', { ascending: true }),
 
     supabaseAdmin
       .from('activity_descriptions')
@@ -62,24 +59,18 @@ async function handleGet(slug, res) {
 
     supabaseAdmin
       .from('therapy_categories')
-      .select(`
-        id, title, image_path,
-        therapies (name, description, popular, recommended)
-      `)
+      .select('id, title, image_path')
       .order('sort_order', { ascending: true }),
 
     supabaseAdmin
-      .from('therapy_images')
-      .select('name, url'),
+      .from('therapies')
+      .select('category_id, name, description, image_url, price_usd, duration, is_popular, is_recommended')
+      .order('sort_order', { ascending: true }),
 
     supabaseAdmin
-      .from('therapy_prices')
-      .select('name, price, duration'),
-
-    supabaseAdmin
-      .from('hydration')
+      .from('hydration_items')
       .select('time, name, icon, note')
-      .order('time', { ascending: true }),
+      .order('sort_order', { ascending: true }),
 
     supabaseAdmin
       .from('info_content')
@@ -95,7 +86,7 @@ async function handleGet(slug, res) {
       .single(),
 
     supabaseAdmin
-      .from('favorites')
+      .from('guest_favorites')
       .select('therapy_name')
       .eq('guest_id', guest.id),
   ]);
@@ -104,15 +95,9 @@ async function handleGet(slug, res) {
   const schedule = {};
   if (scheduleResult.data) {
     for (const item of scheduleResult.data) {
-      const dateKey = item.date;
-      if (!schedule[dateKey]) {
-        schedule[dateKey] = [];
-      }
-      schedule[dateKey].push({
-        time: item.time,
-        name: item.name,
-        type: item.type,
-      });
+      const dateKey = item.activity_date;
+      if (!schedule[dateKey]) schedule[dateKey] = [];
+      schedule[dateKey].push({ time: item.time, name: item.name, type: item.type });
     }
   }
 
@@ -124,22 +109,23 @@ async function handleGet(slug, res) {
     }
   }
 
+  // Build categories with nested therapies, images, and prices
+  const categories = (categoriesResult.data || []).map(cat => ({
+    id: cat.id,
+    title: cat.title,
+    imagePath: cat.image_path,
+    therapies: (therapiesResult.data || [])
+      .filter(t => t.category_id === cat.id)
+      .map(t => ({ name: t.name, description: t.description, popular: t.is_popular, recommended: t.is_recommended })),
+  }));
+
   // Build therapy images map
   const therapyImages = {};
-  if (therapyImagesResult.data) {
-    for (const item of therapyImagesResult.data) {
-      therapyImages[item.name] = item.url;
-    }
-  }
-
-  // Build therapy prices map
   const therapyPrices = {};
-  if (therapyPricesResult.data) {
-    for (const item of therapyPricesResult.data) {
-      therapyPrices[item.name] = {
-        price: item.price,
-        duration: item.duration,
-      };
+  if (therapiesResult.data) {
+    for (const t of therapiesResult.data) {
+      if (t.image_url) therapyImages[t.name] = t.image_url;
+      if (t.price_usd) therapyPrices[t.name] = { price: t.price_usd, duration: t.duration };
     }
   }
 
@@ -151,10 +137,7 @@ async function handleGet(slug, res) {
     }
   }
 
-  // Build favorites set
-  const favorites = favoritesResult.data
-    ? favoritesResult.data.map(f => f.therapy_name)
-    : [];
+  const favorites = favoritesResult.data ? favoritesResult.data.map(f => f.therapy_name) : [];
 
   return res.status(200).json({
     guest: {
@@ -162,19 +145,19 @@ async function handleGet(slug, res) {
       lastName: guest.last_name,
       programme: guest.programme,
       checkIn: guest.check_in,
-      totalDays: guest.total_days,
+      totalDays: guest.duration,
       waBase: guest.wa_base,
       room: guest.room,
     },
     schedule,
     descriptions,
-    categories: categoriesResult.data || [],
+    categories,
     therapyImages,
     therapyPrices,
     hydration: hydrationResult.data || [],
     infoContent,
     nutritionPlans: nutritionPlansResult.data || [],
-    settings: settingsResult.data || { resortName: 'TheLifeCo', whatsappNumber: '' },
+    settings: settingsResult.data || { resort_name: 'TheLifeCo', whatsapp_number: '' },
     favorites,
   });
 }
