@@ -38,7 +38,6 @@ export default async function handler(req, res) {
           guest_id: guest.id,
           activity_name: activityName,
           rating: ratingNum,
-          updated_at: new Date().toISOString(),
         },
         { onConflict: 'guest_id, activity_name' }
       )

@@ -54,7 +54,7 @@ async function handleGet(guestId, res) {
   const schedule = {};
   for (const item of data || []) {
     if (!schedule[item.activity_date]) {
-      schedule[item.date] = [];
+      schedule[item.activity_date] = [];
     }
     schedule[item.activity_date].push({
       id: item.id,

@@ -82,17 +82,16 @@ async function handleGet(req, res) {
 }
 
 async function handlePost(req, res, user) {
-  const {
-    firstName,
-    lastName,
-    email,
-    whatsapp,
-    checkIn,
-    duration,
-    programme,
-    room,
-    notes,
-  } = req.body || {};
+  const body = req.body || {};
+  const firstName = body.firstName;
+  const lastName = body.lastName;
+  const email = body.email;
+  const whatsapp = body.whatsapp;
+  const checkIn = body.checkIn || body.checkin;
+  const duration = body.duration;
+  const programme = body.programme;
+  const room = body.room;
+  const notes = body.notes;
 
   if (!firstName || !lastName || !checkIn || !duration) {
     return res.status(400).json({

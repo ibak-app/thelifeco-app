@@ -98,6 +98,7 @@ async function handlePut(id, req, res, user) {
     email: 'email',
     whatsapp: 'whatsapp',
     checkIn: 'check_in',
+    checkin: 'check_in',
     duration: 'duration',
     totalDays: 'duration',
     programme: 'programme',

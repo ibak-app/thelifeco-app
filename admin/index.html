@@ -415,13 +415,34 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       apiFetch('/api/admin/settings'),
       apiFetch('/api/admin/log')
     ]).then(function(results) {
-      store.guests = (results[0] || []).map(function(g) {
-        g.status = computeStatus(g);
-        return g;
+      // Unwrap API responses (each wraps data in a named key)
+      var rawGuests = (results[0] && results[0].guests) || [];
+      store.guests = rawGuests.map(function(g) {
+        // Map snake_case API fields to camelCase frontend fields
+        return {
+          id: g.id,
+          firstName: g.first_name,
+          lastName: g.last_name,
+          email: g.email || '',
+          whatsapp: g.whatsapp || '',
+          checkin: g.check_in,
+          duration: g.duration,
+          programme: g.programme || '',
+          room: g.room || '',
+          notes: g.notes || '',
+          slug: g.slug,
+          pin: '',
+          status: g.status,
+          checkOut: g.checkOut,
+          daysLeft: g.daysLeft,
+        };
       });
-      store.templates = results[1] || [];
-      store.settings = results[2] || {};
-      store.activityLog = results[3] || [];
+      var rawTemplates = (results[1] && results[1].templates) || [];
+      store.templates = rawTemplates.map(function(t) {
+        return { id: t.id, name: t.name, programme: t.programme, duration: t.duration, scheduleData: t.schedule_data };
+      });
+      store.settings = (results[2] && results[2].settings) || {};
+      store.activityLog = (results[3] && results[3].log) || [];
     }).catch(function(err) {
       if (err.message !== 'Session expired') showAdminToast('Failed to load data: ' + err.message);
     });
@@ -440,12 +461,24 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     return d.toISOString().slice(0, 10);
   }
 
+  function mapGuestFromApi(g) {
+    return {
+      id: g.id, firstName: g.first_name, lastName: g.last_name,
+      email: g.email || '', whatsapp: g.whatsapp || '',
+      checkin: g.check_in, duration: g.duration,
+      programme: g.programme || '', room: g.room || '',
+      notes: g.notes || '', slug: g.slug, pin: '',
+      status: g.status || computeStatus({ checkin: g.check_in, duration: g.duration }),
+      checkOut: g.checkOut, daysLeft: g.daysLeft,
+    };
+  }
+
   function apiCreateGuest(guestData) {
     return apiFetch('/api/admin/guests', {
       method: 'POST',
       body: JSON.stringify(guestData)
-    }).then(function(created) {
-      created.status = computeStatus(created);
+    }).then(function(resp) {
+      var created = mapGuestFromApi(resp.guest);
       store.guests.push(created);
       return created;
     });
@@ -455,8 +488,8 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     return apiFetch('/api/admin/guests/' + id, {
       method: 'PUT',
       body: JSON.stringify(guestData)
-    }).then(function(updated) {
-      updated.status = computeStatus(updated);
+    }).then(function(resp) {
+      var updated = mapGuestFromApi(resp.guest);
       store.guests = store.guests.map(function(g) { return g.id === id ? updated : g; });
       return updated;
     });
@@ -474,9 +507,9 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     return apiFetch('/api/admin/settings', {
       method: 'PUT',
       body: JSON.stringify(settings)
-    }).then(function(updated) {
-      store.settings = updated;
-      return updated;
+    }).then(function(resp) {
+      store.settings = resp.settings || resp;
+      return store.settings;
     });
   }
 
