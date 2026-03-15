@@ -55,7 +55,7 @@ export default async function handler(req, res) {
     }
   } catch (err) {
     console.error('Guest API error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error', debug: err.message });
   }
 }
 
