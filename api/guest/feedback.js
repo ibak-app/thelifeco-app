@@ -8,7 +8,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { slug, category, content } = req.body || {};
+    const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+    const { slug, category, content } = body;
 
     if (!slug || !category || !content) {
       return res.status(400).json({ error: 'Missing slug, category, or content' });
