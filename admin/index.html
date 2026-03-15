@@ -251,15 +251,22 @@ tr:hover td { background: rgba(0,96,156,0.02); }
   }
 
   function getPortalUrl(g) {
-    var slug = (g.firstName + '-' + g.lastName).toLowerCase().replace(/[^a-z0-9-]/g, '');
-    return 'https://thelifeco.app/guest/' + slug + '/';
+    var slug = g.slug || (g.firstName + '-' + g.lastName).toLowerCase().replace(/[^a-z0-9-]/g, '');
+    var base = (store.settings && store.settings.portalBaseUrl) || 'https://thelifeco.app';
+    base = base.replace(/\/+$/, '');
+    return base + '/guest/' + slug;
   }
 
   function cleanWhatsApp(num) { return num.replace(/[^0-9]/g, ''); }
 
   function sendWhatsAppWelcome(g) {
+    if (g.pin === '****') {
+      showAdminToast('PIN not available \u2014 reset it first before sending welcome.');
+      return;
+    }
     var url = getPortalUrl(g);
-    var msg = 'Welcome to TheLifeCo St. Lucia, ' + g.firstName + '! Your personal wellness portal is ready: ' + url + ' Your PIN: ' + g.pin;
+    var pinText = g.pin && g.pin !== '****' ? '\nYour PIN: ' + g.pin : '';
+    var msg = 'Welcome to TheLifeCo St. Lucia, ' + g.firstName + '! Your personal wellness portal is ready: ' + url + pinText;
     var phone = cleanWhatsApp(g.whatsapp);
     location.href = 'https://api.whatsapp.com/send?phone=' + phone + '&text=' + encodeURIComponent(msg);
   }
@@ -579,6 +586,10 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       method: 'PUT',
       body: JSON.stringify({ activities: activities })
     });
+  }
+
+  function apiResetPin(guestId) {
+    return apiFetch('/api/admin/guests/' + guestId + '/reset-pin', { method: 'POST' });
   }
 
   function addLog(action, details) {
@@ -1093,6 +1104,49 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       actions.appendChild(actAct);
     }
 
+    var resetPinAct = el('div', { className: 'action-card' });
+    var rpIcon = el('div', { className: 'action-card-icon', style: 'background:var(--orange-light)' });
+    rpIcon.appendChild(svgIcon(ICONS.clipboard, 18));
+    resetPinAct.appendChild(rpIcon);
+    resetPinAct.appendChild(el('span', { className: 'action-card-text', textContent: 'Reset PIN' }));
+    resetPinAct.addEventListener('click', function() {
+      if (!confirm('Reset PIN for ' + g.firstName + ' ' + g.lastName + '? The old PIN will stop working.')) return;
+      apiResetPin(g.id).then(function(resp) {
+        var newPin = resp.pin || (resp.guest && resp.guest.pin);
+        if (newPin) {
+          g.pin = newPin;
+          var overlay = document.getElementById('modalOverlay');
+          clearEl(overlay); openModal();
+          var modal = el('div', { className: 'modal' });
+          var mh = el('div', { className: 'modal-header' });
+          mh.appendChild(el('h3', { textContent: 'PIN Reset Successful' }));
+          var closeBtn2 = el('button', { className: 'modal-close', textContent: '\u00D7' });
+          closeBtn2.addEventListener('click', closeModal);
+          mh.appendChild(closeBtn2);
+          modal.appendChild(mh);
+          var mb = el('div', { className: 'modal-body', style: 'text-align:center;padding:30px' });
+          mb.appendChild(el('div', { style: 'font-size:0.9rem;color:var(--text-secondary);margin-bottom:12px', textContent: 'New PIN for ' + g.firstName + ' ' + g.lastName }));
+          var pinDisplay = el('div', { className: 'success-pin', style: 'justify-content:center;margin-bottom:16px' });
+          pinDisplay.appendChild(document.createTextNode(newPin));
+          pinDisplay.appendChild(makeCopyBtn(newPin));
+          mb.appendChild(pinDisplay);
+          mb.appendChild(el('div', { style: 'font-size:0.82rem;color:var(--red);font-weight:600', textContent: 'Save this now \u2014 it cannot be recovered later.' }));
+          modal.appendChild(mb);
+          var mf = el('div', { className: 'modal-footer' });
+          var doneBtn = el('button', { className: 'btn btn-primary', textContent: 'Done' });
+          doneBtn.addEventListener('click', function() { closeModal(); render(); });
+          mf.appendChild(doneBtn);
+          modal.appendChild(mf);
+          overlay.appendChild(modal);
+        } else {
+          showAdminToast('PIN reset failed: no PIN in response');
+        }
+      }).catch(function(err) {
+        showAdminToast('PIN reset failed: ' + err.message);
+      });
+    });
+    actions.appendChild(resetPinAct);
+
     var delAct = el('div', { className: 'action-card' });
     var dIcon = el('div', { className: 'action-card-icon', style: 'background:var(--red-light)' });
     dIcon.appendChild(svgIcon(ICONS.trash, 18));
@@ -1113,15 +1167,63 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       { label: 'Check-out', value: formatDate(guestCheckout(g)) },
       { label: 'Days Left', value: (g.status === 'completed' || g.status === 'checked-out') ? 'Completed' : guestDaysLeft(g) + ' days' },
       { label: 'Portal URL', value: portalUrl, copy: true },
-      { label: 'PIN', value: g.pin, copy: true },
+      { label: 'PIN', value: g.pin === '****' ? '' : g.pin },
       { label: 'Notes', value: g.notes || 'None' }
     ];
     items.forEach(function(item) {
       var di = el('div', { className: 'detail-item' });
       di.appendChild(el('div', { className: 'detail-item-label', textContent: item.label }));
       var val = el('div', { className: 'detail-item-value' });
-      val.appendChild(document.createTextNode(item.value));
-      if (item.copy) val.appendChild(makeCopyBtn(item.value));
+      if (item.label === 'PIN' && (g.pin === '****' || !g.pin)) {
+        val.appendChild(document.createTextNode('Not available'));
+        var resetBtn = el('button', { className: 'btn btn-outline btn-sm', textContent: 'Reset PIN' });
+        resetBtn.addEventListener('click', function() {
+          resetBtn.disabled = true;
+          resetBtn.textContent = 'Resetting...';
+          apiResetPin(g.id).then(function(resp) {
+            var newPin = resp.pin || (resp.guest && resp.guest.pin);
+            if (newPin) {
+              g.pin = newPin;
+              // Show PIN in a prominent modal
+              var overlay = document.getElementById('modalOverlay');
+              clearEl(overlay); openModal();
+              var modal = el('div', { className: 'modal' });
+              var mh = el('div', { className: 'modal-header' });
+              mh.appendChild(el('h3', { textContent: 'PIN Reset Successful' }));
+              var closeBtn = el('button', { className: 'modal-close', textContent: '\u00D7' });
+              closeBtn.addEventListener('click', closeModal);
+              mh.appendChild(closeBtn);
+              modal.appendChild(mh);
+              var mb = el('div', { className: 'modal-body', style: 'text-align:center;padding:30px' });
+              mb.appendChild(el('div', { style: 'font-size:0.9rem;color:var(--text-secondary);margin-bottom:12px', textContent: 'New PIN for ' + g.firstName + ' ' + g.lastName }));
+              var pinDisplay = el('div', { className: 'success-pin', style: 'justify-content:center;margin-bottom:16px' });
+              pinDisplay.appendChild(document.createTextNode(newPin));
+              pinDisplay.appendChild(makeCopyBtn(newPin));
+              mb.appendChild(pinDisplay);
+              mb.appendChild(el('div', { style: 'font-size:0.82rem;color:var(--red);font-weight:600', textContent: 'Save this now \u2014 it cannot be recovered later.' }));
+              modal.appendChild(mb);
+              var mf = el('div', { className: 'modal-footer' });
+              var doneBtn = el('button', { className: 'btn btn-primary', textContent: 'Done' });
+              doneBtn.addEventListener('click', function() { closeModal(); render(); });
+              mf.appendChild(doneBtn);
+              modal.appendChild(mf);
+              overlay.appendChild(modal);
+            } else {
+              showAdminToast('PIN reset failed: no PIN in response');
+              resetBtn.disabled = false;
+              resetBtn.textContent = 'Reset PIN';
+            }
+          }).catch(function(err) {
+            showAdminToast('PIN reset failed: ' + err.message);
+            resetBtn.disabled = false;
+            resetBtn.textContent = 'Reset PIN';
+          });
+        });
+        val.appendChild(resetBtn);
+      } else {
+        val.appendChild(document.createTextNode(item.value));
+        if (item.copy) val.appendChild(makeCopyBtn(item.value));
+      }
       di.appendChild(val);
       dg.appendChild(di);
     });
@@ -1281,7 +1383,10 @@ tr:hover td { background: rgba(0,96,156,0.02); }
         notes: inputs.notes.value.trim(),
         schedule: manualSchedule.length > 0 ? manualSchedule : (existing ? existing.schedule : null)
       };
-      if (!guestData.firstName || !guestData.lastName) { alert('Please enter guest name.'); return; }
+      if (!guestData.firstName || !guestData.lastName) { showAdminToast('Please enter guest name.'); return; }
+      if (!guestData.checkIn) { showAdminToast('Check-in date is required'); return; }
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(guestData.checkIn)) { showAdminToast('Invalid check-in date format'); return; }
+      if (!guestData.duration || guestData.duration < 1 || guestData.duration > 365) { showAdminToast('Duration must be 1-365 days'); return; }
 
       submitBtn.disabled = true;
       submitBtn.textContent = existing ? 'Updating...' : 'Creating...';
@@ -1292,6 +1397,14 @@ tr:hover td { background: rgba(0,96,156,0.02); }
 
       apiCall.then(function(savedGuest) {
         guestData = savedGuest;
+
+        // Save schedule if builder has data (for new guests)
+        if (!existing && manualSchedule && manualSchedule.length > 0 && manualSchedule.some(function(d) { return d.activities.length > 0; })) {
+          apiSaveSchedule(savedGuest.id, manualSchedule, savedGuest.checkIn).catch(function(err) {
+            showAdminToast('Guest created but schedule save failed: ' + err.message);
+          });
+        }
+
         addLog(existing ? 'Guest Updated' : 'Guest Created', (existing ? 'Updated' : 'Created') + ' portal for ' + guestData.firstName + ' ' + guestData.lastName);
 
       // Show success
@@ -1307,11 +1420,14 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       urlRow.appendChild(makeCopyBtn(portalUrl));
       sb2.appendChild(urlRow);
 
-      sb2.appendChild(el('div', { style: 'font-size:0.88rem;margin-bottom:4px', textContent: 'Guest PIN:' }));
-      var pinRow = el('div', { className: 'success-pin' });
-      pinRow.appendChild(document.createTextNode(guestData.pin));
-      pinRow.appendChild(makeCopyBtn(guestData.pin));
-      sb2.appendChild(pinRow);
+      if (guestData.pin && guestData.pin !== '****') {
+        sb2.appendChild(el('div', { style: 'font-size:0.88rem;margin-bottom:4px;font-weight:600', textContent: 'Guest PIN:' }));
+        var pinRow = el('div', { className: 'success-pin' });
+        pinRow.appendChild(document.createTextNode(guestData.pin));
+        pinRow.appendChild(makeCopyBtn(guestData.pin));
+        sb2.appendChild(pinRow);
+        sb2.appendChild(el('div', { style: 'font-size:0.82rem;color:var(--red);font-weight:600;margin-top:6px;margin-bottom:8px', textContent: 'Save this PIN now \u2014 it cannot be recovered later.' }));
+      }
 
       // WhatsApp send button
       var waRow = el('div', { style: 'margin-top:14px;display:flex;gap:10px' });

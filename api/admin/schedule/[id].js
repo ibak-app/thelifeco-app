@@ -158,6 +158,7 @@ async function handlePut(guestId, req, res, user) {
       action: 'schedule_updated',
       details: `Updated schedule for ${guest.first_name} ${guest.last_name} (${activities.length} activities)`,
       user_display: user.email,
+      guest_id: guestId,
     })
     .catch(err => console.error('Activity log error:', err));
 

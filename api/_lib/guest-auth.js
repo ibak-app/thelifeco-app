@@ -1,6 +1,9 @@
 import crypto from 'crypto';
 
-const SECRET = process.env.GUEST_SESSION_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
+const SECRET = process.env.GUEST_SESSION_SECRET;
+if (!SECRET) {
+  console.error('FATAL: GUEST_SESSION_SECRET environment variable is not set');
+}
 
 // Create a session token after PIN verification
 export function createGuestToken(slug) {

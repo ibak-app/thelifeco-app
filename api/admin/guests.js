@@ -185,6 +185,7 @@ async function handlePost(req, res, user) {
       action: 'guest_created',
       details: `Created guest ${firstName} ${lastName} (${finalSlug})`,
       user_display: user.email,
+      guest_id: guest.id,
     })
     .catch(err => console.error('Activity log error:', err));
 

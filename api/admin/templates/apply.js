@@ -78,6 +78,7 @@ export default async function handler(req, res) {
     action: 'template_applied',
     details: `Applied template to ${guest.first_name} ${guest.last_name} (${rows.length} activities)`,
     user_display: user.email,
+    guest_id: guestId,
   }).catch(err => console.error('Activity log error:', err));
 
   return res.status(200).json({ success: true, count: rows.length });

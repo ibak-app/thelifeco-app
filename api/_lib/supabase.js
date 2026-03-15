@@ -20,7 +20,11 @@ export function supabaseWithAuth(req) {
 }
 
 // CORS headers for all API responses
-const ALLOWED_ORIGINS = ['https://thelifeco.app', 'https://www.thelifeco.app'];
+const ALLOWED_ORIGINS = [
+  'https://thelifeco.app',
+  'https://www.thelifeco.app',
+  ...(process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',').map(s => s.trim()) : []),
+];
 
 export function getCorsHeaders(req) {
   const origin = req?.headers?.origin || '';

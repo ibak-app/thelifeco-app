@@ -2,6 +2,35 @@ import crypto from 'crypto';
 import { supabaseAdmin, handleCors } from '../_lib/supabase.js';
 import { createGuestToken, requireGuestAuth } from '../_lib/guest-auth.js';
 
+// Basic in-memory rate limiter for PIN attempts.
+// NOTE: This is ephemeral per serverless instance (resets on cold start).
+// For production at scale, upgrade to Redis or Supabase-based rate limiting.
+const pinAttempts = new Map();
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_MS = 15 * 60 * 1000; // 15 minutes
+
+function checkRateLimit(slug) {
+  const now = Date.now();
+  const record = pinAttempts.get(slug);
+  if (!record) return true;
+  // Clean expired entries
+  if (now - record.first > LOCKOUT_MS) {
+    pinAttempts.delete(slug);
+    return true;
+  }
+  return record.count < MAX_ATTEMPTS;
+}
+
+function recordAttempt(slug) {
+  const now = Date.now();
+  const record = pinAttempts.get(slug);
+  if (!record || now - record.first > LOCKOUT_MS) {
+    pinAttempts.set(slug, { count: 1, first: now });
+  } else {
+    record.count++;
+  }
+}
+
 export default async function handler(req, res) {
   if (handleCors(req, res)) return;
 
@@ -190,6 +219,11 @@ async function handlePost(slug, req, res) {
   if (!pin) {
     return res.status(400).json({ error: 'Missing pin' });
   }
+
+  if (!checkRateLimit(slug)) {
+    return res.status(429).json({ error: 'Too many attempts. Try again in 15 minutes.' });
+  }
+  recordAttempt(slug);
 
   // Fetch guest's pin_hash
   const { data: guest, error } = await supabaseAdmin

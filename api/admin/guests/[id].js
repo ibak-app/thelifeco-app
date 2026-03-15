@@ -173,6 +173,7 @@ async function handlePut(id, req, res, user) {
       action: 'guest_updated',
       details: `Updated guest ${id}: ${Object.keys(updates).join(', ')}`,
       user_display: user.email,
+      guest_id: id,
     })
     .catch(err => console.error('Activity log error:', err));
 
@@ -217,6 +218,7 @@ async function handleDelete(id, res, user) {
       action: 'guest_deleted',
       details: `Deleted guest ${guest.first_name} ${guest.last_name} (${guest.slug})`,
       user_display: user.email,
+      guest_id: id,
     })
     .catch(err => console.error('Activity log error:', err));
 

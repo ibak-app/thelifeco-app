@@ -16,8 +16,6 @@ export default async function handler(req, res) {
         return await handleGet(res);
       case 'POST':
         return await handlePost(req, res, user);
-      case 'DELETE':
-        return await handleDelete(req, res, user);
       default:
         return res.status(405).json({ error: 'Method not allowed' });
     }
@@ -82,45 +80,4 @@ async function handlePost(req, res, user) {
     .catch(err => console.error('Activity log error:', err));
 
   return res.status(201).json({ success: true, template: data });
-}
-
-async function handleDelete(req, res, user) {
-  const { id } = req.query;
-
-  if (!id) {
-    return res.status(400).json({ error: 'Missing id parameter' });
-  }
-
-  // Fetch template name for logging
-  const { data: template } = await supabaseAdmin
-    .from('programme_templates')
-    .select('name')
-    .eq('id', id)
-    .single();
-
-  if (!template) {
-    return res.status(404).json({ error: 'Template not found' });
-  }
-
-  const { error } = await supabaseAdmin
-    .from('programme_templates')
-    .delete()
-    .eq('id', id);
-
-  if (error) {
-    console.error('Template delete error:', error);
-    return res.status(500).json({ error: 'Failed to delete template' });
-  }
-
-  // Log activity
-  await supabaseAdmin
-    .from('activity_log')
-    .insert({
-      action: 'template_deleted',
-      details: `Deleted template "${template.name}"`,
-      user_display: user.email,
-    })
-    .catch(err => console.error('Activity log error:', err));
-
-  return res.status(200).json({ success: true });
 }

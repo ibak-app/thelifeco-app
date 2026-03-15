@@ -4972,92 +4972,124 @@ function initInfo() {
 
 function buildInfoContent(id) {
   var wrapper = h('div');
+  var _mc = INFO_CONTENT || {};
 
   if (id === 'method') {
-    appendTo(wrapper, h('p', null, INFO_CONTENT.method.intro));
+    var method = _mc.method;
+    if (method) {
+      var methodIntro = method.intro || '';
+      var coreFoundations = method.coreFoundations || [];
+      var naturalVsAccelerated = method.naturalVsAccelerated || [];
+      var eightPillars = method.eightPillars || [];
 
-    appendTo(wrapper, h('strong', null, 'Core Foundations:'));
-    var ul1 = h('ul');
-    INFO_CONTENT.method.coreFoundations.forEach(function(item) {
-      appendTo(ul1, h('li', null, item));
-    });
-    appendTo(wrapper, ul1);
+      appendTo(wrapper, h('p', null, methodIntro));
 
-    // gap
-    appendTo(wrapper, h('div', 'spacer'));
+      appendTo(wrapper, h('strong', null, 'Core Foundations:'));
+      var ul1 = h('ul');
+      coreFoundations.forEach(function(item) {
+        appendTo(ul1, h('li', null, item));
+      });
+      appendTo(wrapper, ul1);
 
-    appendTo(wrapper, h('strong', null, 'Natural vs. Accelerated Aging:'));
-    var ul2 = h('ul');
-    INFO_CONTENT.method.naturalVsAccelerated.forEach(function(item) {
-      appendTo(ul2, h('li', null, item));
-    });
-    appendTo(wrapper, ul2);
+      appendTo(wrapper, h('div', 'spacer'));
 
-    appendTo(wrapper, h('strong', null, 'The 8 Pillars:'));
-    var ol1 = h('ol');
-    INFO_CONTENT.method.eightPillars.forEach(function(item) {
-      appendTo(ol1, h('li', null, item));
-    });
-    appendTo(wrapper, ol1);
+      appendTo(wrapper, h('strong', null, 'Natural vs. Accelerated Aging:'));
+      var ul2 = h('ul');
+      naturalVsAccelerated.forEach(function(item) {
+        appendTo(ul2, h('li', null, item));
+      });
+      appendTo(wrapper, ul2);
+
+      appendTo(wrapper, h('strong', null, 'The 8 Pillars:'));
+      var ol1 = h('ol');
+      eightPillars.forEach(function(item) {
+        appendTo(ol1, h('li', null, item));
+      });
+      appendTo(wrapper, ol1);
+    }
 
   } else if (id === 'program') {
-    appendTo(wrapper, h('p', null, INFO_CONTENT.program.calNote));
+    var program = _mc.program;
+    if (program) {
+      var calNote = program.calNote || '';
+      var dailyProtocol = program.dailyProtocol || [];
+      var whatToExpect = program.whatToExpect || [];
 
-    appendTo(wrapper, h('strong', null, 'Daily Protocol:'));
-    var ul3 = h('ul');
-    INFO_CONTENT.program.dailyProtocol.forEach(function(item) {
-      appendTo(ul3, h('li', null, item));
-    });
-    appendTo(wrapper, ul3);
+      appendTo(wrapper, h('p', null, calNote));
 
-    appendTo(wrapper, h('strong', null, 'What to Expect:'));
-    var ul4 = h('ul');
-    INFO_CONTENT.program.whatToExpect.forEach(function(item) {
-      appendTo(ul4, h('li', null, item));
-    });
-    appendTo(wrapper, ul4);
+      appendTo(wrapper, h('strong', null, 'Daily Protocol:'));
+      var ul3 = h('ul');
+      dailyProtocol.forEach(function(item) {
+        appendTo(ul3, h('li', null, item));
+      });
+      appendTo(wrapper, ul3);
+
+      appendTo(wrapper, h('strong', null, 'What to Expect:'));
+      var ul4 = h('ul');
+      whatToExpect.forEach(function(item) {
+        appendTo(ul4, h('li', null, item));
+      });
+      appendTo(wrapper, ul4);
+    }
 
   } else if (id === 'nutrition') {
-    appendTo(wrapper, h('p', null, INFO_CONTENT.nutrition.intro));
+    var nutrition = _mc.nutrition;
+    if (nutrition) {
+      var nutritionIntro = nutrition.intro || '';
+      var plans = nutrition.plans || [];
 
-    INFO_CONTENT.nutrition.plans.forEach(function(plan) {
-      var planDiv = h('div', 'nutrition-plan' + (plan.isCurrent ? ' highlight' : ''));
-      var nameEl = h('strong', null, plan.name);
-      appendTo(planDiv, nameEl);
-      appendTo(planDiv, h('span', 'nutrition-plan-cals', ' ' + plan.cals));
-      appendTo(planDiv, h('p', null, plan.desc));
-      appendTo(wrapper, planDiv);
-    });
+      appendTo(wrapper, h('p', null, nutritionIntro));
+
+      plans.forEach(function(plan) {
+        var planDiv = h('div', 'nutrition-plan' + (plan.isCurrent ? ' highlight' : ''));
+        var nameEl = h('strong', null, plan.name);
+        appendTo(planDiv, nameEl);
+        appendTo(planDiv, h('span', 'nutrition-plan-cals', ' ' + plan.cals));
+        appendTo(planDiv, h('p', null, plan.desc));
+        appendTo(wrapper, planDiv);
+      });
+    }
 
   } else if (id === 'included') {
-    var subcategories = [
-      { label: 'Accommodation & Nutrition', key: 'accommodationNutrition' },
-      { label: 'Consultations & Assessments', key: 'consultationsAssessments' },
-      { label: 'Daily Clinic Services', key: 'dailyClinic' },
-      { label: 'SPA & Wellness Amenities', key: 'spaWellness' },
-      { label: 'Daily Group Programs', key: 'dailyGroupPrograms' },
-      { label: 'Unlimited Throughout Your Stay', key: 'unlimited' }
-    ];
-    subcategories.forEach(function(sub) {
-      appendTo(wrapper, h('strong', null, sub.label));
-      var ul = h('ul');
-      INFO_CONTENT.included[sub.key].forEach(function(item) {
-        appendTo(ul, h('li', null, item));
+    var included = _mc.included;
+    if (included) {
+      var subcategories = [
+        { label: 'Accommodation & Nutrition', key: 'accommodationNutrition' },
+        { label: 'Consultations & Assessments', key: 'consultationsAssessments' },
+        { label: 'Daily Clinic Services', key: 'dailyClinic' },
+        { label: 'SPA & Wellness Amenities', key: 'spaWellness' },
+        { label: 'Daily Group Programs', key: 'dailyGroupPrograms' },
+        { label: 'Unlimited Throughout Your Stay', key: 'unlimited' }
+      ];
+      subcategories.forEach(function(sub) {
+        var items = included[sub.key] || [];
+        appendTo(wrapper, h('strong', null, sub.label));
+        var ul = h('ul');
+        items.forEach(function(item) {
+          appendTo(ul, h('li', null, item));
+        });
+        appendTo(wrapper, ul);
       });
-      appendTo(wrapper, ul);
-    });
+    }
 
   } else if (id === 'programs') {
-    appendTo(wrapper, h('p', null, INFO_CONTENT.programs.intro));
+    var programs = _mc.programs;
+    if (programs) {
+      var programsIntro = programs.intro || '';
+      var programsList = programs.list || [];
 
-    INFO_CONTENT.programs.list.forEach(function(prog) {
-      appendTo(wrapper, h('strong', null, prog[0]));
-      appendTo(wrapper, h('p', null, prog[1]));
-    });
+      appendTo(wrapper, h('p', null, programsIntro));
+
+      programsList.forEach(function(prog) {
+        appendTo(wrapper, h('strong', null, prog[0]));
+        appendTo(wrapper, h('p', null, prog[1]));
+      });
+    }
 
   } else if (id === 'facilities') {
+    var facilities = _mc.facilities || [];
     var ul5 = h('ul');
-    INFO_CONTENT.facilities.forEach(function(item) {
+    facilities.forEach(function(item) {
       appendTo(ul5, h('li', null, item));
     });
     appendTo(wrapper, ul5);
@@ -5092,30 +5124,40 @@ function buildInfoContent(id) {
     appendTo(wrapper, mapGrid);
 
   } else if (id === 'activities') {
+    var activities = _mc.activities || [];
     var ul6 = h('ul');
-    INFO_CONTENT.activities.forEach(function(item) {
+    activities.forEach(function(item) {
       appendTo(ul6, h('li', null, item));
     });
     appendTo(wrapper, ul6);
 
   } else if (id === 'cancellation') {
-    var ul7 = h('ul');
-    INFO_CONTENT.cancellation.rules.forEach(function(rule) {
-      appendTo(ul7, h('li', null, rule));
-    });
-    appendTo(wrapper, ul7);
-    appendTo(wrapper, h('p', null, INFO_CONTENT.cancellation.note));
+    var cancellation = _mc.cancellation;
+    if (cancellation) {
+      var cancRules = cancellation.rules || [];
+      var ul7 = h('ul');
+      cancRules.forEach(function(rule) {
+        appendTo(ul7, h('li', null, rule));
+      });
+      appendTo(wrapper, ul7);
+      appendTo(wrapper, h('p', null, cancellation.note || ''));
+    }
 
   } else if (id === 'predetox') {
-    appendTo(wrapper, h('p', null, INFO_CONTENT.predetox.intro));
-    var ul8 = h('ul');
-    INFO_CONTENT.predetox.steps.forEach(function(step) {
-      appendTo(ul8, h('li', null, step));
-    });
-    appendTo(wrapper, ul8);
+    var predetox = _mc.predetox;
+    if (predetox) {
+      appendTo(wrapper, h('p', null, predetox.intro || ''));
+      var predetoxSteps = predetox.steps || [];
+      var ul8 = h('ul');
+      predetoxSteps.forEach(function(step) {
+        appendTo(ul8, h('li', null, step));
+      });
+      appendTo(wrapper, ul8);
+    }
 
   } else if (id === 'faq') {
-    INFO_CONTENT.faq.forEach(function(faqItem) {
+    var faqItems = _mc.faq || [];
+    faqItems.forEach(function(faqItem) {
       var faqEl = h('div', 'faq-item');
       var qBtn = h('button', 'faq-question');
       qBtn.setAttribute('type', 'button');
@@ -5139,9 +5181,12 @@ function buildInfoContent(id) {
     });
 
   } else if (id === 'contact') {
-    appendTo(wrapper, h('p', null, INFO_CONTENT.contact.intro));
+    var contact = _mc.contact;
+    if (contact) {
+    appendTo(wrapper, h('p', null, contact.intro || ''));
     var contactList = h('ul');
-    INFO_CONTENT.contact.items.forEach(function(item) {
+    var contactItems = contact.items || [];
+    contactItems.forEach(function(item) {
       var li = h('li');
       var labelEl = h('strong', null, item.label + ': ');
       appendTo(li, labelEl);
@@ -5163,6 +5208,7 @@ function buildInfoContent(id) {
       appendTo(contactList, li);
     });
     appendTo(wrapper, contactList);
+    }
   }
 
   return wrapper;
@@ -5309,21 +5355,40 @@ var _sessionTimeoutStarted = false;
 function startSessionTimeout() {
   if (_sessionTimeoutStarted) return;
   _sessionTimeoutStarted = true;
-  var TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
-  var WARNING_MS = 25 * 60 * 1000; // 25 minutes
+  var TIMEOUT_MS = 4 * 60 * 60 * 1000; // 4 hours
   var _sessionTimer = null;
-  var _warningTimer = null;
+
+  function onSessionTimeout() {
+    var existing = document.getElementById('session-timeout-overlay');
+    if (existing) return;
+    var overlay = document.createElement('div');
+    overlay.id = 'session-timeout-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+    var card = document.createElement('div');
+    card.style.cssText = 'background:#fff;border-radius:16px;padding:32px;text-align:center;max-width:300px';
+    var title = document.createElement('div');
+    title.textContent = 'Still there?';
+    title.style.cssText = 'font-size:18px;font-weight:600;margin-bottom:8px';
+    var msg = document.createElement('div');
+    msg.textContent = 'Tap to continue using your portal.';
+    msg.style.cssText = 'font-size:14px;color:#5B7E96;margin-bottom:20px';
+    var btn = document.createElement('button');
+    btn.textContent = 'Continue';
+    btn.style.cssText = 'padding:12px 32px;background:#00609C;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer';
+    btn.onclick = function() {
+      document.body.removeChild(overlay);
+      resetSessionTimer();
+    };
+    card.appendChild(title);
+    card.appendChild(msg);
+    card.appendChild(btn);
+    overlay.appendChild(card);
+    document.body.appendChild(overlay);
+  }
 
   function resetSessionTimer() {
     if (_sessionTimer) clearTimeout(_sessionTimer);
-    if (_warningTimer) clearTimeout(_warningTimer);
-    _warningTimer = setTimeout(function() {
-      showToast('Session expires in 5 minutes');
-    }, WARNING_MS);
-    _sessionTimer = setTimeout(function() {
-      try { sessionStorage.removeItem(AUTH_KEY); } catch(e) {}
-      location.reload();
-    }, TIMEOUT_MS);
+    _sessionTimer = setTimeout(onSessionTimeout, TIMEOUT_MS);
   }
 
   resetSessionTimer();
