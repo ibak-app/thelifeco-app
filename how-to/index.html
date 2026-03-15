@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kullanım Kılavuzu — TheLifeCo Guest Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body { font-family: 'Inter', system-ui, sans-serif; color: #141827; background: #fff; line-height: 1.7; }
+    :root {
+      --navy: #00609C; --navy-dark: #004d7d; --teal: #00BED6; --orange: #F6A358;
+      --bg-section: #F4F8FB; --bg-warm: #FFF8F3; --bg-dark: #0b1220;
+      --text-secondary: #5B7E96; --text-muted: #8AABC0; --border: #E3EDF3;
+    }
+    a { color: var(--navy); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    img { max-width: 100%; display: block; }
+
+    /* Nav */
+    .top-bar { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .top-bar-logo { font-weight: 700; font-size: 15px; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+    .top-bar-logo svg { width: 28px; height: 28px; }
+    .top-bar-links { display: flex; gap: 20px; font-size: 13px; font-weight: 500; flex-wrap: wrap; }
+    .top-bar-links a { color: var(--text-secondary); }
+    .top-bar-links a:hover { color: var(--navy); text-decoration: none; }
+
+    /* Layout */
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+    .hero { background: linear-gradient(135deg, var(--navy), #004d7d); color: #fff; padding: 64px 24px 48px; text-align: center; }
+    .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 5vw, 42px); margin-bottom: 12px; }
+    .hero p { font-size: 17px; opacity: .8; max-width: 600px; margin: 0 auto; }
+
+    /* TOC */
+    .toc { background: var(--bg-section); padding: 32px 24px; border-bottom: 1px solid var(--border); }
+    .toc-inner { max-width: 900px; margin: 0 auto; }
+    .toc h2 { font-size: 18px; margin-bottom: 16px; color: var(--navy); }
+    .toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px; }
+    .toc-grid a { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; font-size: 14px; color: #141827; font-weight: 500; }
+    .toc-grid a:hover { background: rgba(0,96,156,.06); text-decoration: none; }
+    .toc-num { width: 24px; height: 24px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+    /* Sections */
+    .section { padding: 48px 0; border-bottom: 1px solid var(--border); }
+    .section:last-child { border-bottom: none; }
+    .section-alt { background: var(--bg-section); }
+    .section h2 { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--navy); margin-bottom: 8px; }
+    .section h3 { font-size: 20px; color: #141827; margin: 32px 0 12px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .section h3:first-of-type { border-top: none; margin-top: 24px; }
+    .section h4 { font-size: 16px; color: var(--navy); margin: 20px 0 8px; }
+    .section p, .section li { font-size: 15px; color: #333; }
+    .section p { margin-bottom: 12px; }
+    .section ul, .section ol { margin: 0 0 16px 24px; }
+    .section li { margin-bottom: 6px; }
+    .label { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--teal); margin-bottom: 8px; }
+
+    /* Callouts */
+    .callout { border-radius: 12px; padding: 16px 20px; margin: 16px 0; font-size: 14px; line-height: 1.6; }
+    .callout-warn { background: #FFF3E0; border-left: 4px solid var(--orange); }
+    .callout-info { background: #E3F2FD; border-left: 4px solid var(--navy); }
+    .callout-tip { background: #E8F5E9; border-left: 4px solid #4CAF50; }
+    .callout strong { display: block; margin-bottom: 4px; }
+
+    /* Steps */
+    .steps { counter-reset: step; list-style: none; margin: 16px 0; padding: 0; }
+    .steps li { counter-increment: step; position: relative; padding: 12px 0 12px 48px; border-bottom: 1px solid #f0f0f0; font-size: 15px; }
+    .steps li::before { content: counter(step); position: absolute; left: 0; top: 12px; width: 32px; height: 32px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .steps li:last-child { border-bottom: none; }
+
+    /* Key-value */
+    .kv { display: grid; grid-template-columns: 160px 1fr; gap: 8px 16px; margin: 12px 0; font-size: 14px; }
+    .kv dt { font-weight: 600; color: var(--navy); }
+    .kv dd { color: #333; }
+
+    /* Code */
+    code { background: #f0f4f8; padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: 'SF Mono', Consolas, monospace; }
+
+    /* Footer */
+    .footer { background: var(--bg-dark); color: rgba(255,255,255,.6); padding: 32px 24px; text-align: center; font-size: 13px; }
+
+    @media (max-width: 600px) {
+      .kv { grid-template-columns: 1fr; }
+      .top-bar-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Auth Gate (same as brief page) -->
+<div id="auth-gate" style="position:fixed;inset:0;z-index:9999;background:#fff;display:flex;align-items:center;justify-content:center;font-family:'Inter',system-ui,sans-serif;">
+  <div style="text-align:center;max-width:360px;padding:32px;">
+    <svg width="40" height="40" viewBox="0 0 20 20" fill="none" style="margin-bottom:16px;"><circle cx="10" cy="10" r="9" stroke="#00609C" stroke-width="1.5"/><path d="M10 4C10 4 7 7.5 7 10.5C7 12.43 8.34 14 10 14C11.66 14 13 12.43 13 10.5C13 7.5 10 4 10 4Z" fill="#00BED6" opacity=".8"/></svg>
+    <h2 style="font-size:20px;margin-bottom:4px;color:#141827;">TheLifeCo Staff</h2>
+    <p style="font-size:13px;color:#5B7E96;margin-bottom:24px;">Bu sayfaya erişmek için giriş yapın.</p>
+    <form id="auth-form" style="text-align:left;">
+      <label style="font-size:12px;font-weight:600;color:#5B7E96;display:block;margin-bottom:4px;">E-posta</label>
+      <input id="auth-email" type="email" required style="width:100%;padding:10px 12px;border:1px solid #E3EDF3;border-radius:8px;font-size:14px;margin-bottom:12px;outline:none;" />
+      <label style="font-size:12px;font-weight:600;color:#5B7E96;display:block;margin-bottom:4px;">Şifre</label>
+      <input id="auth-pass" type="password" required style="width:100%;padding:10px 12px;border:1px solid #E3EDF3;border-radius:8px;font-size:14px;margin-bottom:16px;outline:none;" />
+      <button type="submit" style="width:100%;padding:12px;background:#00609C;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Giriş Yap</button>
+      <p id="auth-error" style="color:#E53935;font-size:13px;margin-top:12px;display:none;text-align:center;"></p>
+    </form>
+  </div>
+</div>
+<script>
+(function() {
+  var gate = document.getElementById('auth-gate');
+  var stored = sessionStorage.getItem('brief_token');
+  if (stored) {
+    fetch('/api/admin/auth', { headers: { Authorization: 'Bearer ' + stored } })
+      .then(function(r) { return r.json(); })
+      .then(function(d) { if (d.valid) gate.style.display = 'none'; });
+  }
+  document.getElementById('auth-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var email = document.getElementById('auth-email').value;
+    var pass = document.getElementById('auth-pass').value;
+    var errEl = document.getElementById('auth-error');
+    fetch('/api/admin/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: pass })
+    }).then(function(r) { return r.json(); }).then(function(d) {
+      if (d.token) {
+        sessionStorage.setItem('brief_token', d.token);
+        gate.style.display = 'none';
+      } else {
+        errEl.textContent = 'Geçersiz e-posta veya şifre';
+        errEl.style.display = 'block';
+      }
+    }).catch(function() {
+      errEl.textContent = 'Bağlantı hatası';
+      errEl.style.display = 'block';
+    });
+  });
+})();
+</script>
+
+<!-- Top Bar -->
+<nav class="top-bar">
+  <div class="top-bar-logo">
+    <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#00609C" stroke-width="1.5"/><path d="M10 4C10 4 7 7.5 7 10.5C7 12.43 8.34 14 10 14C11.66 14 13 12.43 13 10.5C13 7.5 10 4 10 4Z" fill="#00BED6" opacity=".8"/></svg>
+    Kullanım Kılavuzu
+  </div>
+  <div class="top-bar-links">
+    <a href="#giris">Giriş</a>
+    <a href="#misafir-olusturma">Misafir Oluşturma</a>
+    <a href="#portal">Misafir Portalı</a>
+    <a href="#icerik">İçerik Yönetimi</a>
+    <a href="#ayarlar">Ayarlar</a>
+    <a href="/admin/">Admin Paneli</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <h1>TheLifeCo Personel Kılavuzu</h1>
+  <p>Guest Portal sisteminin tüm özelliklerini adım adım öğrenin. Bu kılavuz, resepsiyon ve yönetim ekibi için hazırlanmıştır.</p>
+</div>
+
+<!-- Table of Contents -->
+<div class="toc" id="icerik-tablosu">
+  <div class="toc-inner">
+    <h2>İçindekiler</h2>
+    <div class="toc-grid">
+      <a href="#giris"><span class="toc-num">1</span>Admin Paneline Giriş</a>
+      <a href="#dashboard"><span class="toc-num">2</span>Dashboard (Ana Sayfa)</a>
+      <a href="#misafir-olusturma"><span class="toc-num">3</span>Yeni Misafir Oluşturma</a>
+      <a href="#misafir-yonetimi"><span class="toc-num">4</span>Misafir Yönetimi</a>
+      <a href="#program-takvim"><span class="toc-num">5</span>Program ve Takvim</a>
+      <a href="#sablonlar"><span class="toc-num">6</span>Program Şablonları</a>
+      <a href="#portal"><span class="toc-num">7</span>Misafir Portalı</a>
+      <a href="#portal-bugun"><span class="toc-num">8</span>Portal: Bugün Sekmesi</a>
+      <a href="#portal-program"><span class="toc-num">9</span>Portal: Program Sekmesi</a>
+      <a href="#portal-kesfet"><span class="toc-num">10</span>Portal: Keşfet (Terapiler)</a>
+      <a href="#portal-bilgi"><span class="toc-num">11</span>Portal: Bilgi Sekmesi</a>
+      <a href="#whatsapp"><span class="toc-num">12</span>WhatsApp Entegrasyonu</a>
+      <a href="#icerik"><span class="toc-num">13</span>İçerik Yönetimi</a>
+      <a href="#ayarlar"><span class="toc-num">14</span>Ayarlar</a>
+      <a href="#aktivite-log"><span class="toc-num">15</span>Aktivite Kayıtları</a>
+      <a href="#guvenlik"><span class="toc-num">16</span>Güvenlik ve PIN</a>
+      <a href="#pwa"><span class="toc-num">17</span>PWA Kurulumu</a>
+      <a href="#sss"><span class="toc-num">18</span>Sık Sorulan Sorular</a>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<!-- 1. Admin Paneline Giriş -->
+<section class="section" id="giris">
+  <div class="container">
+    <span class="label">Bölüm 1</span>
+    <h2>Admin Paneline Giriş</h2>
+    <p>Admin paneli, tüm misafir işlemlerinin yönetildiği ana ekrandır. Sadece yetkili personel erişebilir.</p>
+
+    <dl class="kv">
+      <dt>Admin URL</dt><dd><code>thelifeco.app/admin</code></dd>
+      <dt>Giriş Yöntemi</dt><dd>E-posta + Şifre</dd>
+      <dt>Oturum Süresi</dt><dd>Tarayıcı kapatılana kadar (sessionStorage)</dd>
+    </dl>
+
+    <h3>Giriş Adımları</h3>
+    <ol class="steps">
+      <li><code>thelifeco.app/admin</code> adresine gidin</li>
+      <li>E-posta adresinizi girin (admin@thelifeco.app)</li>
+      <li>Şifrenizi girin</li>
+      <li><strong>Sign In</strong> butonuna tıklayın</li>
+      <li>Dashboard ekranı açılacaktır</li>
+    </ol>
+
+    <div class="callout callout-warn">
+      <strong>Dikkat</strong>
+      Tarayıcıyı kapattığınızda oturumunuz sona erer. Yeniden giriş yapmanız gerekir.
+    </div>
+  </div>
+</section>
+
+<!-- 2. Dashboard -->
+<section class="section section-alt" id="dashboard">
+  <div class="container">
+    <span class="label">Bölüm 2</span>
+    <h2>Dashboard (Ana Sayfa)</h2>
+    <p>Dashboard, tesisin anlık durumunu gösteren kontrol panelidir.</p>
+
+    <h3>İstatistik Kartları</h3>
+    <ul>
+      <li><strong>Active Guests</strong> — Şu anda tesiste olan misafir sayısı</li>
+      <li><strong>Upcoming</strong> — Yaklaşan check-in'ler</li>
+      <li><strong>Occupancy</strong> — Doluluk oranı (oda sayısına göre)</li>
+      <li><strong>Total Guests</strong> — Toplam kayıtlı misafir</li>
+    </ul>
+
+    <h3>Bugünkü Hareketler</h3>
+    <ul>
+      <li><strong>Checking In Today</strong> — Bugün giriş yapacak misafirler</li>
+      <li><strong>Checking Out Today</strong> — Bugün çıkış yapacak misafirler</li>
+    </ul>
+    <p>Her misafirin adına tıklayarak detay sayfasına gidebilirsiniz.</p>
+
+    <h3>Son Aktiviteler</h3>
+    <p>Sağ tarafta son 6 işlem görüntülenir: misafir oluşturma, silme, ayar değişiklikleri vb.</p>
+  </div>
+</section>
+
+<!-- 3. Yeni Misafir Oluşturma -->
+<section class="section" id="misafir-olusturma">
+  <div class="container">
+    <span class="label">Bölüm 3</span>
+    <h2>Yeni Misafir Oluşturma</h2>
+    <p>Her misafir için benzersiz bir portal oluşturulur. Bu portal, misafirin tüm program bilgilerini, terapi seçeneklerini ve tesis bilgilerini içerir.</p>
+
+    <h3>Adım Adım Misafir Oluşturma</h3>
+    <ol class="steps">
+      <li>Sol menüden <strong>Create Guest</strong> sekmesine tıklayın</li>
+      <li>Misafir bilgilerini doldurun (aşağıdaki tabloya bakın)</li>
+      <li>Sağ panelde programı oluşturun (günlük aktiviteler)</li>
+      <li><strong>Create Guest Portal</strong> butonuna tıklayın</li>
+      <li>Ekranda görünen <strong>PIN kodunu mutlaka kaydedin</strong></li>
+      <li>Portal linkini ve PIN'i misafire WhatsApp ile gönderin</li>
+    </ol>
+
+    <h3>Form Alanları</h3>
+    <dl class="kv">
+      <dt>Ad (zorunlu)</dt><dd>Misafirin adı</dd>
+      <dt>Soyad (zorunlu)</dt><dd>Misafirin soyadı</dd>
+      <dt>E-posta</dt><dd>İletişim e-postası (opsiyonel)</dd>
+      <dt>WhatsApp</dt><dd>Telefon numarası, ülke kodu dahil (ör: +905321234567)</dd>
+      <dt>Check-in Tarihi (zorunlu)</dt><dd>Giriş tarihi</dd>
+      <dt>Süre (zorunlu)</dt><dd>Kalış süresi (gün), varsayılan: 7</dd>
+      <dt>Program</dt><dd>Beslenme programı seçimi (Master Detox, Green Juice, vb.)</dd>
+      <dt>Oda</dt><dd>Oda numarası</dd>
+      <dt>Notlar</dt><dd>Personel için özel notlar</dd>
+    </dl>
+
+    <div class="callout callout-warn">
+      <strong>PIN Kodu Hakkında</strong>
+      PIN kodu sadece bir kez gösterilir. Kaydetmezseniz, daha sonra sıfırlamanız gerekir. PIN'i misafire göndermeyi unutmayın.
+    </div>
+
+    <h3>Program Oluşturma</h3>
+    <p>Sağ paneldeki <strong>Build Manually</strong> sekmesinde günlük aktiviteleri ekleyin:</p>
+    <ol>
+      <li>Gün sekmesini seçin (Day 1, Day 2, ...)</li>
+      <li>Saat girin (ör: 09:00)</li>
+      <li>Aktivite adını yazın (ör: Morning Yoga, Lymphatic Drainage)</li>
+      <li>Tür seçin: <strong>Group</strong> (grup), <strong>Food</strong> (yemek), <strong>Clinic</strong> (klinik), <strong>Extra</strong> (ekstra)</li>
+      <li><strong>+ Add Activity</strong> ile yeni satır ekleyin</li>
+      <li>Tüm günleri tamamlayın</li>
+    </ol>
+
+    <h3>Oluşturma Sonrası</h3>
+    <p>Misafir başarıyla oluşturulduğunda ekranda şunlar görünür:</p>
+    <ul>
+      <li><strong>Portal URL</strong> — Misafirin erişeceği link (ör: thelifeco.app/guest/ad-soyad)</li>
+      <li><strong>PIN</strong> — 4 haneli giriş kodu</li>
+      <li><strong>Send WhatsApp Welcome</strong> — Hoş geldin mesajı gönderme butonu</li>
+      <li><strong>Open Portal</strong> — Portalı yeni sekmede açma</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 4. Misafir Yönetimi -->
+<section class="section section-alt" id="misafir-yonetimi">
+  <div class="container">
+    <span class="label">Bölüm 4</span>
+    <h2>Misafir Yönetimi</h2>
+    <p>Sol menüdeki <strong>Guests</strong> sekmesinden tüm misafirleri görüntüleyebilir ve yönetebilirsiniz.</p>
+
+    <h3>Misafir Listesi</h3>
+    <ul>
+      <li><strong>Arama</strong> — İsim, e-posta, oda numarası veya telefon ile arayın</li>
+      <li><strong>Filtreler</strong> — All / Active / Upcoming / Completed sekmeleri</li>
+      <li><strong>Sıralama</strong> — İsim, check-in tarihi veya durum</li>
+    </ul>
+
+    <h3>Misafir Detay Sayfası</h3>
+    <p>Bir misafirin adına tıklayarak detay sayfasını açabilirsiniz. Bu sayfada:</p>
+
+    <h4>Hızlı İşlemler</h4>
+    <ul>
+      <li><strong>Send WhatsApp Welcome</strong> — Hoş geldin mesajı gönder</li>
+      <li><strong>Open Portal</strong> — Misafirin portalını aç</li>
+      <li><strong>Edit Guest</strong> — Bilgileri düzenle</li>
+      <li><strong>Mark Completed</strong> — Çıkış yapıldı olarak işaretle</li>
+      <li><strong>Mark Active</strong> — Aktif olarak işaretle (check-in günü)</li>
+      <li><strong>Reset PIN</strong> — Yeni PIN oluştur (eski PIN geçersiz olur)</li>
+      <li><strong>Delete</strong> — Misafiri sil (geri alınamaz)</li>
+    </ul>
+
+    <h4>Bilgi Kartları</h4>
+    <p>E-posta, WhatsApp, oda, check-in/out tarihleri, kalan gün sayısı, portal URL ve notlar.</p>
+
+    <h4>Program Düzenleme</h4>
+    <p>Detay sayfasındaki <strong>Edit Schedule</strong> butonuna tıklayarak mevcut programı düzenleyebilirsiniz. Değişiklikler <strong>Save Schedule</strong> ile kaydedilir.</p>
+
+    <div class="callout callout-info">
+      <strong>Durum Değişiklikleri</strong>
+      Misafir durumları otomatik olarak hesaplanır (check-in tarihine göre). Manuel olarak da değiştirebilirsiniz.
+    </div>
+  </div>
+</section>
+
+<!-- 5. Program ve Takvim -->
+<section class="section" id="program-takvim">
+  <div class="container">
+    <span class="label">Bölüm 5</span>
+    <h2>Program ve Takvim</h2>
+    <p>Her misafirin günlük aktivite programı veritabanında tutulur ve portalda görüntülenir.</p>
+
+    <h3>Aktivite Türleri</h3>
+    <dl class="kv">
+      <dt>Group</dt><dd>Grup aktiviteleri (yoga, pilates, meditasyon)</dd>
+      <dt>Food</dt><dd>Yemek/içecek saatleri (yeşil suyu, öğle yemeği)</dd>
+      <dt>Clinic</dt><dd>Klinik tedavileri (kolonik, IV terapi)</dd>
+      <dt>Extra</dt><dd>Ekstra aktiviteler (masaj, sauna)</dd>
+    </dl>
+
+    <h3>Program Düzenleme</h3>
+    <ol class="steps">
+      <li>Misafir detay sayfasına gidin</li>
+      <li><strong>Edit Schedule</strong> butonuna tıklayın</li>
+      <li>Gün sekmelerinden düzenlemek istediğiniz günü seçin</li>
+      <li>Aktiviteleri ekleyin, silin veya değiştirin</li>
+      <li><strong>Save Schedule</strong> ile kaydedin</li>
+    </ol>
+
+    <div class="callout callout-tip">
+      <strong>İpucu</strong>
+      Sık kullanılan programlar için şablon oluşturun (Bölüm 6). Böylece her misafir için sıfırdan program yazmak zorunda kalmazsınız.
+    </div>
+  </div>
+</section>
+
+<!-- 6. Program Şablonları -->
+<section class="section section-alt" id="sablonlar">
+  <div class="container">
+    <span class="label">Bölüm 6</span>
+    <h2>Program Şablonları</h2>
+    <p>Şablonlar, tekrarlayan programları hızlıca uygulamanızı sağlar.</p>
+
+    <h3>Şablon Oluşturma</h3>
+    <ol class="steps">
+      <li>Sol menüden <strong>Programmes</strong> sekmesine gidin</li>
+      <li><strong>+ New Template</strong> butonuna tıklayın</li>
+      <li>Şablon adı, program adı ve süre girin</li>
+      <li><strong>Create Template</strong> ile kaydedin</li>
+    </ol>
+
+    <h3>Şablonu Misafire Uygulama</h3>
+    <ol class="steps">
+      <li>Şablon satırındaki <strong>Apply to Guest</strong> butonuna tıklayın</li>
+      <li>Açılan pencereden misafiri seçin</li>
+      <li><strong>Apply</strong> ile onaylayın</li>
+      <li>Mevcut program silinir ve şablon uygulanır</li>
+    </ol>
+
+    <div class="callout callout-warn">
+      <strong>Dikkat</strong>
+      Şablon uygulamak, misafirin mevcut programını tamamen değiştirir. Eski program kaybolur.
+    </div>
+  </div>
+</section>
+
+<!-- 7. Misafir Portalı -->
+<section class="section" id="portal">
+  <div class="container">
+    <span class="label">Bölüm 7</span>
+    <h2>Misafir Portalı</h2>
+    <p>Misafir portalı, her misafirin kişisel dijital rehberidir. Telefon tarayıcısından açılır, uygulama indirmeye gerek yoktur.</p>
+
+    <dl class="kv">
+      <dt>URL Formatı</dt><dd><code>thelifeco.app/guest/ad-soyad</code></dd>
+      <dt>Giriş</dt><dd>4 haneli PIN kodu</dd>
+      <dt>Oturum Süresi</dt><dd>24 saat (12 saat hard max)</dd>
+      <dt>Çevrimdışı</dt><dd>Son veriler önbelleğe alınır</dd>
+    </dl>
+
+    <h3>Portal Giriş Ekranı</h3>
+    <p>Misafir portalını açtığında tam ekran bir giriş ekranı görür:</p>
+    <ul>
+      <li>TheLifeCo logosu ve "St. Lucia" yazısı</li>
+      <li>4 adet PIN kutusu</li>
+      <li>4 rakam girildiğinde otomatik doğrulama</li>
+      <li>Yanlış PIN girilirse "Invalid PIN" mesajı</li>
+      <li>5 yanlış denemeden sonra 15 dakika bekleme</li>
+    </ul>
+
+    <h3>Portal Sekmeleri</h3>
+    <p>Alt navigasyon çubuğunda 4 sekme bulunur:</p>
+    <ul>
+      <li><strong>Today</strong> — Bugünkü program ve bilgiler</li>
+      <li><strong>Schedule</strong> — Tüm kalış programı</li>
+      <li><strong>Explore</strong> — Terapi kataloğu ve favori listesi</li>
+      <li><strong>Info</strong> — Tesis bilgileri, beslenme, acil durum</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 8. Portal: Bugün Sekmesi -->
+<section class="section section-alt" id="portal-bugun">
+  <div class="container">
+    <span class="label">Bölüm 8</span>
+    <h2>Portal: Bugün Sekmesi</h2>
+    <p>Misafirin gün içindeki en önemli bilgilerini gösterir.</p>
+
+    <h3>Ekran İçeriği</h3>
+    <ul>
+      <li><strong>Selamlama</strong> — "Good morning/afternoon/evening, [Ad]"</li>
+      <li><strong>Tarih</strong> — Bugünün tarihi</li>
+      <li><strong>Program rozeti</strong> — Program adı ve oda numarası</li>
+      <li><strong>İlerleme çubuğu</strong> — Kalış süresinin % kaçının tamamlandığı</li>
+      <li><strong>Sonraki aktivite</strong> — Bir sonraki aktiviteye kalan süre</li>
+      <li><strong>Bugünün programı</strong> — Zaman çizelgesi formatında tüm aktiviteler</li>
+      <li><strong>Beslenme bilgisi</strong> — Günlük beslenme planı</li>
+    </ul>
+
+    <p>Tamamlanan aktiviteler işaretlenir, aktif aktivite vurgulanır.</p>
+  </div>
+</section>
+
+<!-- 9. Portal: Program Sekmesi -->
+<section class="section" id="portal-program">
+  <div class="container">
+    <span class="label">Bölüm 9</span>
+    <h2>Portal: Program Sekmesi</h2>
+    <p>Misafirin tüm kalış süresindeki programı gün gün gösterir.</p>
+
+    <h3>Özellikler</h3>
+    <ul>
+      <li><strong>Tarih seçici</strong> — Yatay kaydırmalı tarih listesi</li>
+      <li><strong>Aktif gün</strong> — Bugün teal rengiyle vurgulanır</li>
+      <li><strong>Günlük istatistikler</strong> — Aktivite sayısı ve süre</li>
+      <li><strong>Zaman çizelgesi</strong> — Her aktivitenin saati, adı ve türü</li>
+    </ul>
+
+    <p>Misafir herhangi bir güne tıklayarak o günün programını görüntüleyebilir.</p>
+  </div>
+</section>
+
+<!-- 10. Portal: Keşfet -->
+<section class="section section-alt" id="portal-kesfet">
+  <div class="container">
+    <span class="label">Bölüm 10</span>
+    <h2>Portal: Keşfet (Terapiler)</h2>
+    <p>Misafirler burada tüm terapi seçeneklerini inceleyebilir ve WhatsApp ile rezervasyon yapabilir.</p>
+
+    <h3>Kategori Görünümü</h3>
+    <p>Ana ekranda terapi kategorileri kartlar halinde gösterilir:</p>
+    <ul>
+      <li>Bio-Hacking Technologies</li>
+      <li>IV Infusions &amp; Protocols</li>
+      <li>Massage &amp; Body</li>
+      <li>Beauty &amp; Reshaping</li>
+      <li>Clinical Treatments</li>
+      <li>Mind &amp; Meditation</li>
+    </ul>
+
+    <h3>Terapi Kartları</h3>
+    <p>Bir kategoriye tıklayınca o kategorideki terapiler listelenir:</p>
+    <ul>
+      <li>Terapi görseli</li>
+      <li>Terapi adı</li>
+      <li>Kısa açıklama</li>
+      <li><strong>Popular</strong> veya <strong>Recommended</strong> rozetleri</li>
+      <li>Kalp ikonu — Favorilere ekle/çıkar</li>
+    </ul>
+
+    <h3>Terapi Detay Sayfası</h3>
+    <p>Bir terapiye tıklayınca tam detay sayfası açılır:</p>
+    <ul>
+      <li>Büyük görsel</li>
+      <li>Detaylı açıklama</li>
+      <li>Fiyat ve süre bilgisi</li>
+      <li><strong>"Request via WhatsApp"</strong> butonu — Tek dokunuşla WhatsApp mesajı açar</li>
+      <li>Benzer terapiler önerileri</li>
+    </ul>
+
+    <h3>Arama ve Favoriler</h3>
+    <ul>
+      <li><strong>Arama çubuğu</strong> — İsme göre terapi arama</li>
+      <li><strong>Favoriler filtresi</strong> — Sadece favori terapileri göster</li>
+      <li>Favoriler veritabanına senkronize edilir</li>
+    </ul>
+
+    <div class="callout callout-tip">
+      <strong>Gelir Fırsatı</strong>
+      Explore sekmesi, misafirlerin ek terapi satın almasını kolaylaştırır. Her görüntüleme potansiyel bir upsell fırsatıdır.
+    </div>
+  </div>
+</section>
+
+<!-- 11. Portal: Bilgi Sekmesi -->
+<section class="section" id="portal-bilgi">
+  <div class="container">
+    <span class="label">Bölüm 11</span>
+    <h2>Portal: Bilgi Sekmesi</h2>
+    <p>Misafirin ihtiyaç duyabileceği tüm tesis bilgileri burada yer alır.</p>
+
+    <h3>Bölümler</h3>
+    <ul>
+      <li><strong>Hydration Schedule</strong> — Günlük su/içecek takvimi (saat, içecek adı, not)</li>
+      <li><strong>Nutrition Plans</strong> — Beslenme programları (kalori, açıklama)</li>
+      <li><strong>Wellness Tips</strong> — Sağlık ipuçları</li>
+      <li><strong>House Rules</strong> — Tesis kuralları</li>
+      <li><strong>Emergency Contacts</strong> — Acil durum iletişim bilgileri</li>
+      <li><strong>FAQ</strong> — Sık sorulan sorular</li>
+    </ul>
+    <p>Her bölüm akordeon formatında açılır/kapanır. İçerikler admin panelinden yönetilebilir.</p>
+  </div>
+</section>
+
+<!-- 12. WhatsApp Entegrasyonu -->
+<section class="section section-alt" id="whatsapp">
+  <div class="container">
+    <span class="label">Bölüm 12</span>
+    <h2>WhatsApp Entegrasyonu</h2>
+
+    <h3>Admin Tarafı</h3>
+    <ul>
+      <li><strong>Hoş geldin mesajı</strong> — Misafir oluşturulduğunda "Send WhatsApp Welcome" butonu</li>
+      <li>Mesaj içeriği: Portal linki + PIN kodu + karşılama metni</li>
+      <li>WhatsApp Web açılır, mesaj otomatik doldurulur, siz sadece gönder'e basarsınız</li>
+    </ul>
+
+    <h3>Misafir Tarafı</h3>
+    <ul>
+      <li><strong>WhatsApp yardım butonu</strong> — Sağ üst köşede yeşil yuvarlak buton</li>
+      <li>Tıklayınca hızlı mesaj seçenekleri açılır:
+        <ul>
+          <li>Open Chat — Direkt sohbet aç</li>
+          <li>Running late — "Seansıma geç kalacağım"</li>
+          <li>Need assistance — "Yardıma ihtiyacım var"</li>
+          <li>Room service — "Oda servisi istiyorum"</li>
+        </ul>
+      </li>
+      <li><strong>Terapi rezervasyonu</strong> — Explore'daki "Request via WhatsApp" butonu ile doğrudan terapi planlayıcısına mesaj gönderilir</li>
+    </ul>
+
+    <div class="callout callout-info">
+      <strong>WhatsApp Numarası</strong>
+      Ayarlar sayfasından WhatsApp numarasını değiştirebilirsiniz. Tüm portallar otomatik olarak güncellenir.
+    </div>
+  </div>
+</section>
+
+<!-- 13. İçerik Yönetimi -->
+<section class="section" id="icerik">
+  <div class="container">
+    <span class="label">Bölüm 13</span>
+    <h2>İçerik Yönetimi</h2>
+    <p>Terapi kataloğu, hidrasyon takvimi, beslenme planları ve bilgi içerikleri API üzerinden yönetilir.</p>
+
+    <div class="callout callout-info">
+      <strong>API Endpoint</strong>
+      Tüm içerik yönetimi <code>/api/admin/content?type=XXXX</code> üzerinden yapılır. Şu anda admin panelinde görsel arayüz hazırlanıyor. Bu sürece kadar Supabase panelinden doğrudan düzenleyebilirsiniz.
+    </div>
+
+    <h3>Yönetilebilir İçerik Türleri</h3>
+    <dl class="kv">
+      <dt>therapies</dt><dd>Terapi kataloğu (ad, açıklama, görsel, fiyat, kategori)</dd>
+      <dt>categories</dt><dd>Terapi kategorileri (Bio-Hacking, IV, Massage, vb.)</dd>
+      <dt>hydration</dt><dd>Günlük hidrasyon takvimi (saat, içecek, not)</dd>
+      <dt>nutrition</dt><dd>Beslenme planları (ad, kalori, açıklama)</dd>
+      <dt>info</dt><dd>Bilgi sayfaları (kurallar, SSS, ipuçları)</dd>
+      <dt>descriptions</dt><dd>Aktivite açıklamaları (yoga, pilates, vb.)</dd>
+      <dt>staff</dt><dd>Personel listesi (ad, rol)</dd>
+    </dl>
+
+    <h3>Supabase'den Düzenleme</h3>
+    <ol class="steps">
+      <li><code>supabase.com</code> adresine giriş yapın</li>
+      <li>TheLifeCo projesini seçin</li>
+      <li>Sol menüden <strong>Table Editor</strong>'a tıklayın</li>
+      <li>Düzenlemek istediğiniz tabloyu seçin (ör: therapies)</li>
+      <li>Satırları düzenleyin, ekleyin veya silin</li>
+      <li>Değişiklikler anında portala yansır</li>
+    </ol>
+  </div>
+</section>
+
+<!-- 14. Ayarlar -->
+<section class="section section-alt" id="ayarlar">
+  <div class="container">
+    <span class="label">Bölüm 14</span>
+    <h2>Ayarlar</h2>
+    <p>Sol menüden <strong>Settings</strong> sekmesine tıklayarak portal ayarlarını yönetin.</p>
+
+    <h3>Portal Ayarları (Toggle'lar)</h3>
+    <dl class="kv">
+      <dt>Auto-generate PIN</dt><dd>Misafir oluşturulurken otomatik PIN oluştur</dd>
+      <dt>Send Welcome Message</dt><dd>Otomatik WhatsApp hoş geldin mesajı</dd>
+      <dt>Enable Guest Feedback</dt><dd>Misafirlerden geri bildirim toplama</dd>
+      <dt>Session Timeout</dt><dd>Hareketsizlik sonrası otomatik çıkış</dd>
+    </dl>
+
+    <h3>Tesis Yapılandırması</h3>
+    <dl class="kv">
+      <dt>Resort Name</dt><dd>Tesis adı (portalde görünür)</dd>
+      <dt>WhatsApp Number</dt><dd>İletişim numarası (ülke kodu dahil)</dd>
+      <dt>Portal Base URL</dt><dd>Portal temel URL'si</dd>
+      <dt>Default Duration</dt><dd>Varsayılan kalış süresi (gün)</dd>
+    </dl>
+
+    <h3>Veri Yönetimi</h3>
+    <ul>
+      <li><strong>Export JSON</strong> — Tüm verileri JSON olarak indirin (yedekleme)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 15. Aktivite Kayıtları -->
+<section class="section" id="aktivite-log">
+  <div class="container">
+    <span class="label">Bölüm 15</span>
+    <h2>Aktivite Kayıtları</h2>
+    <p>Sol menüdeki <strong>Activity Log</strong> sekmesinde tüm işlem geçmişi tutulur.</p>
+
+    <h3>Kayıt Edilen İşlemler</h3>
+    <ul>
+      <li>Misafir oluşturma / güncelleme / silme</li>
+      <li>PIN sıfırlama</li>
+      <li>Program kaydetme / şablon uygulama</li>
+      <li>Ayar değişiklikleri</li>
+      <li>Şablon oluşturma / silme</li>
+      <li>Durum değişiklikleri</li>
+    </ul>
+
+    <p>Her kayıt şu bilgileri içerir:</p>
+    <dl class="kv">
+      <dt>Zaman</dt><dd>İşlemin yapıldığı tarih ve saat</dd>
+      <dt>İşlem</dt><dd>Yapılan işlem türü (renkli rozet)</dd>
+      <dt>Kullanıcı</dt><dd>İşlemi yapan admin'in e-posta adresi</dd>
+      <dt>Detay</dt><dd>İşlem detayı (ör: "Created guest Hasan Akkaya")</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- 16. Güvenlik ve PIN -->
+<section class="section section-alt" id="guvenlik">
+  <div class="container">
+    <span class="label">Bölüm 16</span>
+    <h2>Güvenlik ve PIN Yönetimi</h2>
+
+    <h3>PIN Sistemi</h3>
+    <ul>
+      <li>Her misafir için benzersiz 4 haneli PIN oluşturulur</li>
+      <li>PIN, sunucuda şifrelenmiş (SHA-256 hash) olarak saklanır</li>
+      <li>PIN yalnızca oluşturma anında bir kez gösterilir</li>
+      <li>Kaybolursa <strong>Reset PIN</strong> ile yeni PIN oluşturulur</li>
+    </ul>
+
+    <h3>PIN Sıfırlama</h3>
+    <ol class="steps">
+      <li>Misafir detay sayfasına gidin</li>
+      <li><strong>Reset PIN</strong> butonuna tıklayın</li>
+      <li>Onay mesajını kabul edin</li>
+      <li>Yeni PIN ekranda görünecektir — hemen kaydedin</li>
+      <li>Yeni PIN'i misafire iletin</li>
+    </ol>
+
+    <h3>Güvenlik Önlemleri</h3>
+    <ul>
+      <li><strong>Brute-force koruması</strong> — 5 yanlış PIN denemesinden sonra 15 dakika bekleme (sunucu taraflı)</li>
+      <li><strong>Timing-safe karşılaştırma</strong> — PIN hash karşılaştırması zamanlama saldırılarına karşı korumalı</li>
+      <li><strong>Oturum süresi</strong> — 24 saat sonra otomatik çıkış, 12 saat hard limit</li>
+      <li><strong>HTTPS</strong> — Tüm iletişim şifrelidir</li>
+      <li><strong>HSTS</strong> — Tarayıcılar her zaman HTTPS kullanmaya zorlanır</li>
+    </ul>
+
+    <div class="callout callout-warn">
+      <strong>Asla Yapmayın</strong>
+      PIN kodlarını e-posta ile göndermeyin. WhatsApp veya yüz yüze iletin. PIN'leri kağıda yazmayın.
+    </div>
+  </div>
+</section>
+
+<!-- 17. PWA Kurulumu -->
+<section class="section" id="pwa">
+  <div class="container">
+    <span class="label">Bölüm 17</span>
+    <h2>PWA Kurulumu (Uygulama Gibi Kullanma)</h2>
+    <p>Misafirler portalı telefonlarına uygulama olarak ekleyebilir. Bu sayede tam ekran deneyim yaşarlar.</p>
+
+    <h3>iPhone (iOS) Kurulumu</h3>
+    <ol class="steps">
+      <li>Safari'de portal linkini açın</li>
+      <li>Alt çubuktaki <strong>Paylaş</strong> (kutu+ok) ikonuna dokunun</li>
+      <li><strong>"Ana Ekrana Ekle"</strong> seçeneğini seçin</li>
+      <li><strong>Ekle</strong> butonuna dokunun</li>
+      <li>Ana ekranda TheLifeCo ikonu görünecektir</li>
+    </ol>
+
+    <h3>Android Kurulumu</h3>
+    <ol class="steps">
+      <li>Chrome'da portal linkini açın</li>
+      <li>Üstte çıkan <strong>"Uygulamayı Yükle"</strong> banner'ına dokunun</li>
+      <li>Veya sağ üstteki üç nokta menüsünden <strong>"Ana ekrana ekle"</strong> seçin</li>
+      <li><strong>Yükle</strong> butonuna dokunun</li>
+    </ol>
+
+    <div class="callout callout-tip">
+      <strong>Misafirlere Önerin</strong>
+      Check-in sırasında misafirlere portalı ana ekrana eklemelerini önerin. Tam ekran deneyim çok daha kullanışlıdır ve çevrimdışı da çalışır.
+    </div>
+  </div>
+</section>
+
+<!-- 18. SSS -->
+<section class="section section-alt" id="sss">
+  <div class="container">
+    <span class="label">Bölüm 18</span>
+    <h2>Sık Sorulan Sorular</h2>
+
+    <h3>Misafir PIN'ini unutursa ne yapmalıyım?</h3>
+    <p>Admin panelinden misafir detay sayfasına gidin ve <strong>Reset PIN</strong> butonuna tıklayın. Yeni PIN oluşturulur ve eski PIN geçersiz olur. Yeni PIN'i misafire hemen iletin.</p>
+
+    <h3>Misafirin programını değiştirmem gerekiyor. Nasıl yapabilirim?</h3>
+    <p>Misafir detay sayfasında <strong>Edit Schedule</strong> butonuna tıklayın. Mevcut program düzenleme modunda açılır. Değişikliklerinizi yapın ve <strong>Save Schedule</strong> ile kaydedin.</p>
+
+    <h3>Yeni bir terapi eklemek istiyorum. Nasıl?</h3>
+    <p>Şu anda Supabase panelinden <strong>therapies</strong> tablosuna yeni satır ekleyebilirsiniz. Gerekli alanlar: name, category_id, description. Opsiyonel: image_url, price_usd, duration, is_popular, is_recommended.</p>
+
+    <h3>WhatsApp numarası değişti. Ne yapmalıyım?</h3>
+    <p>Admin panelinde <strong>Settings</strong> sayfasına gidin. <strong>WhatsApp Number</strong> alanını güncelleyin ve <strong>Save Configuration</strong> ile kaydedin. Tüm portallarda otomatik güncellenir.</p>
+
+    <h3>Misafir portalı çalışmıyor / yüklenmiyor.</h3>
+    <p>Şu adımları kontrol edin:</p>
+    <ol>
+      <li>İnternet bağlantısını kontrol edin</li>
+      <li>URL'nin doğru olduğundan emin olun: <code>thelifeco.app/guest/ad-soyad</code></li>
+      <li>Tarayıcı önbelleğini temizleyin</li>
+      <li>Farklı bir tarayıcı deneyin</li>
+      <li>Sorun devam ederse admin panelinden misafirin durumunu kontrol edin</li>
+    </ol>
+
+    <h3>Birden fazla admin kullanıcı ekleyebilir miyim?</h3>
+    <p>Evet. Supabase Authentication panelinden yeni kullanıcı oluşturabilirsiniz. Yeni kullanıcının e-posta adresi, Vercel ortam değişkenlerindeki <code>ADMIN_EMAILS</code> listesine eklenmelidir.</p>
+
+    <h3>Misafir check-out yaptıktan sonra portalına erişebilir mi?</h3>
+    <p>Evet, portal erişilebilir durumda kalır. Misafir durumu otomatik olarak "Completed" olur ama veriler silinmez. İstenirse admin panelinden misafir silinebilir.</p>
+
+    <h3>Veri yedeği alabilir miyim?</h3>
+    <p>Admin panelinin Settings sayfasındaki <strong>Export JSON</strong> butonu ile mevcut verileri indirebilirsiniz. Ayrıca Supabase panelinden veritabanı yedeği alınabilir.</p>
+  </div>
+</section>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>TheLifeCo Guest Portal — Personel Kullanım Kılavuzu</p>
+  <p style="margin-top:4px;opacity:.6;">thelifeco.app &middot; Built by ibak</p>
+</footer>
+
+</body>
+</html>
