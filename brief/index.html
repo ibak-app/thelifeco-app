@@ -1161,6 +1161,59 @@
 </head>
 <body>
 
+  <!-- ═══════════════════════ AUTH GATE ═════════════════════════════════ -->
+  <div id="auth-gate" style="position:fixed;inset:0;z-index:9999;background:#fff;display:flex;align-items:center;justify-content:center;font-family:'Inter',system-ui,sans-serif;">
+    <div style="text-align:center;max-width:360px;padding:32px;">
+      <svg width="40" height="40" viewBox="0 0 20 20" fill="none" style="margin-bottom:16px;"><circle cx="10" cy="10" r="9" stroke="#00609C" stroke-width="1.5"/><path d="M10 4C10 4 7 7.5 7 10.5C7 12.43 8.34 14 10 14C11.66 14 13 12.43 13 10.5C13 7.5 10 4 10 4Z" fill="#00BED6" opacity=".8"/></svg>
+      <h2 style="font-size:20px;font-weight:600;margin-bottom:4px;color:#141827;">Admin Access Required</h2>
+      <p style="font-size:14px;color:#5B7E96;margin-bottom:24px;">Sign in to view the project brief.</p>
+      <form id="auth-form" autocomplete="on">
+        <input id="auth-email" type="email" placeholder="Email" autocomplete="email" required style="display:block;width:100%;padding:10px 14px;margin-bottom:10px;border:1px solid #E3EDF3;border-radius:8px;font-size:14px;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#00609C'" onblur="this.style.borderColor='#E3EDF3'">
+        <input id="auth-pass" type="password" placeholder="Password" autocomplete="current-password" required style="display:block;width:100%;padding:10px 14px;margin-bottom:14px;border:1px solid #E3EDF3;border-radius:8px;font-size:14px;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#00609C'" onblur="this.style.borderColor='#E3EDF3'">
+        <button type="submit" style="width:100%;padding:10px;background:#00609C;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s;">Sign In</button>
+      </form>
+      <p id="auth-error" style="font-size:13px;color:#e00;margin-top:12px;display:none;"></p>
+    </div>
+  </div>
+  <script>
+  (function() {
+    var gate = document.getElementById('auth-gate');
+    var stored = sessionStorage.getItem('brief_token');
+    if (stored) {
+      fetch('/api/admin/auth', { headers: { Authorization: 'Bearer ' + stored } })
+        .then(function(r) { return r.json(); })
+        .then(function(d) { if (d.valid) gate.style.display = 'none'; })
+        .catch(function() {});
+    }
+    document.getElementById('auth-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var email = document.getElementById('auth-email').value;
+      var pass = document.getElementById('auth-pass').value;
+      var errEl = document.getElementById('auth-error');
+      errEl.style.display = 'none';
+      fetch('/api/admin/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, password: pass })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.token) {
+          sessionStorage.setItem('brief_token', d.token);
+          gate.style.display = 'none';
+        } else {
+          errEl.textContent = d.error || 'Invalid credentials';
+          errEl.style.display = 'block';
+        }
+      })
+      .catch(function() {
+        errEl.textContent = 'Connection error. Try again.';
+        errEl.style.display = 'block';
+      });
+    });
+  })();
+  </script>
+
   <!-- ═══════════════════════════════ NAV ═══════════════════════════════ -->
   <nav id="nav" role="navigation" aria-label="Site navigation">
     <div class="container">
@@ -1208,8 +1261,8 @@
         <h1 class="hero-title" id="hero-title">
           The Guest<br><span>Portal</span>
         </h1>
-        <p class="hero-subtitle">A personalized digital wellness companion for every TheLifeCo guest</p>
-        <p class="hero-tagline">Replace WhatsApp chaos and PDF clutter with a beautiful, intelligent experience — powered by a dynamic backend, served from a single link, no app download required.</p>
+        <p class="hero-subtitle">A live production system powering personalized digital wellness for every TheLifeCo guest</p>
+        <p class="hero-tagline">WhatsApp chaos and PDF clutter replaced with a beautiful, intelligent experience — live on Vercel + Supabase, served from a single link, no app download required.</p>
         <div class="btn-group">
           <a href="/guest/hasan-akkaya" class="btn btn-teal btn-lg">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="8" stroke="#fff" stroke-width="1.5"/><path d="M7 6l4 3-4 3V6z" fill="#fff"/></svg>
@@ -1222,7 +1275,7 @@
 
         <div class="hero-stats" aria-label="Key metrics">
           <div class="hero-stat">
-            <div class="hero-stat-num">16</div>
+            <div class="hero-stat-num">12</div>
             <div class="hero-stat-label">API endpoints</div>
           </div>
           <div class="hero-stat">
@@ -1786,6 +1839,147 @@
         <p class="section-subtitle">Recent improvements that make the guest portal smarter, faster, and more delightful to use.</p>
       </div>
 
+      <h3 class="whats-new-group-title reveal" style="color:var(--navy);font-size:1.25rem;font-weight:700;margin:0 0 20px;padding:12px 20px;background:linear-gradient(135deg,rgba(0,190,214,.08),rgba(0,96,156,.06));border-left:3px solid var(--teal);border-radius:0 8px 8px 0;">Production Launch — March 2026</h3>
+      <div class="whats-new-grid" style="margin-bottom:48px;">
+
+        <div class="new-feature-card reveal reveal-delay-1">
+          <div class="new-feature-icon new-feature-icon--navy" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="6" width="20" height="16" rx="3" stroke="#00609C" stroke-width="1.8"/><path d="M4 11h20" stroke="#00609C" stroke-width="1.5"/><circle cx="8" cy="18" r="1.5" fill="#00BED6"/><circle cx="14" cy="18" r="1.5" fill="#00BED6"/><circle cx="20" cy="18" r="1.5" fill="#00BED6"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">Live</span>
+          <h3>Vercel + Supabase Backend</h3>
+          <p>Full serverless API with PostgreSQL database, row-level security, and 15 database tables powering the entire system.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-2">
+          <div class="new-feature-icon new-feature-icon--teal" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="6" y="4" width="16" height="20" rx="3" stroke="#00BED6" stroke-width="1.8"/><circle cx="14" cy="14" r="4" stroke="#00BED6" stroke-width="1.5"/><path d="M14 12v2l1.5 1" stroke="#00BED6" stroke-width="1.3" stroke-linecap="round"/><path d="M10 8h8" stroke="#00BED6" stroke-width="1.2" stroke-linecap="round" opacity=".5"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">Live</span>
+          <h3>Guest Authentication</h3>
+          <p>HMAC-SHA256 session tokens, 4-digit PIN with rate limiting (5 attempts/15min), 24-hour expiry for security.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-3">
+          <div class="new-feature-icon new-feature-icon--purple" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="5" stroke="#7c3aed" stroke-width="1.8"/><path d="M6 22c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round"/><path d="M18 8l2-2M20 10h2" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" opacity=".6"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">Live</span>
+          <h3>Admin Role-Based Access</h3>
+          <p>Supabase Auth for staff, ADMIN_EMAILS env var for role control, JWT session management with secure cookies.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-1">
+          <div class="new-feature-icon new-feature-icon--navy" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M6 8h16M6 14h16M6 20h16" stroke="#00609C" stroke-width="1.8" stroke-linecap="round"/><circle cx="21" cy="8" r="3" fill="#00BED6" opacity=".7"/><circle cx="21" cy="14" r="3" fill="#00BED6" opacity=".5"/><circle cx="21" cy="20" r="3" fill="#00BED6" opacity=".3"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">Live</span>
+          <h3>Dynamic Guest Portals</h3>
+          <p>No more file duplication — staff create guests in the dashboard, each gets a unique URL generated instantly.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-2">
+          <div class="new-feature-icon new-feature-icon--teal" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="6" y="6" width="16" height="16" rx="3" stroke="#00BED6" stroke-width="1.8"/><path d="M11 14h6M14 11v6" stroke="#00BED6" stroke-width="1.8" stroke-linecap="round"/><path d="M10 4v4M18 4v4" stroke="#00BED6" stroke-width="1.5" stroke-linecap="round" opacity=".5"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">Live</span>
+          <h3>PIN Reset</h3>
+          <p>Admin can reset guest PINs from the dashboard with random crypto-secure generation. No guest data exposed.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-3">
+          <div class="new-feature-icon new-feature-icon--purple" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 6l2.5 5 5.5.8-4 3.9.9 5.3L14 18.5 9.1 21l.9-5.3-4-3.9 5.5-.8L14 6z" stroke="#7c3aed" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">Live</span>
+          <h3>Favorites & Ratings Sync</h3>
+          <p>Guest interactions sync to database via API, not just localStorage. Ratings and favorites persist across devices.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-1">
+          <div class="new-feature-icon new-feature-icon--navy" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M6 20l4-4 4 2 4-6 4 3" stroke="#00609C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="4" width="20" height="20" rx="3" stroke="#00609C" stroke-width="1.5" opacity=".4"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">Live</span>
+          <h3>Feedback System</h3>
+          <p>Categorized guest feedback saved to database with optional WhatsApp integration for real-time staff alerts.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-2">
+          <div class="new-feature-icon new-feature-icon--teal" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#00BED6" stroke-width="1.8"/><path d="M10 14l2.5 2.5L18 11" stroke="#00BED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">Live</span>
+          <h3>Therapy Catalog (40 treatments)</h3>
+          <p>6 categories, full descriptions, pricing, and images — all served dynamically from the database.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-3">
+          <div class="new-feature-icon new-feature-icon--purple" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 4v4M14 20v4M4 14h4M20 14h4" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round"/><circle cx="14" cy="14" r="6" stroke="#7c3aed" stroke-width="1.5" opacity=".5"/><path d="M10 14c0-2.2 1.8-4 4-4" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">Live</span>
+          <h3>Hydration Schedule</h3>
+          <p>11 daily hydration items served from the database with timing and descriptions for the full detox protocol.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-1">
+          <div class="new-feature-icon new-feature-icon--navy" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="5" width="18" height="18" rx="3" stroke="#00609C" stroke-width="1.8"/><path d="M9 10h10M9 14h7M9 18h10" stroke="#00609C" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">Live</span>
+          <h3>Programme Templates</h3>
+          <p>Save and apply schedule templates. 3 pre-built: 7-Day Green Salad, 14-Day Master Detox, 5-Day Juice Fast.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-2">
+          <div class="new-feature-icon new-feature-icon--teal" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="8" width="20" height="14" rx="3" stroke="#00BED6" stroke-width="1.8"/><path d="M4 13h20" stroke="#00BED6" stroke-width="1.2"/><circle cx="14" cy="5" r="2" stroke="#00BED6" stroke-width="1.5"/><path d="M12 5h4" stroke="#00BED6" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">Live</span>
+          <h3>Content-Security-Policy</h3>
+          <p>Security headers including CSP, HSTS, X-Frame-Options, and Referrer-Policy for production hardening.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-3">
+          <div class="new-feature-icon new-feature-icon--purple" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#7c3aed" stroke-width="1.8"/><path d="M14 8v6l3 3" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 6l2 2" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" opacity=".5"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">Live</span>
+          <h3>St. Lucia Timezone</h3>
+          <p>All date calculations use UTC-4 (no DST) for accurate schedule display regardless of user device timezone.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-1">
+          <div class="new-feature-icon new-feature-icon--navy" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M8 6h12l-2 8H10L8 6z" stroke="#00609C" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 14v6c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2v-6" stroke="#00609C" stroke-width="1.5"/><path d="M12 18h4" stroke="#00609C" stroke-width="1.2" stroke-linecap="round" opacity=".5"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">Live</span>
+          <h3>Atomic Schedule Updates</h3>
+          <p>Schedule changes use transactional rollback on failure. No partial writes — either all days update or none do.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-2">
+          <div class="new-feature-icon new-feature-icon--teal" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="6" y="4" width="16" height="20" rx="3" stroke="#00BED6" stroke-width="1.8"/><path d="M10 10h8M10 14h5M10 18h8" stroke="#00BED6" stroke-width="1.5" stroke-linecap="round"/><path d="M19 10l-1 1-1-1" stroke="#00BED6" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity=".6"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">Live</span>
+          <h3>Input Validation</h3>
+          <p>All endpoints validate string lengths, date formats, and allowed values. Rejects malformed requests with clear errors.</p>
+        </div>
+
+        <div class="new-feature-card reveal reveal-delay-3">
+          <div class="new-feature-icon new-feature-icon--purple" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="6" width="20" height="16" rx="3" stroke="#7c3aed" stroke-width="1.8"/><path d="M4 11h20" stroke="#7c3aed" stroke-width="1.2"/><path d="M8 15h4M8 18h8" stroke="#7c3aed" stroke-width="1.3" stroke-linecap="round"/><circle cx="20" cy="15" r="1.5" fill="#7c3aed" opacity=".5"/></svg>
+          </div>
+          <span class="new-feature-badge new-feature-badge--new">Live</span>
+          <h3>Activity Log</h3>
+          <p>All admin actions logged with timestamps and user attribution. Full audit trail for guest and schedule changes.</p>
+        </div>
+
+      </div>
+
+      <h3 class="whats-new-group-title reveal" style="color:var(--navy);font-size:1.1rem;font-weight:600;margin:0 0 20px;padding:8px 16px;background:rgba(0,96,156,.05);border-left:3px solid var(--navy);border-radius:0 6px 6px 0;">Earlier Updates</h3>
       <div class="whats-new-grid">
 
         <div class="new-feature-card reveal reveal-delay-1">
@@ -2314,7 +2508,7 @@
           <div class="tech-desc">Instant load with splash screen. Service worker caches for offline use.</div>
         </div>
         <div class="tech-card">
-          <div class="tech-value">16</div>
+          <div class="tech-value">12</div>
           <div class="tech-label">API endpoints</div>
           <div class="tech-desc">RESTful serverless functions for guest data, auth, admin CRUD, and more.</div>
         </div>
@@ -2448,7 +2642,7 @@
               <div class="demo-screen-header">
                 <div class="demo-screen-greeting">Good morning,</div>
                 <div class="demo-screen-name">Hasan Akkaya</div>
-                <div class="demo-screen-prog">Master Cleanse Programme · Day 3 of 10</div>
+                <div class="demo-screen-prog">Green Salad Programme · Day 7 of 7</div>
               </div>
               <div class="demo-screen-today">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
@@ -2531,10 +2725,10 @@
   <footer id="footer" role="contentinfo">
     <div class="container">
       <div class="footer-logo">thelifeco<span>.app</span></div>
-      <p class="footer-tagline">A concept by ibak · Wellness technology for boutique retreats</p>
+      <p class="footer-tagline">Built by ibak · Wellness technology for boutique retreats</p>
       <div class="footer-divider" aria-hidden="true"></div>
       <div class="footer-meta">
-        <p>Guest Portal System · 16 API Endpoints · 2026</p>
+        <p>Guest Portal System · 12 API Endpoints · 2026</p>
         <p style="margin-top:6px;">
           <a href="/guest/hasan-akkaya">Live Demo</a>
           &nbsp;·&nbsp;
