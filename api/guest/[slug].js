@@ -2,33 +2,31 @@ import crypto from 'crypto';
 import { supabaseAdmin, handleCors } from '../_lib/supabase.js';
 import { createGuestToken, requireGuestAuth } from '../_lib/guest-auth.js';
 
-// Basic in-memory rate limiter for PIN attempts.
-// NOTE: This is ephemeral per serverless instance (resets on cold start).
-// For production at scale, upgrade to Redis or Supabase-based rate limiting.
-const pinAttempts = new Map();
+// Distributed rate limiter using activity_log table (survives cold starts)
 const MAX_ATTEMPTS = 5;
-const LOCKOUT_MS = 15 * 60 * 1000; // 15 minutes
+const LOCKOUT_MINUTES = 15;
 
-function checkRateLimit(slug) {
-  const now = Date.now();
-  const record = pinAttempts.get(slug);
-  if (!record) return true;
-  // Clean expired entries
-  if (now - record.first > LOCKOUT_MS) {
-    pinAttempts.delete(slug);
-    return true;
+async function checkRateLimit(slug) {
+  const since = new Date(Date.now() - LOCKOUT_MINUTES * 60 * 1000).toISOString();
+  const { count, error } = await supabaseAdmin
+    .from('activity_log')
+    .select('id', { count: 'exact', head: true })
+    .eq('action', 'pin_attempt')
+    .eq('details', slug)
+    .gte('created_at', since);
+
+  if (error) {
+    console.error('Rate limit check error:', error);
+    return true; // fail open on DB error
   }
-  return record.count < MAX_ATTEMPTS;
+  return (count || 0) < MAX_ATTEMPTS;
 }
 
-function recordAttempt(slug) {
-  const now = Date.now();
-  const record = pinAttempts.get(slug);
-  if (!record || now - record.first > LOCKOUT_MS) {
-    pinAttempts.set(slug, { count: 1, first: now });
-  } else {
-    record.count++;
-  }
+async function recordAttempt(slug) {
+  await supabaseAdmin
+    .from('activity_log')
+    .insert({ action: 'pin_attempt', details: slug, user_display: 'guest' })
+    .catch(err => console.error('Rate limit record error:', err));
 }
 
 export default async function handler(req, res) {
@@ -220,15 +218,15 @@ async function handlePost(slug, req, res) {
     return res.status(400).json({ error: 'Missing pin' });
   }
 
-  if (!checkRateLimit(slug)) {
+  if (!(await checkRateLimit(slug))) {
     return res.status(429).json({ error: 'Too many attempts. Try again in 15 minutes.' });
   }
-  recordAttempt(slug);
+  await recordAttempt(slug);
 
   // Fetch guest's pin_hash
   const { data: guest, error } = await supabaseAdmin
     .from('guests')
-    .select('pin_hash')
+    .select('id, pin_hash')
     .eq('slug', slug)
     .single();
 
@@ -248,5 +246,5 @@ async function handlePost(slug, req, res) {
     return res.status(200).json({ valid: false });
   }
 
-  return res.status(200).json({ valid: true, token: createGuestToken(slug) });
+  return res.status(200).json({ valid: true, token: createGuestToken(slug, guest.id) });
 }

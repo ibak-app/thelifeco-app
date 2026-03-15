@@ -306,10 +306,13 @@ tr:hover td { background: rgba(0,96,156,0.02); }
 
   // -- Auth --
   var AUTH_TOKEN_KEY = 'tlc_admin_token';
+  var ADMIN_EMAIL_KEY = 'tlc_admin_email';
 
   function getAuthToken() { return sessionStorage.getItem(AUTH_TOKEN_KEY); }
   function setAuthToken(token) { sessionStorage.setItem(AUTH_TOKEN_KEY, token); }
-  function clearAuthToken() { sessionStorage.removeItem(AUTH_TOKEN_KEY); }
+  function clearAuthToken() { sessionStorage.removeItem(AUTH_TOKEN_KEY); sessionStorage.removeItem(ADMIN_EMAIL_KEY); }
+  function getAdminEmail() { return sessionStorage.getItem(ADMIN_EMAIL_KEY) || ''; }
+  function setAdminEmail(email) { sessionStorage.setItem(ADMIN_EMAIL_KEY, email); }
 
   function authHeaders() {
     return {
@@ -373,6 +376,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     })
     .then(function(data) {
       setAuthToken(data.token);
+      setAdminEmail(email);
       showApp();
     })
     .catch(function(err) {
@@ -423,7 +427,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       apiFetch('/api/admin/guests'),
       apiFetch('/api/admin/templates'),
       apiFetch('/api/admin/settings'),
-      apiFetch('/api/admin/log')
+      apiFetch('/api/admin/settings?type=log')
     ]).then(function(results) {
       // Unwrap API responses (each wraps data in a named key)
       var rawGuests = (results[0] && results[0].guests) || [];
@@ -559,7 +563,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
   }
 
   function apiDeleteTemplate(id) {
-    return apiFetch('/api/admin/templates/' + id, {
+    return apiFetch('/api/admin/templates?id=' + id, {
       method: 'DELETE'
     }).then(function() {
       store.templates = store.templates.filter(function(t) { return t.id !== id; });
@@ -594,7 +598,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
 
   function addLog(action, details) {
     // Local-only log entry (server logs activity automatically in each API handler)
-    store.activityLog.unshift({ action: action, details: details, user_display: '', created_at: new Date().toISOString() });
+    store.activityLog.unshift({ action: action, details: details, user_display: getAdminEmail(), created_at: new Date().toISOString() });
   }
   var currentPage = 'dashboard';
   var detailGuestId = null;
@@ -1233,15 +1237,19 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     var schedCard = el('div', { className: 'card' });
     var sch = el('div', { className: 'card-header' });
     sch.appendChild(el('h2', { textContent: 'Schedule' }));
+    var editSchedBtn = el('button', { className: 'btn btn-outline btn-sm', textContent: 'Edit Schedule' });
+    sch.appendChild(editSchedBtn);
     schedCard.appendChild(sch);
     var scb = el('div', { className: 'card-body' });
     scb.appendChild(el('div', { className: 'spinner' }));
     schedCard.appendChild(scb);
     page.appendChild(schedCard);
 
+    var fetchedScheduleData = null;
     apiFetch('/api/admin/schedule/' + g.id).then(function(resp) {
       clearEl(scb);
       var schedule = (resp && resp.schedule) || {};
+      fetchedScheduleData = schedule;
       var dates = Object.keys(schedule).sort();
       if (dates.length === 0) {
         scb.appendChild(el('div', { style: 'color:var(--text-muted);font-size:0.85rem', textContent: 'No schedule assigned yet.' }));
@@ -1259,6 +1267,48 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     }).catch(function() {
       clearEl(scb);
       scb.appendChild(el('div', { style: 'color:var(--text-muted);font-size:0.85rem', textContent: 'Could not load schedule.' }));
+    });
+
+    editSchedBtn.addEventListener('click', function() {
+      clearEl(scb);
+      // Convert API schedule (date-keyed) into day-based array for the builder
+      var manualSchedule = [];
+      var schedObj = fetchedScheduleData || {};
+      var dates = Object.keys(schedObj).sort();
+      if (dates.length > 0) {
+        dates.forEach(function(date, idx) {
+          var acts = (schedObj[date] || []).map(function(a) { return { time: a.time || '09:00', name: a.name || '', type: a.type || 'group' }; });
+          manualSchedule.push({ title: 'Day ' + (idx + 1), activities: acts });
+        });
+      } else {
+        for (var di = 0; di < (g.duration || 7); di++) {
+          manualSchedule.push({ title: 'Day ' + (di + 1), activities: [] });
+        }
+      }
+      // Create mock inputs object for the builder
+      var mockInputs = { duration: { value: manualSchedule.length || g.duration || 7, addEventListener: function() {} } };
+      buildManualScheduleUI(scb, manualSchedule, mockInputs);
+      // Add save button
+      var saveRow = el('div', { style: 'margin-top:16px;display:flex;gap:10px' });
+      var saveSchedBtn = el('button', { className: 'btn btn-primary', textContent: 'Save Schedule' });
+      saveSchedBtn.addEventListener('click', function() {
+        saveSchedBtn.disabled = true;
+        saveSchedBtn.textContent = 'Saving...';
+        apiSaveSchedule(g.id, manualSchedule, g.checkIn).then(function() {
+          showAdminToast('Schedule saved successfully.');
+          addLog('Schedule Updated', 'Updated schedule for ' + g.firstName + ' ' + g.lastName);
+          render();
+        }).catch(function(err) {
+          showAdminToast('Error saving schedule: ' + err.message);
+          saveSchedBtn.disabled = false;
+          saveSchedBtn.textContent = 'Save Schedule';
+        });
+      });
+      saveRow.appendChild(saveSchedBtn);
+      var cancelSchedBtn = el('button', { className: 'btn btn-outline', textContent: 'Cancel' });
+      cancelSchedBtn.addEventListener('click', function() { render(); });
+      saveRow.appendChild(cancelSchedBtn);
+      scb.appendChild(saveRow);
     });
 
     return page;
@@ -1384,6 +1434,11 @@ tr:hover td { background: rgba(0,96,156,0.02); }
         schedule: manualSchedule.length > 0 ? manualSchedule : (existing ? existing.schedule : null)
       };
       if (!guestData.firstName || !guestData.lastName) { showAdminToast('Please enter guest name.'); return; }
+      if (guestData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestData.email)) { showAdminToast('Please enter a valid email address.'); return; }
+      if (guestData.whatsapp) {
+        var digits = guestData.whatsapp.replace(/[\s\-\+]/g, '');
+        if (!/^\d+$/.test(digits) || digits.length < 7 || digits.length > 15) { showAdminToast('WhatsApp number must contain 7-15 digits (may include +, spaces, dashes).'); return; }
+      }
       if (!guestData.checkIn) { showAdminToast('Check-in date is required'); return; }
       if (!/^\d{4}-\d{2}-\d{2}$/.test(guestData.checkIn)) { showAdminToast('Invalid check-in date format'); return; }
       if (!guestData.duration || guestData.duration < 1 || guestData.duration > 365) { showAdminToast('Duration must be 1-365 days'); return; }
@@ -1608,7 +1663,57 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       tr.appendChild(el('td', { textContent: t.programme }));
       tr.appendChild(el('td', { textContent: t.duration + ' days' }));
       tr.appendChild(el('td', { textContent: formatDate(t.createdAt) }));
-      var actTd = el('td');
+      var actTd = el('td', { style: 'display:flex;gap:6px' });
+      var applyBtn = el('button', { className: 'btn btn-teal btn-sm', textContent: 'Apply to Guest' });
+      applyBtn.addEventListener('click', function() {
+        var overlay = document.getElementById('modalOverlay');
+        clearEl(overlay); openModal();
+        var modal = el('div', { className: 'modal' });
+        var mh = el('div', { className: 'modal-header' });
+        mh.appendChild(el('h3', { textContent: 'Apply Template: ' + t.name }));
+        var closeBtn = el('button', { className: 'modal-close', textContent: '\u00D7' });
+        closeBtn.addEventListener('click', closeModal);
+        mh.appendChild(closeBtn);
+        modal.appendChild(mh);
+        var mb = el('div', { className: 'modal-body' });
+        mb.appendChild(el('label', { className: 'form-label', textContent: 'Select Guest' }));
+        var guestSelect = el('select', { className: 'form-select' });
+        guestSelect.appendChild(el('option', { value: '', textContent: '-- Select a guest --' }));
+        store.guests.forEach(function(gg) {
+          guestSelect.appendChild(el('option', { value: gg.id, textContent: gg.firstName + ' ' + gg.lastName + ' (' + gg.programme + ')' }));
+        });
+        mb.appendChild(guestSelect);
+        modal.appendChild(mb);
+        var mf = el('div', { className: 'modal-footer' });
+        var cancelBtn2 = el('button', { className: 'btn btn-outline', textContent: 'Cancel' });
+        cancelBtn2.addEventListener('click', closeModal);
+        mf.appendChild(cancelBtn2);
+        var applyConfirmBtn = el('button', { className: 'btn btn-primary', textContent: 'Apply' });
+        applyConfirmBtn.addEventListener('click', function() {
+          var selectedGuestId = guestSelect.value;
+          if (!selectedGuestId) { showAdminToast('Please select a guest.'); return; }
+          applyConfirmBtn.disabled = true;
+          applyConfirmBtn.textContent = 'Applying...';
+          apiFetch('/api/admin/templates?id=' + t.id + '&action=apply', {
+            method: 'POST',
+            body: JSON.stringify({ guestId: selectedGuestId })
+          }).then(function() {
+            var guest = store.guests.find(function(gg) { return gg.id === selectedGuestId; });
+            var guestName = guest ? guest.firstName + ' ' + guest.lastName : selectedGuestId;
+            addLog('Template Applied', 'Applied "' + t.name + '" to ' + guestName);
+            showAdminToast('Template applied successfully.');
+            closeModal();
+          }).catch(function(err) {
+            showAdminToast('Error applying template: ' + err.message);
+            applyConfirmBtn.disabled = false;
+            applyConfirmBtn.textContent = 'Apply';
+          });
+        });
+        mf.appendChild(applyConfirmBtn);
+        modal.appendChild(mf);
+        overlay.appendChild(modal);
+      });
+      actTd.appendChild(applyBtn);
       var delBtn = el('button', { className: 'btn btn-outline btn-sm', textContent: 'Delete' });
       delBtn.addEventListener('click', function() {
         if (!confirm('Delete template "' + t.name + '"?')) return;
@@ -1858,7 +1963,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     thead.appendChild(hr);
     table.appendChild(thead);
     var tbody = el('tbody');
-    var actionColors = { 'Guest Created': 'badge-active', 'Guest Updated': 'badge-active', 'Guest Deleted': 'badge-completed', 'PDF Uploaded': 'badge-upcoming', 'Settings Updated': 'badge-draft', 'Template Created': 'badge-upcoming', 'Template Deleted': 'badge-completed', 'Data Cleared': 'badge-completed', 'Data Imported': 'badge-upcoming', 'Status Changed': 'badge-upcoming' };
+    var actionColors = { 'Guest Created': 'badge-active', 'Guest Updated': 'badge-active', 'Guest Deleted': 'badge-completed', 'PDF Uploaded': 'badge-upcoming', 'Settings Updated': 'badge-draft', 'Template Created': 'badge-upcoming', 'Template Deleted': 'badge-completed', 'Template Applied': 'badge-upcoming', 'Data Cleared': 'badge-completed', 'Data Imported': 'badge-upcoming', 'Status Changed': 'badge-upcoming', 'Schedule Updated': 'badge-active' };
     store.activityLog.forEach(function(a) {
       var tr = el('tr');
       var timeTd = el('td');

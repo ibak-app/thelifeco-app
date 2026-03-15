@@ -3063,7 +3063,10 @@ function loadGuestData() {
       waFallback = 'https://api.whatsapp.com/send?phone=' + SETTINGS.whatsapp_number.replace(/[^0-9]/g, '');
     }
 
-    // Guest profile
+    // Guest profile — check for critical data
+    if (!data.guest) {
+      throw new Error('Guest profile missing from server response');
+    }
     GUEST = {
       firstName: data.guest.firstName,
       lastName: data.guest.lastName,
@@ -3074,6 +3077,10 @@ function loadGuestData() {
       waBase: data.guest.waBase || waFallback
     };
 
+    // Flag partial data issues for UI handling
+    data._emptySchedule = !data.schedule || Object.keys(data.schedule).length === 0;
+    data._emptyCategories = !data.categories || data.categories.length === 0;
+
     // Seed favorites from server into localStorage (merge with existing)
     if (data.favorites && data.favorites.length) {
       var existingFavs = [];
@@ -3081,7 +3088,9 @@ function loadGuestData() {
       data.favorites.forEach(function(name) {
         if (existingFavs.indexOf(name) === -1) existingFavs.push(name);
       });
-      try { localStorage.setItem(FAVORITES_KEY, JSON.stringify(existingFavs)); } catch(e) {}
+      try { localStorage.setItem(FAVORITES_KEY, JSON.stringify(existingFavs)); } catch(e) {
+        if (e && e.name === 'QuotaExceededError') showToast('Storage full \u2014 some preferences may not save');
+      }
     }
 
     // Schedule
@@ -3203,7 +3212,9 @@ function toggleFavorite(name) {
   } else {
     favs.splice(idx, 1);
   }
-  try { localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs)); } catch(e) {}
+  try { localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs)); } catch(e) {
+    if (e && e.name === 'QuotaExceededError') showToast('Storage full \u2014 some preferences may not save');
+  }
   updateFavoritesCount();
   logEvent('explore', 'favorite', name);
   // Sync to server (fire-and-forget)
@@ -3508,7 +3519,9 @@ function setRating(dateStr, activityName, stars) {
   var ratings = getRatings();
   var key = dateStr + '|' + activityName;
   ratings[key] = stars;
-  try { localStorage.setItem(RATINGS_KEY, JSON.stringify(ratings)); } catch(e) {}
+  try { localStorage.setItem(RATINGS_KEY, JSON.stringify(ratings)); } catch(e) {
+    if (e && e.name === 'QuotaExceededError') showToast('Storage full \u2014 some preferences may not save');
+  }
   if (navigator.vibrate) navigator.vibrate(30);
   // Sync to server (fire-and-forget)
   try {
@@ -3980,7 +3993,9 @@ function initToday() {
     htCountEl.addEventListener('click', function() {
       htCount++;
       if (htCount > htMax) htCount = 0;
-      try { localStorage.setItem(htDayKey, String(htCount)); } catch(e) {}
+      try { localStorage.setItem(htDayKey, String(htCount)); } catch(e) {
+        if (e && e.name === 'QuotaExceededError') showToast('Storage full \u2014 some preferences may not save');
+      }
       updateHydrationTracker();
       if (navigator.vibrate) navigator.vibrate(15);
     });
@@ -4002,7 +4017,10 @@ function initToday() {
       }
     });
     if (activities.length === 0) {
-      appendTo(timelineContainer, h('div', 'empty-state', 'No activities scheduled for today.'));
+      var emptyMsg = Object.keys(SCHEDULE).length === 0
+        ? 'No schedule yet \u2014 your programme will appear here once it\u2019s ready.'
+        : 'No activities scheduled for today.';
+      appendTo(timelineContainer, h('div', 'empty-state', emptyMsg));
     }
   }
 
@@ -4358,6 +4376,14 @@ function initExplore() {
   var searchInput = document.getElementById('explore-search');
 
   if (!categoriesContainer) return;
+
+  // Empty state if no categories
+  if (EXPLORE_CATEGORIES.length === 0) {
+    var emptyEl = h('div', 'empty-state', 'Therapies unavailable \u2014 please check back later.');
+    emptyEl.style.cssText = 'text-align:center;padding:40px 20px;color:var(--text-2);font-size:14px';
+    appendTo(categoriesContainer, emptyEl);
+    return;
+  }
 
   // Build category cards
   EXPLORE_CATEGORIES.forEach(function(cat) {
@@ -5355,8 +5381,39 @@ var _sessionTimeoutStarted = false;
 function startSessionTimeout() {
   if (_sessionTimeoutStarted) return;
   _sessionTimeoutStarted = true;
-  var TIMEOUT_MS = 4 * 60 * 60 * 1000; // 4 hours
+
+  // Use settings-based timeout if available, otherwise default 4 hours
+  var TIMEOUT_MS = 4 * 60 * 60 * 1000;
+  if (typeof SETTINGS !== 'undefined' && SETTINGS && SETTINGS.sessionTimeout) {
+    var stMin = parseInt(SETTINGS.sessionTimeout, 10);
+    if (stMin > 0) TIMEOUT_MS = stMin * 60 * 1000;
+  }
+
+  // Hard max session: 12 hours from first auth, regardless of activity
+  var HARD_MAX_MS = 12 * 60 * 60 * 1000;
+  var AUTH_TS_KEY = 'tlc_auth_timestamp';
+  if (!sessionStorage.getItem(AUTH_TS_KEY)) {
+    sessionStorage.setItem(AUTH_TS_KEY, String(Date.now()));
+  }
+  var authTimestamp = parseInt(sessionStorage.getItem(AUTH_TS_KEY), 10);
+
   var _sessionTimer = null;
+  var _hardMaxTimer = null;
+
+  function forceReAuth() {
+    sessionStorage.removeItem('tlc_guest_token');
+    sessionStorage.removeItem(AUTH_KEY);
+    sessionStorage.removeItem(AUTH_TS_KEY);
+    location.reload();
+  }
+
+  // Set up hard max timer
+  var hardRemaining = HARD_MAX_MS - (Date.now() - authTimestamp);
+  if (hardRemaining <= 0) {
+    forceReAuth();
+    return;
+  }
+  _hardMaxTimer = setTimeout(forceReAuth, hardRemaining);
 
   function onSessionTimeout() {
     var existing = document.getElementById('session-timeout-overlay');
@@ -5387,6 +5444,11 @@ function startSessionTimeout() {
   }
 
   function resetSessionTimer() {
+    // Check hard max before resetting idle timer
+    if (Date.now() - authTimestamp >= HARD_MAX_MS) {
+      forceReAuth();
+      return;
+    }
     if (_sessionTimer) clearTimeout(_sessionTimer);
     _sessionTimer = setTimeout(onSessionTimeout, TIMEOUT_MS);
   }
@@ -5465,9 +5527,9 @@ function startSessionTimeout() {
     if (hash && tabs[hash]) {
       switchTab(hash, true);
     }
-    // Fade splash after data loads
+    // Fade splash only after data is confirmed loaded
     var splash = document.getElementById('splash');
-    if (splash) {
+    if (splash && DATA_LOADED) {
       var splashStart = window._splashStart || Date.now();
       var elapsed = Date.now() - splashStart;
       var remaining = Math.max(0, 800 - elapsed);
@@ -5475,6 +5537,15 @@ function startSessionTimeout() {
         splash.style.opacity = '0';
         setTimeout(function() { splash.style.display = 'none'; }, 500);
       }, remaining);
+    } else if (splash) {
+      // Data not yet flagged — poll briefly until DATA_LOADED
+      var _splashPoll = setInterval(function() {
+        if (DATA_LOADED) {
+          clearInterval(_splashPoll);
+          splash.style.opacity = '0';
+          setTimeout(function() { splash.style.display = 'none'; }, 500);
+        }
+      }, 100);
     }
   }).catch(function(err) {
     // If unauthorized, clear token and show auth gate

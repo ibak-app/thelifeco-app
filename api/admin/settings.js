@@ -11,6 +11,11 @@ export default async function handler(req, res) {
   if (!user) return;
 
   try {
+    // Route ?type=log to activity log handler
+    if (req.query.type === 'log' && req.method === 'GET') {
+      return await handleGetLog(req, res);
+    }
+
     switch (req.method) {
       case 'GET':
         return await handleGet(res);
@@ -130,4 +135,21 @@ async function handlePut(req, res, user) {
     .catch(err => console.error('Activity log error:', err));
 
   return res.status(200).json({ success: true, settings: data });
+}
+
+async function handleGetLog(req, res) {
+  const limit = Math.min(Number(req.query.limit) || 100, 500);
+
+  const { data, error } = await supabaseAdmin
+    .from('activity_log')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error('Activity log fetch error:', error);
+    return res.status(500).json({ error: 'Failed to fetch activity log' });
+  }
+
+  return res.status(200).json({ log: data || [] });
 }

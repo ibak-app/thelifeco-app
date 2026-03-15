@@ -6,27 +6,38 @@ if (!SECRET) {
 }
 
 // Create a session token after PIN verification
-export function createGuestToken(slug) {
+// Includes both slug and guest ID for security
+export function createGuestToken(slug, guestId) {
   const ts = Date.now();
-  const payload = slug + ':' + ts;
+  const payload = slug + ':' + (guestId || '') + ':' + ts;
   const hmac = crypto.createHmac('sha256', SECRET).update(payload).digest('hex');
   // Token valid for 24 hours
   return Buffer.from(payload + ':' + hmac).toString('base64url');
 }
 
-// Verify and extract slug from token. Returns slug or null.
+// Verify and extract slug from token. Returns { slug, guestId } or null.
 export function verifyGuestToken(token) {
   try {
     const decoded = Buffer.from(token, 'base64url').toString();
     const parts = decoded.split(':');
-    if (parts.length !== 3) return null;
-    const [slug, ts, hmac] = parts;
-    // Check expiry (24 hours)
-    if (Date.now() - parseInt(ts) > 24 * 60 * 60 * 1000) return null;
-    // Verify HMAC
-    const expected = crypto.createHmac('sha256', SECRET).update(slug + ':' + ts).digest('hex');
-    if (!crypto.timingSafeEqual(Buffer.from(hmac), Buffer.from(expected))) return null;
-    return slug;
+    // Support both old (slug:ts:hmac) and new (slug:guestId:ts:hmac) formats
+    if (parts.length === 3) {
+      // Old format: slug:ts:hmac
+      const [slug, ts, hmac] = parts;
+      if (Date.now() - parseInt(ts) > 24 * 60 * 60 * 1000) return null;
+      const expected = crypto.createHmac('sha256', SECRET).update(slug + ':' + ts).digest('hex');
+      if (!crypto.timingSafeEqual(Buffer.from(hmac), Buffer.from(expected))) return null;
+      return { slug, guestId: null };
+    }
+    if (parts.length === 4) {
+      // New format: slug:guestId:ts:hmac
+      const [slug, guestId, ts, hmac] = parts;
+      if (Date.now() - parseInt(ts) > 24 * 60 * 60 * 1000) return null;
+      const expected = crypto.createHmac('sha256', SECRET).update(slug + ':' + guestId + ':' + ts).digest('hex');
+      if (!crypto.timingSafeEqual(Buffer.from(hmac), Buffer.from(expected))) return null;
+      return { slug, guestId: guestId || null };
+    }
+    return null;
   } catch { return null; }
 }
 
@@ -37,10 +48,10 @@ export function requireGuestAuth(req, res) {
     res.status(401).json({ error: 'Missing guest session token' });
     return null;
   }
-  const slug = verifyGuestToken(auth.replace('Bearer ', ''));
-  if (!slug) {
+  const result = verifyGuestToken(auth.replace('Bearer ', ''));
+  if (!result) {
     res.status(401).json({ error: 'Invalid or expired session' });
     return null;
   }
-  return slug;
+  return result.slug;
 }
