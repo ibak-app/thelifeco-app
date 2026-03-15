@@ -1,5 +1,19 @@
 import { supabaseAdmin, handleCors } from '../_lib/supabase.js';
 
+export const config = { api: { bodyParser: false } };
+
+function parseBody(req) {
+  return new Promise((resolve, reject) => {
+    let data = '';
+    req.on('data', chunk => { data += chunk; });
+    req.on('end', () => {
+      try { resolve(JSON.parse(data)); }
+      catch (e) { reject(new Error('Invalid request body')); }
+    });
+    req.on('error', reject);
+  });
+}
+
 export default async function handler(req, res) {
   if (handleCors(req, res)) return;
 
@@ -8,8 +22,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
-    const { slug, category, content } = body;
+    const { slug, category, content } = await parseBody(req);
 
     if (!slug || !category || !content) {
       return res.status(400).json({ error: 'Missing slug, category, or content' });
@@ -19,42 +32,36 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Content exceeds maximum length of 5000 characters' });
     }
 
-    let guest;
-    try {
-      const result = await supabaseAdmin
-        .from('guests')
-        .select('id')
-        .eq('slug', slug)
-        .single();
-      if (result.error || !result.data) {
-        return res.status(404).json({ error: 'Guest not found', detail: result.error?.message });
-      }
-      guest = result.data;
-    } catch (lookupErr) {
-      return res.status(500).json({ error: 'Guest lookup failed', detail: lookupErr.message });
+    // Look up guest by slug
+    const { data: guest, error: guestError } = await supabaseAdmin
+      .from('guests')
+      .select('id')
+      .eq('slug', slug)
+      .single();
+
+    if (guestError || !guest) {
+      return res.status(404).json({ error: 'Guest not found' });
     }
 
-    let data;
-    try {
-      const result = await supabaseAdmin
-        .from('guest_feedback')
-        .insert({
-          guest_id: guest.id,
-          category,
-          content,
-        })
-        .select()
-        .single();
-      if (result.error) {
-        return res.status(500).json({ error: 'Failed to save feedback', detail: result.error.message });
-      }
-      data = result.data;
-    } catch (insertErr) {
-      return res.status(500).json({ error: 'Insert failed', detail: insertErr.message });
+    // Insert feedback
+    const { data, error } = await supabaseAdmin
+      .from('guest_feedback')
+      .insert({
+        guest_id: guest.id,
+        category,
+        content,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Feedback insert error:', error);
+      return res.status(500).json({ error: 'Failed to save feedback' });
     }
 
     return res.status(201).json({ success: true, feedback: data });
   } catch (err) {
-    return res.status(500).json({ error: 'Internal server error', detail: err.message, stack: err.stack?.split('\n').slice(0, 3) });
+    console.error('Feedback API error:', err);
+    return res.status(500).json({ error: 'Internal server error' });
   }
 }
