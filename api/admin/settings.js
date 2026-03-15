@@ -54,6 +54,12 @@ async function handlePut(req, res, user) {
   const fieldMap = {
     resortName: 'resort_name',
     whatsappNumber: 'whatsapp_number',
+    autoPin: 'auto_pin',
+    welcomeMsg: 'welcome_msg',
+    guestFeedback: 'guest_feedback',
+    sessionTimeout: 'session_timeout',
+    portalBaseUrl: 'portal_base_url',
+    defaultDuration: 'default_duration',
   };
 
   const dbUpdates = {};

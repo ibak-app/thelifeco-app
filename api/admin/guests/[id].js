@@ -63,15 +63,16 @@ async function handleGet(id, res) {
   }
 
   // Compute checkout and status
-  const checkOutDate = new Date(guest.check_in);
+  const checkInDateParsed = new Date(guest.check_in + 'T00:00:00-04:00');
+  const checkOutDate = new Date(checkInDateParsed);
   checkOutDate.setDate(checkOutDate.getDate() + guest.duration);
 
   const now = new Date();
   const daysLeft = Math.max(0, Math.ceil((checkOutDate - now) / (1000 * 60 * 60 * 24)));
 
   let status = 'active';
-  if (now < new Date(guest.check_in)) status = 'upcoming';
-  else if (now > checkOutDate) status = 'checked-out';
+  if (now < checkInDateParsed) status = 'upcoming';
+  else if (now > checkOutDate) status = 'completed';
 
   return res.status(200).json({
     guest: {

@@ -10,6 +10,10 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing slug parameter' });
   }
 
+  if (!/^[a-z0-9][a-z0-9-]{1,60}$/.test(slug)) {
+    return res.status(400).json({ error: 'Invalid slug format' });
+  }
+
   try {
     if (req.method === 'GET') {
       return await handleGet(slug, res);
@@ -35,17 +39,7 @@ async function handleGet(slug, res) {
     return res.status(404).json({ error: 'Guest not found' });
   }
 
-  const [
-    scheduleResult,
-    descriptionsResult,
-    categoriesResult,
-    therapiesResult,
-    hydrationResult,
-    infoContentResult,
-    nutritionPlansResult,
-    settingsResult,
-    favoritesResult,
-  ] = await Promise.all([
+  const results = await Promise.allSettled([
     supabaseAdmin
       .from('schedule_activities')
       .select('activity_date, time, name, type')
@@ -90,6 +84,17 @@ async function handleGet(slug, res) {
       .select('therapy_name')
       .eq('guest_id', guest.id),
   ]);
+
+  const settled = (i) => results[i].status === 'fulfilled' ? results[i].value : { data: null };
+  const scheduleResult = settled(0);
+  const descriptionsResult = settled(1);
+  const categoriesResult = settled(2);
+  const therapiesResult = settled(3);
+  const hydrationResult = settled(4);
+  const infoContentResult = settled(5);
+  const nutritionPlansResult = settled(6);
+  const settingsResult = settled(7);
+  const favoritesResult = settled(8);
 
   // Group schedule by date
   const schedule = {};
@@ -139,6 +144,15 @@ async function handleGet(slug, res) {
 
   const favorites = favoritesResult.data ? favoritesResult.data.map(f => f.therapy_name) : [];
 
+  // Compute guest stay status using St. Lucia timezone (UTC-4, no DST)
+  const now = new Date();
+  const checkInDate = new Date(guest.check_in + 'T00:00:00-04:00');
+  const checkOutDate = new Date(checkInDate);
+  checkOutDate.setDate(checkOutDate.getDate() + guest.duration);
+  let status = 'active';
+  if (now < checkInDate) status = 'upcoming';
+  else if (now > checkOutDate) status = 'completed';
+
   return res.status(200).json({
     guest: {
       firstName: guest.first_name,
@@ -148,6 +162,7 @@ async function handleGet(slug, res) {
       totalDays: guest.duration,
       waBase: guest.wa_base,
       room: guest.room,
+      status,
     },
     schedule,
     descriptions,

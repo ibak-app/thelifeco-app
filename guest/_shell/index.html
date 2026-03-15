@@ -1497,10 +1497,10 @@ ul, ol {
    ============================================================ */
 #help-btn {
   position: fixed;
-  bottom: calc(var(--nav-height) + var(--safe-bottom) + 16px);
-  right: 20px;
-  width: 56px;
-  height: 56px;
+  top: calc(var(--safe-top, 0px) + 12px);
+  right: 16px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: var(--whatsapp-green);
   color: #fff;
@@ -1518,14 +1518,14 @@ ul, ol {
 }
 
 #help-btn svg {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
 }
 
 /* Constrain to app width on larger screens */
 @media (min-width: 480px) {
   #help-btn {
-    right: calc(50% - 240px + 20px);
+    right: calc(50% - 240px + 16px);
   }
 }
 
@@ -2515,11 +2515,11 @@ ul, ol {
    ============================================================ */
 .quick-msg-menu {
   position: fixed;
-  right: 20px;
-  bottom: calc(var(--nav-height) + var(--safe-bottom) + 80px);
+  right: 16px;
+  top: calc(var(--safe-top, 0px) + 64px);
   z-index: 799;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   gap: 10px;
   pointer-events: none;
   opacity: 0;
@@ -2541,7 +2541,7 @@ ul, ol {
   font-size: 13px;
   font-weight: 500;
   color: var(--text);
-  transform: translateY(10px) scale(0.9);
+  transform: translateY(-10px) scale(0.9);
   opacity: 0;
   transition: transform 0.25s var(--ease), opacity 0.25s var(--ease);
   cursor: pointer;
@@ -2567,7 +2567,7 @@ ul, ol {
   flex-shrink: 0;
 }
 @media (min-width: 480px) {
-  .quick-msg-menu { right: calc(50% - 240px + 20px); }
+  .quick-msg-menu { right: calc(50% - 240px + 16px); }
 }
 
 /* ============================================================
@@ -2693,6 +2693,10 @@ ul, ol {
         <span class="badge-dot" aria-hidden="true"></span>
         <span id="program-badge-text"></span>
       </div>
+      <div id="guest-room-badge" class="program-badge" style="display:none;margin-top:4px;background:rgba(255,255,255,0.12)">
+        <span style="font-size:12px;margin-right:4px">🏠</span>
+        <span id="guest-room-text"></span>
+      </div>
     </div>
 
     <div class="progress-section">
@@ -2758,7 +2762,7 @@ ul, ol {
       <img src="/guest/_shared/images/yoga-beach.jpg" alt="Full Schedule" />
       <div class="page-header-content">
         <h1>Full Schedule</h1>
-        <p>March 9&ndash;15, 2026 &middot; St. Lucia</p>
+        <p id="schedule-date-range">St. Lucia</p>
       </div>
     </div>
 
@@ -2990,10 +2994,16 @@ function unlockApp() {
 // =============================================================
 
 var GUEST = {};
+var SETTINGS = {};
+var NUTRITION_PLANS = [];
 var DATA_LOADED = false;
 
-// Use current date
-var TODAY_DATE = new Date();
+// Use current date in St. Lucia timezone (UTC-4, no DST)
+function getStLuciaDate() {
+  var now = new Date();
+  return new Date(now.getTime() + (now.getTimezoneOffset() * 60000) - (4 * 3600000));
+}
+var TODAY_DATE = getStLuciaDate();
 
 var TYPE_LABELS = { group: 'Group', food: 'Nutrition', clinic: 'Therapy', extra: 'Treatment' };
 
@@ -3020,6 +3030,18 @@ function loadGuestData() {
     if (!r.ok) throw new Error('Guest not found');
     return r.json();
   }).then(function(data) {
+    // Settings (whatsapp_number, etc.)
+    SETTINGS = data.settings || {};
+
+    // Nutrition plans
+    NUTRITION_PLANS = data.nutritionPlans || [];
+
+    // Build WhatsApp base URL from settings if guest waBase is missing
+    var waFallback = 'https://api.whatsapp.com/send?phone=17582861869';
+    if (SETTINGS.whatsapp_number) {
+      waFallback = 'https://api.whatsapp.com/send?phone=' + SETTINGS.whatsapp_number.replace(/[^0-9]/g, '');
+    }
+
     // Guest profile
     GUEST = {
       firstName: data.guest.firstName,
@@ -3027,8 +3049,19 @@ function loadGuestData() {
       program: data.guest.programme,
       checkIn: data.guest.checkIn,
       totalDays: data.guest.duration,
-      waBase: data.guest.waBase || 'https://api.whatsapp.com/send?phone=17582861869'
+      room: data.guest.room || '',
+      waBase: data.guest.waBase || waFallback
     };
+
+    // Seed favorites from server into localStorage (merge with existing)
+    if (data.favorites && data.favorites.length) {
+      var existingFavs = [];
+      try { existingFavs = JSON.parse(localStorage.getItem(FAVORITES_KEY)) || []; } catch(e) {}
+      data.favorites.forEach(function(name) {
+        if (existingFavs.indexOf(name) === -1) existingFavs.push(name);
+      });
+      try { localStorage.setItem(FAVORITES_KEY, JSON.stringify(existingFavs)); } catch(e) {}
+    }
 
     // Schedule
     SCHEDULE = data.schedule || {};
@@ -3081,6 +3114,22 @@ function loadGuestData() {
     // Update page title with guest name
     document.title = 'TheLifeCo · ' + GUEST.firstName;
 
+    // Update schedule date range header dynamically
+    var scheduleDates = Object.keys(SCHEDULE).sort();
+    if (scheduleDates.length > 0) {
+      var sdFirst = new Date(scheduleDates[0] + 'T00:00:00');
+      var sdLast = new Date(scheduleDates[scheduleDates.length - 1] + 'T00:00:00');
+      var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      var rangeText;
+      if (sdFirst.getMonth() === sdLast.getMonth() && sdFirst.getFullYear() === sdLast.getFullYear()) {
+        rangeText = months[sdFirst.getMonth()] + ' ' + sdFirst.getDate() + '\u2013' + sdLast.getDate() + ', ' + sdFirst.getFullYear();
+      } else {
+        rangeText = months[sdFirst.getMonth()] + ' ' + sdFirst.getDate() + ' \u2013 ' + months[sdLast.getMonth()] + ' ' + sdLast.getDate() + ', ' + sdLast.getFullYear();
+      }
+      var schedRangeEl = document.getElementById('schedule-date-range');
+      if (schedRangeEl) schedRangeEl.textContent = rangeText + ' \u00B7 St. Lucia';
+    }
+
     DATA_LOADED = true;
     return data;
   });
@@ -3128,7 +3177,8 @@ function getFavorites() {
 function toggleFavorite(name) {
   var favs = getFavorites();
   var idx = favs.indexOf(name);
-  if (idx === -1) {
+  var adding = idx === -1;
+  if (adding) {
     favs.push(name);
     if (navigator.vibrate) navigator.vibrate(50);
   } else {
@@ -3137,7 +3187,15 @@ function toggleFavorite(name) {
   try { localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs)); } catch(e) {}
   updateFavoritesCount();
   logEvent('explore', 'favorite', name);
-  return idx === -1;
+  // Sync to server (fire-and-forget)
+  try {
+    fetch('/api/guest/favorites', {
+      method: adding ? 'POST' : 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug: SLUG, therapyName: name })
+    }).catch(function() {});
+  } catch(e) {}
+  return adding;
 }
 
 function isFavorite(name) {
@@ -3435,6 +3493,14 @@ function setRating(dateStr, activityName, stars) {
   ratings[key] = stars;
   try { localStorage.setItem(RATINGS_KEY, JSON.stringify(ratings)); } catch(e) {}
   if (navigator.vibrate) navigator.vibrate(30);
+  // Sync to server (fire-and-forget)
+  try {
+    fetch('/api/guest/ratings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug: SLUG, activityName: activityName, rating: stars })
+    }).catch(function() {});
+  } catch(e) {}
   // Badge: zenMaster — rated 10+ activities
   var ratedCount = Object.keys(ratings).length;
 }
@@ -3495,9 +3561,10 @@ function buildRatingStars(dateStr, activityName) {
 // =============================================================
 
 function getTodayStr() {
-  var y = TODAY_DATE.getFullYear();
-  var m = String(TODAY_DATE.getMonth() + 1);
-  var d = String(TODAY_DATE.getDate());
+  var stLucia = getStLuciaDate();
+  var y = stLucia.getFullYear();
+  var m = String(stLucia.getMonth() + 1);
+  var d = String(stLucia.getDate());
   m = m.length < 2 ? '0' + m : m;
   d = d.length < 2 ? '0' + d : d;
   return y + '-' + m + '-' + d;
@@ -3698,6 +3765,17 @@ function buildNextActivityBanner(activities) {
   }
 }
 
+function showRoomBadge() {
+  if (GUEST.room) {
+    var roomBadge = document.getElementById('guest-room-badge');
+    var roomText = document.getElementById('guest-room-text');
+    if (roomBadge && roomText) {
+      roomText.textContent = 'Room ' + GUEST.room;
+      roomBadge.style.display = '';
+    }
+  }
+}
+
 var _nextActivityInterval = null;
 var _lastRemindedActivity = '';
 
@@ -3727,6 +3805,7 @@ function initToday() {
     if (tc) { while (tc.firstChild) tc.removeChild(tc.firstChild); appendTo(tc, h('div', 'empty-state', 'Your wellness journey starts on ' + formatDateLong(GUEST.checkIn) + '. We cannot wait to welcome you!')); }
     var ue = document.getElementById('today-updated');
     if (ue) ue.textContent = 'Last updated ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    showRoomBadge();
     return;
   }
 
@@ -3759,12 +3838,18 @@ function initToday() {
       endCard.lastChild.style.cssText = 'font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:16px;';
       var rebookBtn = h('a', 'btn btn-teal btn-full');
       rebookBtn.href = GUEST.waBase + '&text=' + encodeURIComponent('Hi, I\'d like to book my next retreat at TheLifeCo!');
+      rebookBtn.setAttribute('target', '_blank');
       rebookBtn.textContent = 'Book Your Next Retreat';
+      rebookBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.open(GUEST.waBase + '&text=' + encodeURIComponent('Hi, I\'d like to book my next retreat at TheLifeCo!'), '_blank');
+      });
       appendTo(endCard, rebookBtn);
       appendTo(tc2, endCard);
     }
     var ue2 = document.getElementById('today-updated');
     if (ue2) ue2.textContent = 'Last updated ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    showRoomBadge();
     return;
   }
 
@@ -3777,6 +3862,7 @@ function initToday() {
   if (headerDateEl) headerDateEl.textContent = formatDateLong(todayStr);
   var badgeEl = document.getElementById('program-badge-text');
   if (badgeEl) badgeEl.textContent = GUEST.program + ' \u00B7 Day ' + dayNum + ' of ' + GUEST.totalDays;
+  showRoomBadge();
   var pct = Math.round(((dayNum - 1) / GUEST.totalDays) * 100);
   if (pct < 0) pct = 0;
   if (pct > 100) pct = 100;
@@ -3912,11 +3998,23 @@ function initToday() {
   var nutritionCard = document.getElementById('nutrition-card');
   if (nutritionCard) {
     while (nutritionCard.firstChild) nutritionCard.removeChild(nutritionCard.firstChild);
-    appendTo(nutritionCard, h('h3', null, 'Green Salad Program'));
-    appendTo(nutritionCard, h('p', null, '750\u2013850 calories per day \u00B7 100% plant-based whole-food meals'));
+    // Find matching nutrition plan from API data
+    var nutPlan = null;
+    if (NUTRITION_PLANS.length > 0) {
+      NUTRITION_PLANS.forEach(function(p) {
+        if (GUEST.program && p.name && p.name.toLowerCase().indexOf(GUEST.program.toLowerCase()) !== -1) nutPlan = p;
+        if (!nutPlan && GUEST.program && GUEST.program.toLowerCase().indexOf(p.name.toLowerCase()) !== -1) nutPlan = p;
+      });
+      if (!nutPlan) nutPlan = NUTRITION_PLANS[0];
+    }
+    var nutName = nutPlan ? nutPlan.name : 'Nutrition Plan';
+    var nutCals = nutPlan && nutPlan.calories ? nutPlan.calories : '';
+    var nutDesc = nutPlan && nutPlan.description ? nutPlan.description : 'Plant-based whole-food meals';
+    appendTo(nutritionCard, h('h3', null, nutName));
+    appendTo(nutritionCard, h('p', null, (nutCals ? nutCals + ' calories per day \u00B7 ' : '') + nutDesc));
     var statsGrid = h('div', 'nutrition-stats');
     var stat1 = h('div', 'nutrition-stat');
-    appendTo(stat1, h('div', 'nutrition-stat-value', '750-850'));
+    appendTo(stat1, h('div', 'nutrition-stat-value', nutCals || '\u2014'));
     appendTo(stat1, h('div', 'nutrition-stat-label', 'Calories'));
     appendTo(statsGrid, stat1);
     var stat2 = h('div', 'nutrition-stat');
@@ -4034,8 +4132,18 @@ function initToday() {
       var eLbl = fbEmojiData[fbSelEmoji - 1] ? fbEmojiData[fbSelEmoji - 1].icon + ' ' + fbEmojiData[fbSelEmoji - 1].label : '';
       var fbMsg = 'Day ' + dayNum + ' Feedback: ' + eLbl;
       if (fbTxt.value.trim()) fbMsg += '\n' + fbTxt.value.trim();
-      location.href = GUEST.waBase + '&text=' + encodeURIComponent(fbMsg);
-      logEvent('feedback', 'whatsapp', String(fbSelEmoji));
+      // Save feedback to server API
+      try {
+        fetch('/api/guest/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug: SLUG, category: 'daily', content: fbMsg })
+        }).catch(function() {});
+      } catch(e) {}
+      showToast('Feedback saved! Thank you.');
+      // Also send via WhatsApp as secondary action
+      window.open(GUEST.waBase + '&text=' + encodeURIComponent(fbMsg), '_blank');
+      logEvent('feedback', 'submit', String(fbSelEmoji));
     });
     appendTo(fbActs, fbWaBtn);
     appendTo(fbCard, fbActs);
@@ -4267,7 +4375,7 @@ function initExplore() {
     EXPLORE_CATEGORIES.forEach(function(cat) {
       cat.therapies.forEach(function(therapy) {
         if (scheduledNames[therapy.name]) return;
-        var tLower = therapy.name.toLowerCase() + ' ' + therapy.desc.toLowerCase();
+        var tLower = therapy.name.toLowerCase() + ' ' + (therapy.description || '').toLowerCase();
         var relevant = false;
         scheduledKeywords.forEach(function(kw) {
           if (tLower.indexOf(kw) !== -1) relevant = true;
@@ -4295,7 +4403,7 @@ function initExplore() {
       // Body
       var recBody = h('div', 'recommendation-card-body');
       appendTo(recBody, h('h4', null, therapy.name));
-      var snippet = therapy.desc.length > 70 ? therapy.desc.substring(0, 70) + '...' : therapy.desc;
+      var snippet = (therapy.description || '').length > 70 ? therapy.description.substring(0, 70) + '...' : (therapy.description || '');
       appendTo(recBody, h('p', null, snippet));
       // Price footer
       var recPriceInfo = THERAPY_PRICES[therapy.name];
@@ -4354,7 +4462,7 @@ function initExplore() {
       while (therapiesContainer.firstChild) therapiesContainer.removeChild(therapiesContainer.firstChild);
       EXPLORE_CATEGORIES.forEach(function(cat) {
         cat.therapies.forEach(function(therapy) {
-          if (therapy.name.toLowerCase().indexOf(q) !== -1 || therapy.desc.toLowerCase().indexOf(q) !== -1) {
+          if (therapy.name.toLowerCase().indexOf(q) !== -1 || (therapy.description || '').toLowerCase().indexOf(q) !== -1) {
             var card = buildSingleTherapyCard(therapy);
             appendTo(therapiesContainer, card);
           }
@@ -4439,7 +4547,7 @@ function buildSingleTherapyCard(therapy) {
   appendTo(body, h('h4', null, therapy.name));
 
   // Snippet
-  var snippet = therapy.desc.length > 80 ? therapy.desc.substring(0, 80) + '...' : therapy.desc;
+  var snippet = (therapy.description || '').length > 80 ? therapy.description.substring(0, 80) + '...' : (therapy.description || '');
   appendTo(body, h('p', 'therapy-card-snippet', snippet));
 
   // Footer with price + duration
@@ -4539,7 +4647,7 @@ function openTherapyDetail(therapy) {
 
   // About section
   appendTo(content, h('div', 'therapy-detail-label', 'About this therapy'));
-  appendTo(content, h('p', 'therapy-detail-desc', therapy.desc));
+  appendTo(content, h('p', 'therapy-detail-desc', therapy.description || ''));
 
   // Divider
   appendTo(content, h('div', 'therapy-detail-divider'));
@@ -4636,9 +4744,12 @@ function openTherapyDetail(therapy) {
   var waMsg = encodeURIComponent('Hi, I\'d like to book ' + therapy.name + ' please.');
   var bookBtn = h('a', 'therapy-detail-book');
   bookBtn.href = GUEST.waBase + '&text=' + waMsg;
+  bookBtn.setAttribute('target', '_blank');
   bookBtn.textContent = 'Book Now';
   bookBtn.addEventListener('click', function(e) {
+    e.preventDefault();
     e.stopPropagation();
+    window.open(GUEST.waBase + '&text=' + waMsg, '_blank');
     logEvent('booking', 'whatsapp', therapy.name);
   });
   appendTo(stickyBar, bookBtn);
@@ -4681,7 +4792,7 @@ function initInfo() {
   // Emergency Quick-Dial section at the top
   var emergencySection = h('div', 'emergency-section');
   var emergencyLink = h('a', 'emergency-btn');
-  emergencyLink.href = 'tel:+17582861869';
+  emergencyLink.href = 'tel:+' + (SETTINGS.whatsapp_number || '17582861869').replace(/[^0-9]/g, '');
   // Phone SVG
   var phoneSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   phoneSvg.setAttribute('viewBox', '0 0 24 24');
@@ -4701,6 +4812,7 @@ function initInfo() {
   // WhatsApp secondary button
   var waBtn = h('a', 'emergency-wa-btn');
   waBtn.href = GUEST.waBase;
+  waBtn.setAttribute('target', '_blank');
   var waSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   waSvg.setAttribute('viewBox', '0 0 24 24');
   waSvg.setAttribute('fill', 'currentColor');
@@ -4709,7 +4821,7 @@ function initInfo() {
   waSvg.appendChild(waPath);
   waBtn.appendChild(waSvg);
   appendTo(waBtn, h('span', null, 'Resort WhatsApp'));
-  waBtn.addEventListener('click', function() { logEvent('info', 'emergency-wa', 'whatsapp'); });
+  waBtn.addEventListener('click', function(e) { e.preventDefault(); window.open(GUEST.waBase, '_blank'); logEvent('info', 'emergency-wa', 'whatsapp'); });
   appendTo(emergencySection, waBtn);
 
   accordion.parentNode.insertBefore(emergencySection, accordion);
@@ -4999,7 +5111,9 @@ function buildInfoContent(id) {
       } else if (item.label === 'WhatsApp Group') {
         var waLink = h('a', null, item.value);
         waLink.href = GUEST.waBase;
+        waLink.setAttribute('target', '_blank');
         waLink.style.color = 'var(--whatsapp-green)';
+        waLink.addEventListener('click', function(e) { e.preventDefault(); window.open(GUEST.waBase, '_blank'); });
         appendTo(li, waLink);
       } else {
         appendTo(li, document.createTextNode(item.value));
@@ -5289,7 +5403,7 @@ function startSessionTimeout() {
         e.stopPropagation();
         var url = GUEST.waBase;
         if (qm.msg) url += '&text=' + encodeURIComponent(qm.msg);
-        location.href = url;
+        window.open(url, '_blank');
         quickMenu.classList.remove('open');
         logEvent('whatsapp', 'quick-msg', qm.label);
       });
@@ -5414,7 +5528,7 @@ function startSessionTimeout() {
             askBtn.textContent = 'Ask About These';
             askBtn.addEventListener('click', function() {
               var msg = 'Hi! I\'m interested in these therapies:\n\n' + favs.join('\n') + '\n\nCould you help me book them?';
-              location.href = GUEST.waBase + '&text=' + encodeURIComponent(msg);
+              window.open(GUEST.waBase + '&text=' + encodeURIComponent(msg), '_blank');
             });
             appendTo(therapiesContainer, askBtn);
           }

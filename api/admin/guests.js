@@ -25,12 +25,12 @@ export default async function handler(req, res) {
 
 function computeStatus(checkIn, duration) {
   const now = new Date();
-  const checkInDate = new Date(checkIn);
+  const checkInDate = new Date(checkIn + 'T00:00:00-04:00');
   const checkOutDate = new Date(checkInDate);
   checkOutDate.setDate(checkOutDate.getDate() + duration);
 
   if (now < checkInDate) return 'upcoming';
-  if (now > checkOutDate) return 'checked-out';
+  if (now > checkOutDate) return 'completed';
   return 'active';
 }
 

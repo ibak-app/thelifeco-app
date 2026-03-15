@@ -61,6 +61,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
 .badge-active { background: var(--green-light); color: #15803d; } .badge-active .badge-dot { background: var(--green); }
 .badge-upcoming { background: var(--blue-light); color: #1d4ed8; } .badge-upcoming .badge-dot { background: var(--blue); }
 .badge-completed { background: var(--gray-light); color: #475569; } .badge-completed .badge-dot { background: var(--gray); }
+.badge-checked-out { background: var(--gray-light); color: #475569; } .badge-checked-out .badge-dot { background: var(--gray); }
 .badge-draft { background: var(--orange-light); color: #c2410c; } .badge-draft .badge-dot { background: var(--orange); }
 .badge-checkout { background: var(--red-light); color: var(--red); font-size: 0.7rem; padding: 2px 8px; margin-left: 6px; }
 .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: var(--transition); font-family: inherit; }
@@ -267,7 +268,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
   function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
 
   var TODAY_STR = new Date().toISOString().slice(0, 10);
-  var TOTAL_ROOMS = 20;
+  var TOTAL_ROOMS = 20; // default, updated from store.settings.total_rooms after load
 
   var ICONS = {
     home: ['M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z', 'M9 22V12h6v10'],
@@ -431,7 +432,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
           room: g.room || '',
           notes: g.notes || '',
           slug: g.slug,
-          pin: '',
+          pin: computePin(g.check_in),
           status: g.status,
           checkOut: g.checkOut,
           daysLeft: g.daysLeft,
@@ -443,6 +444,8 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       });
       store.settings = (results[2] && results[2].settings) || {};
       store.activityLog = (results[3] && results[3].log) || [];
+      // Update TOTAL_ROOMS from settings if available
+      if (store.settings.total_rooms) TOTAL_ROOMS = parseInt(store.settings.total_rooms, 10) || 20;
     }).catch(function(err) {
       if (err.message !== 'Session expired') showAdminToast('Failed to load data: ' + err.message);
     });
@@ -453,6 +456,12 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     if (checkout <= TODAY_STR) return 'completed';
     if (g.checkin <= TODAY_STR) return 'active';
     return 'upcoming';
+  }
+
+  function computePin(checkin) {
+    if (!checkin) return '0000';
+    // PIN is MMDD of check-in date
+    return checkin.slice(5).replace('-', '');
   }
 
   function guestCheckoutDate(checkin, duration) {
@@ -467,7 +476,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       email: g.email || '', whatsapp: g.whatsapp || '',
       checkin: g.check_in, duration: g.duration,
       programme: g.programme || '', room: g.room || '',
-      notes: g.notes || '', slug: g.slug, pin: '',
+      notes: g.notes || '', slug: g.slug, pin: computePin(g.check_in),
       status: g.status || computeStatus({ checkin: g.check_in, duration: g.duration }),
       checkOut: g.checkOut, daysLeft: g.daysLeft,
     };
@@ -535,21 +544,27 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     return apiFetch('/api/admin/schedule/' + guestId);
   }
 
-  function apiSaveSchedule(guestId, schedule) {
+  function apiSaveSchedule(guestId, schedule, checkinDate) {
+    // Transform day-based schedule into flat activities array with concrete dates
+    var activities = [];
+    var checkin = new Date(checkinDate);
+    schedule.forEach(function(day, dayIdx) {
+      var d = new Date(checkin);
+      d.setDate(d.getDate() + dayIdx);
+      var dateStr = d.toISOString().slice(0, 10);
+      (day.activities || []).forEach(function(act) {
+        activities.push({ date: dateStr, time: act.time || '', name: act.name || '', type: act.type || 'group' });
+      });
+    });
     return apiFetch('/api/admin/schedule/' + guestId, {
       method: 'PUT',
-      body: JSON.stringify({ schedule: schedule })
+      body: JSON.stringify({ activities: activities })
     });
   }
 
   function addLog(action, details) {
-    // Fire-and-forget log to API
-    apiFetch('/api/admin/log', {
-      method: 'POST',
-      body: JSON.stringify({ action: action, details: details })
-    }).then(function(entry) {
-      if (entry) store.activityLog.unshift(entry);
-    }).catch(function() { /* silently fail */ });
+    // Local-only log entry (server logs activity automatically in each API handler)
+    store.activityLog.unshift({ action: action, details: details, user_display: '', created_at: new Date().toISOString() });
   }
   var currentPage = 'dashboard';
   var detailGuestId = null;
@@ -577,9 +592,10 @@ tr:hover td { background: rgba(0,96,156,0.02); }
   }
 
   function statusBadge(status) {
+    var displayText = status === 'checked-out' ? 'Checked Out' : status.charAt(0).toUpperCase() + status.slice(1);
     var b = el('span', { className: 'badge badge-' + status });
     b.appendChild(el('span', { className: 'badge-dot' }));
-    b.appendChild(document.createTextNode(status.charAt(0).toUpperCase() + status.slice(1)));
+    b.appendChild(document.createTextNode(displayText));
     return b;
   }
 
@@ -682,7 +698,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     var stats = el('div', { className: 'stats-row' });
     var activeCount = store.guests.filter(function(g) { return g.status === 'active'; }).length;
     var upcomingCount = store.guests.filter(function(g) { return g.status === 'upcoming'; }).length;
-    var completedCount = store.guests.filter(function(g) { return g.status === 'completed'; }).length;
+    var completedCount = store.guests.filter(function(g) { return g.status === 'completed' || g.status === 'checked-out'; }).length;
     var totalCount = store.guests.length;
     var occupiedRooms = store.guests.filter(function(g) { return g.status === 'active'; }).length;
 
@@ -820,7 +836,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       ai.appendChild(dot);
       var info = el('div');
       info.appendChild(el('div', { className: 'activity-text', textContent: a.details }));
-      info.appendChild(el('div', { className: 'activity-time', textContent: formatDate(a.time) }));
+      info.appendChild(el('div', { className: 'activity-time', textContent: formatDate(a.created_at) }));
       ai.appendChild(info);
       acb.appendChild(ai);
     });
@@ -885,7 +901,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     function getFiltered() {
       var query = searchInput.value.toLowerCase();
       var filtered = store.guests.filter(function(g) {
-        var matchTab = filterState.tab === 'all' || g.status === filterState.tab;
+        var matchTab = filterState.tab === 'all' || g.status === filterState.tab || (filterState.tab === 'completed' && g.status === 'checked-out');
         var searchStr = (g.firstName + ' ' + g.lastName + ' ' + g.email + ' ' + g.programme + ' ' + (g.room || '') + ' ' + (g.whatsapp || '')).toLowerCase();
         var matchSearch = !query || searchStr.indexOf(query) !== -1;
         return matchTab && matchSearch;
@@ -932,7 +948,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
         tr.appendChild(el('td', { textContent: formatDate(g.checkin) }));
         tr.appendChild(el('td', { textContent: formatDate(guestCheckout(g)) }));
         var daysLeft = guestDaysLeft(g);
-        tr.appendChild(el('td', { textContent: g.status === 'completed' ? '-' : daysLeft + 'd' }));
+        tr.appendChild(el('td', { textContent: (g.status === 'completed' || g.status === 'checked-out') ? '-' : daysLeft + 'd' }));
         var statusTd = el('td');
         statusTd.appendChild(statusBadge(g.status));
         if (isCheckoutToday(g)) statusTd.appendChild(el('span', { className: 'badge badge-checkout', textContent: 'Out today' }));
@@ -1036,7 +1052,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       compAct.appendChild(cIcon);
       compAct.appendChild(el('span', { className: 'action-card-text', textContent: 'Mark Completed' }));
       compAct.addEventListener('click', function() {
-        apiUpdateGuest(g.id, { status_override: 'completed' }).then(function() {
+        apiUpdateGuest(g.id, { status: 'completed' }).then(function() {
           addLog('Status Changed', g.firstName + ' ' + g.lastName + ' marked as completed');
           render();
         }).catch(function(err) { showAdminToast('Error: ' + err.message); });
@@ -1050,7 +1066,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       actAct.appendChild(aIcon);
       actAct.appendChild(el('span', { className: 'action-card-text', textContent: 'Mark Active' }));
       actAct.addEventListener('click', function() {
-        apiUpdateGuest(g.id, { status_override: 'active' }).then(function() {
+        apiUpdateGuest(g.id, { status: 'active' }).then(function() {
           addLog('Status Changed', g.firstName + ' ' + g.lastName + ' marked as active');
           render();
         }).catch(function(err) { showAdminToast('Error: ' + err.message); });
@@ -1076,7 +1092,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       { label: 'Room', value: g.room || '-' },
       { label: 'Check-in', value: formatDate(g.checkin) },
       { label: 'Check-out', value: formatDate(guestCheckout(g)) },
-      { label: 'Days Left', value: g.status === 'completed' ? 'Completed' : guestDaysLeft(g) + ' days' },
+      { label: 'Days Left', value: (g.status === 'completed' || g.status === 'checked-out') ? 'Completed' : guestDaysLeft(g) + ' days' },
       { label: 'Portal URL', value: portalUrl, copy: true },
       { label: 'PIN', value: g.pin, copy: true },
       { label: 'Notes', value: g.notes || 'None' }
@@ -1092,26 +1108,37 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     });
     page.appendChild(dg);
 
-    // Schedule preview if any
-    if (g.schedule && g.schedule.length > 0) {
-      var schedCard = el('div', { className: 'card' });
-      var sch = el('div', { className: 'card-header' });
-      sch.appendChild(el('h2', { textContent: 'Schedule' }));
-      schedCard.appendChild(sch);
-      var scb = el('div', { className: 'card-body' });
-      g.schedule.forEach(function(day) {
+    // Schedule preview - fetch from API
+    var schedCard = el('div', { className: 'card' });
+    var sch = el('div', { className: 'card-header' });
+    sch.appendChild(el('h2', { textContent: 'Schedule' }));
+    schedCard.appendChild(sch);
+    var scb = el('div', { className: 'card-body' });
+    scb.appendChild(el('div', { className: 'spinner' }));
+    schedCard.appendChild(scb);
+    page.appendChild(schedCard);
+
+    apiFetch('/api/admin/schedule/' + g.id).then(function(resp) {
+      clearEl(scb);
+      var schedule = (resp && resp.schedule) || {};
+      var dates = Object.keys(schedule).sort();
+      if (dates.length === 0) {
+        scb.appendChild(el('div', { style: 'color:var(--text-muted);font-size:0.85rem', textContent: 'No schedule assigned yet.' }));
+        return;
+      }
+      dates.forEach(function(date) {
         var dayEl = el('div', { className: 'schedule-day' });
-        dayEl.appendChild(el('div', { className: 'schedule-day-title', textContent: day.title }));
-        if (day.activities) {
-          day.activities.forEach(function(act) {
-            dayEl.appendChild(el('div', { className: 'schedule-item', textContent: act.time + ' - ' + act.name + ' (' + act.type + ')' }));
-          });
-        }
+        dayEl.appendChild(el('div', { className: 'schedule-day-title', textContent: formatDate(date) }));
+        var activities = schedule[date] || [];
+        activities.forEach(function(act) {
+          dayEl.appendChild(el('div', { className: 'schedule-item', textContent: (act.time || '') + ' - ' + (act.name || '') + ' (' + (act.type || '') + ')' }));
+        });
         scb.appendChild(dayEl);
       });
-      schedCard.appendChild(scb);
-      page.appendChild(schedCard);
-    }
+    }).catch(function() {
+      clearEl(scb);
+      scb.appendChild(el('div', { style: 'color:var(--text-muted);font-size:0.85rem', textContent: 'Could not load schedule.' }));
+    });
 
     return page;
   }
@@ -1197,21 +1224,12 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       manualPane.style.display = 'block'; uploadPane.style.display = 'none';
     });
 
-    // Upload zone
-    var zone = el('div', { className: 'upload-zone' });
+    // Upload zone - disabled, coming soon
+    var zone = el('div', { className: 'upload-zone', style: 'opacity:0.5;cursor:default' });
     zone.appendChild(el('div', { className: 'upload-zone-icon' }, [svgIcon(ICONS.upload, 40)]));
-    zone.appendChild(el('div', { className: 'upload-zone-text', textContent: 'Drop PDF here or click to upload' }));
-    zone.appendChild(el('div', { className: 'upload-zone-sub', textContent: 'Supports .pdf files up to 10MB' }));
-    var fileInput = el('input', { type: 'file', accept: '.pdf', style: 'display:none' });
-    zone.addEventListener('click', function() { fileInput.click(); });
-    zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('drag-over'); });
-    zone.addEventListener('dragleave', function() { zone.classList.remove('drag-over'); });
-    zone.addEventListener('drop', function(e) { e.preventDefault(); zone.classList.remove('drag-over'); simulatePdfParse(uploadPane, inputs); });
-    fileInput.addEventListener('change', function() { if (fileInput.files.length) simulatePdfParse(uploadPane, inputs); });
+    zone.appendChild(el('div', { className: 'upload-zone-text', textContent: 'PDF import coming soon' }));
+    zone.appendChild(el('div', { className: 'upload-zone-sub', textContent: 'Use the Manual tab to build schedules.' }));
     uploadPane.appendChild(zone);
-    uploadPane.appendChild(fileInput);
-    var previewArea = el('div', { className: 'schedule-preview' });
-    uploadPane.appendChild(previewArea);
     rcb.appendChild(uploadPane);
 
     // Manual schedule builder
@@ -1410,67 +1428,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     }
   }
 
-  // -- PDF Parse Simulation --
-  function simulatePdfParse(container, inputs) {
-    var preview = container.querySelector('.schedule-preview');
-    if (!preview) return;
-    clearEl(preview);
-
-    // Step 1: Loading animation
-    var loadingBox = el('div', { className: 'parse-step' });
-    var loadTitle = el('div', { className: 'parse-step-title' });
-    loadTitle.appendChild(document.createTextNode('Parsing PDF...'));
-    loadingBox.appendChild(loadTitle);
-    loadingBox.appendChild(el('div', { className: 'spinner' }));
-    loadingBox.appendChild(el('div', { style: 'text-align:center;color:var(--text-muted);font-size:0.82rem', textContent: 'Extracting schedule data from document' }));
-    preview.appendChild(loadingBox);
-
-    var programme = inputs && inputs.programme ? inputs.programme.value : 'Green Salad';
-
-    setTimeout(function() {
-      clearEl(preview);
-
-      // Step 2: Show parsed results
-      var resultBox = el('div', { className: 'parse-step' });
-      var resTitle = el('div', { className: 'parse-step-title' });
-      resTitle.appendChild(el('span', { className: 'parse-step-check', textContent: '\u2713 ' }));
-      resTitle.appendChild(document.createTextNode('PDF Parsed Successfully'));
-      resultBox.appendChild(resTitle);
-      resultBox.appendChild(el('div', { style: 'font-size:0.82rem;color:var(--text-secondary);margin-bottom:12px', textContent: 'Detected programme: ' + programme }));
-      preview.appendChild(resultBox);
-
-      var scheduleData = getProgrammeSchedule(programme);
-
-      preview.appendChild(el('div', { style: 'font-weight:600;margin-bottom:12px;font-size:0.92rem', textContent: 'Parsed Schedule Preview' }));
-
-      scheduleData.forEach(function(d) {
-        var dayEl = el('div', { className: 'schedule-day' });
-        dayEl.appendChild(el('div', { className: 'schedule-day-title', textContent: d.day }));
-        d.items.forEach(function(item) {
-          dayEl.appendChild(el('div', { className: 'schedule-item', textContent: item }));
-        });
-        preview.appendChild(dayEl);
-      });
-
-      // Approve button
-      var approveRow = el('div', { style: 'margin-top:14px;display:flex;gap:10px' });
-      var approveBtn = el('button', { className: 'btn btn-success' });
-      approveBtn.appendChild(svgIcon(ICONS.check, 16));
-      approveBtn.appendChild(document.createTextNode(' Approve & Save Schedule'));
-      approveBtn.addEventListener('click', function() {
-        showAdminToast('Schedule approved and saved');
-        approveBtn.textContent = 'Approved';
-        approveBtn.disabled = true;
-        approveBtn.style.opacity = '0.6';
-      });
-      approveRow.appendChild(approveBtn);
-
-      var rejectBtn = el('button', { className: 'btn btn-outline', textContent: 'Reject & Re-upload' });
-      rejectBtn.addEventListener('click', function() { clearEl(preview); });
-      approveRow.appendChild(rejectBtn);
-      preview.appendChild(approveRow);
-    }, 2000);
-  }
+  // PDF Parse - placeholder (not yet implemented)
 
   function getProgrammeSchedule(programme) {
     var schedules = {
@@ -1770,15 +1728,15 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     store.activityLog.forEach(function(a) {
       var tr = el('tr');
       var timeTd = el('td');
-      var dt = new Date(a.time);
-      timeTd.appendChild(el('div', { textContent: formatDate(a.time), style: 'font-weight:500' }));
+      var dt = new Date(a.created_at);
+      timeTd.appendChild(el('div', { textContent: formatDate(a.created_at), style: 'font-weight:500' }));
       timeTd.appendChild(el('div', { textContent: dt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }), style: 'font-size:0.75rem;color:var(--text-muted)' }));
       tr.appendChild(timeTd);
       var actionTd = el('td');
       var ab = el('span', { className: 'badge ' + (actionColors[a.action] || 'badge-completed'), textContent: a.action });
       actionTd.appendChild(ab);
       tr.appendChild(actionTd);
-      tr.appendChild(el('td', { textContent: a.user }));
+      tr.appendChild(el('td', { textContent: a.user_display || '' }));
       tr.appendChild(el('td', { textContent: a.details }));
       tbody.appendChild(tr);
     });

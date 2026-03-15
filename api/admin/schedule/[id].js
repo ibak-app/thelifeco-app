@@ -89,10 +89,22 @@ async function handlePut(guestId, req, res, user) {
   }
 
   // Validate activities
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  const timeRegex = /^\d{2}:\d{2}$/;
   for (const activity of activities) {
     if (!activity.date || !activity.time || !activity.name) {
       return res.status(400).json({
         error: 'Each activity must have date, time, and name',
+      });
+    }
+    if (!dateRegex.test(activity.date)) {
+      return res.status(400).json({
+        error: `Invalid date format "${activity.date}" — expected YYYY-MM-DD`,
+      });
+    }
+    if (!timeRegex.test(activity.time)) {
+      return res.status(400).json({
+        error: `Invalid time format "${activity.time}" — expected HH:MM`,
       });
     }
   }
@@ -110,12 +122,13 @@ async function handlePut(guestId, req, res, user) {
 
   // Insert new schedule
   if (activities.length > 0) {
-    const rows = activities.map(a => ({
+    const rows = activities.map((a, index) => ({
       guest_id: guestId,
       activity_date: a.date,
       time: a.time,
       name: a.name,
-      type: a.type || 'activity',
+      type: a.type || 'group',
+      sort_order: index,
     }));
 
     const { error: insertError } = await supabaseAdmin
