@@ -1,5 +1,7 @@
 {
   "rewrites": [
+    { "source": "/guest/_shared/:path*", "destination": "/guest/_shared/:path*" },
+    { "source": "/guest/_shell/:path*", "destination": "/guest/_shell/:path*" },
     { "source": "/guest/:slug", "destination": "/guest/_shell/index.html" },
     { "source": "/guest/:slug/", "destination": "/guest/_shell/index.html" },
     { "source": "/guest/:slug/sw.js", "destination": "/guest/_shared/sw.js" },
