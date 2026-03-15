@@ -1182,7 +1182,7 @@
           <li><a href="#whats-new">What's New</a></li>
           <li><a href="#tech">Tech</a></li>
           <li><a href="#roi">ROI</a></li>
-          <li><a href="/guest/hasan-akkaya/" class="nav-cta">See Demo</a></li>
+          <li><a href="/guest/hasan-akkaya" class="nav-cta">See Demo</a></li>
         </ul>
         <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
@@ -1203,15 +1203,15 @@
       <div class="hero-content reveal">
         <div class="hero-eyebrow">
           <div class="hero-eyebrow-dot" aria-hidden="true"></div>
-          Concept Proposal · TheLifeCo St. Lucia
+          Live System · TheLifeCo St. Lucia
         </div>
         <h1 class="hero-title" id="hero-title">
           The Guest<br><span>Portal</span>
         </h1>
         <p class="hero-subtitle">A personalized digital wellness companion for every TheLifeCo guest</p>
-        <p class="hero-tagline">Replace WhatsApp chaos and PDF clutter with a beautiful, intelligent experience — served from a single link, no app download required.</p>
+        <p class="hero-tagline">Replace WhatsApp chaos and PDF clutter with a beautiful, intelligent experience — powered by a dynamic backend, served from a single link, no app download required.</p>
         <div class="btn-group">
-          <a href="/guest/hasan-akkaya/" class="btn btn-teal btn-lg">
+          <a href="/guest/hasan-akkaya" class="btn btn-teal btn-lg">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="8" stroke="#fff" stroke-width="1.5"/><path d="M7 6l4 3-4 3V6z" fill="#fff"/></svg>
             See Live Demo
           </a>
@@ -1222,8 +1222,8 @@
 
         <div class="hero-stats" aria-label="Key metrics">
           <div class="hero-stat">
-            <div class="hero-stat-num">80+</div>
-            <div class="hero-stat-label">Features across 4 tabs</div>
+            <div class="hero-stat-num">16</div>
+            <div class="hero-stat-label">API endpoints</div>
           </div>
           <div class="hero-stat">
             <div class="hero-stat-num">7 days</div>
@@ -1545,22 +1545,22 @@
     <div class="container">
       <div class="section-header section-header--center reveal">
         <div class="label">Deployment</div>
-        <h2 class="section-title" id="how-title">Zero Infrastructure. Instant Deployment.</h2>
-        <p class="section-subtitle">No app store submissions. No backend servers. No ongoing maintenance costs. Just a link.</p>
+        <h2 class="section-title" id="how-title">Simple Setup. Dynamic Portal.</h2>
+        <p class="section-subtitle">No app store submissions. No manual file duplication. Staff create guests in the admin dashboard and share a link.</p>
       </div>
 
       <div class="steps-grid" role="list">
 
         <div class="step-card reveal reveal-delay-1" role="listitem">
           <div class="step-number" aria-hidden="true">1</div>
-          <h3>Generate</h3>
-          <p>Staff enters guest data into a simple form or spreadsheet. A personalized HTML page is generated automatically — complete with schedule, programme details, and name.</p>
+          <h3>Create</h3>
+          <p>Staff creates a guest in the admin dashboard. A personalized portal is generated instantly — complete with schedule, programme, and PIN.</p>
         </div>
 
         <div class="step-card reveal reveal-delay-2" role="listitem">
           <div class="step-number" aria-hidden="true">2</div>
           <h3>Share</h3>
-          <p>Guest receives their unique link via WhatsApp on check-in day. Example: <strong style="color:var(--navy)">thelifeco.app/guest/firstname-lastname</strong> — no login, no password, just tap and go.</p>
+          <p>Guest receives their unique link via WhatsApp on check-in day. Example: <strong style="color:var(--navy)">thelifeco.app/guest/firstname-lastname</strong> — enter a 4-digit PIN and they're in.</p>
         </div>
 
         <div class="step-card reveal reveal-delay-3" role="listitem">
@@ -1580,7 +1580,7 @@
         </div>
         <div class="tech-callout-body">
           <h4>Technical Architecture</h4>
-          <p>Single <code>.html</code> file per guest. No app store approval. No backend. No database. No user accounts. No GDPR complexity. Hosted on GitHub Pages or Cloudflare Pages — total infrastructure cost: <strong>~$0/month</strong>. Guest data lives only in the HTML file itself. Files can be password-protected or made private at any time.</p>
+          <p>Vercel serverless API + Supabase PostgreSQL. A single-file PWA shell loads guest data dynamically from the API. Hosted on Vercel with automatic SSL. Guest data stored securely in a database with row-level security. Dynamic guest creation from the admin dashboard — no manual file duplication. Infrastructure cost: <strong>~$0/month</strong> on Vercel Hobby + Supabase free tier.</p>
         </div>
       </div>
 
@@ -2300,7 +2300,7 @@
       <div class="section-header section-header--center reveal">
         <div class="label label--light">Under the Hood</div>
         <h2 class="section-title" id="tech-title">Built for Performance</h2>
-        <p class="section-subtitle">Zero dependencies. No framework bloat. Pure vanilla JavaScript that loads instantly.</p>
+        <p class="section-subtitle">Vanilla JavaScript frontend backed by Vercel serverless APIs and Supabase PostgreSQL.</p>
       </div>
       <div class="tech-grid reveal">
         <div class="tech-card">
@@ -2314,9 +2314,9 @@
           <div class="tech-desc">Instant load with splash screen. Service worker caches for offline use.</div>
         </div>
         <div class="tech-card">
-          <div class="tech-value">80+</div>
-          <div class="tech-label">Features built</div>
-          <div class="tech-desc">Full descriptions, pricing badges, and one-tap WhatsApp booking.</div>
+          <div class="tech-value">16</div>
+          <div class="tech-label">API endpoints</div>
+          <div class="tech-desc">RESTful serverless functions for guest data, auth, admin CRUD, and more.</div>
         </div>
         <div class="tech-card">
           <div class="tech-value">100%</div>
@@ -2324,14 +2324,14 @@
           <div class="tech-desc">Works without internet. Google Fonts cached. Full app in service worker.</div>
         </div>
         <div class="tech-card">
-          <div class="tech-value">0</div>
-          <div class="tech-label">Dependencies</div>
-          <div class="tech-desc">No React, no npm, no build tools. Vanilla JS that works everywhere.</div>
+          <div class="tech-value">Supabase</div>
+          <div class="tech-label">Database</div>
+          <div class="tech-desc">PostgreSQL with row-level security, real-time subscriptions, and built-in auth.</div>
         </div>
         <div class="tech-card">
-          <div class="tech-value">i18n</div>
-          <div class="tech-label">Ready for translation</div>
-          <div class="tech-desc">String externalization system built in. Add Turkish, Arabic, or any language.</div>
+          <div class="tech-value">HMAC</div>
+          <div class="tech-label">Session auth</div>
+          <div class="tech-desc">Signed tokens with 24h expiry. Timing-safe PIN verification. Role-based admin access.</div>
         </div>
         <div class="tech-card">
           <div class="tech-value">WCAG</div>
@@ -2368,8 +2368,8 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="2" stroke="#fff" stroke-width="1.8"/><path d="M8 8h8M8 12h6M8 16h4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".7"/><path d="M14 14l4 4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
           </div>
           <div>
-            <h3>PDF Programme Import</h3>
-            <p>Upload guest programme PDFs, auto-parse into structured schedules.</p>
+            <h3>Schedule Builder</h3>
+            <p>Build guest schedules manually with a day-by-day builder. Apply programme templates with one click.</p>
           </div>
         </div>
 
@@ -2422,8 +2422,8 @@
         </div>
         <div class="roi-card">
           <div class="roi-icon">🔄</div>
-          <h3>Zero Maintenance</h3>
-          <p>No servers, no databases, no app store approvals. Update guest data in one HTML file. Deploy in seconds.</p>
+          <h3>Near-Zero Cost</h3>
+          <p>Vercel Hobby + Supabase free tier. No app store fees, no server maintenance. The entire platform runs for ~$0/month.</p>
         </div>
       </div>
     </div>
@@ -2514,7 +2514,7 @@
         </div>
 
         <div class="btn-group reveal" style="justify-content:center; margin-top: 8px;">
-          <a href="/guest/hasan-akkaya/" class="btn btn-teal btn-lg">
+          <a href="/guest/hasan-akkaya" class="btn btn-teal btn-lg">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="8" stroke="#fff" stroke-width="1.5"/><path d="M7 6l4 3-4 3V6z" fill="#fff"/></svg>
             Open Demo Portal
           </a>
@@ -2534,9 +2534,9 @@
       <p class="footer-tagline">A concept by ibak · Wellness technology for boutique retreats</p>
       <div class="footer-divider" aria-hidden="true"></div>
       <div class="footer-meta">
-        <p>Guest Portal System · 80+ Features · 2026</p>
+        <p>Guest Portal System · 16 API Endpoints · 2026</p>
         <p style="margin-top:6px;">
-          <a href="/guest/hasan-akkaya/">Live Demo</a>
+          <a href="/guest/hasan-akkaya">Live Demo</a>
           &nbsp;·&nbsp;
           <a href="mailto:hello@ibak.app">hello@ibak.app</a>
         </p>
