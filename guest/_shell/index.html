@@ -3208,7 +3208,7 @@ function toggleFavorite(name) {
   logEvent('explore', 'favorite', name);
   // Sync to server (fire-and-forget)
   try {
-    guestFetch('/api/guest/favorites', {
+    guestFetch('/api/guest/actions?type=favorites', {
       method: adding ? 'POST' : 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ slug: SLUG, therapyName: name })
@@ -3512,7 +3512,7 @@ function setRating(dateStr, activityName, stars) {
   if (navigator.vibrate) navigator.vibrate(30);
   // Sync to server (fire-and-forget)
   try {
-    guestFetch('/api/guest/ratings', {
+    guestFetch('/api/guest/actions?type=ratings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ slug: SLUG, activityName: activityName, rating: stars })
@@ -4157,7 +4157,7 @@ function initToday() {
       if (fbTxt.value.trim()) fbMsg += '\n' + fbTxt.value.trim();
       // Save feedback to server API
       try {
-        guestFetch('/api/guest/feedback', {
+        guestFetch('/api/guest/actions?type=feedback', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ slug: SLUG, category: 'daily', content: fbMsg })

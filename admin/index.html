@@ -589,7 +589,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
   }
 
   function apiResetPin(guestId) {
-    return apiFetch('/api/admin/guests/' + guestId + '/reset-pin', { method: 'POST' });
+    return apiFetch('/api/admin/guests/' + guestId + '?action=reset-pin', { method: 'POST' });
   }
 
   function addLog(action, details) {
