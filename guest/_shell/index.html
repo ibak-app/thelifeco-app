@@ -1,0 +1,5556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#00609C" />
+  <meta name="description" content="TheLifeCo St. Lucia — Personalized Guest Portal" />
+  <title>TheLifeCo · Guest Portal</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="/icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet" />
+  <style>
+/* ============================================================
+   TheLifeCo St. Lucia — Guest PWA Stylesheet
+   Luxury wellness mobile app (480px max)
+   ============================================================ */
+
+/* --- Custom Properties --- */
+:root {
+  --blue: #00609C;
+  --blue-dark: #004D7D;
+  --blue-light: #E8F4FA;
+  --teal: #00BED6;
+  --teal-dark: #00A5BB;
+  --teal-light: #E0F7FA;
+  --warm: #F6A358;
+  --warm-dark: #E8923F;
+  --warm-light: #FFF5ED;
+  --bg: #FAF9F6;
+  --surface: #FFFFFF;
+  --surface-2: #F5F3EF;
+  --border: #E8E4DD;
+  --text: #1A1A2E;
+  --text-2: #4A5568;
+  --text-3: #718096;
+  --text-4: #7A8AA0;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --nav-height: 64px;
+  --whatsapp-green: #25D366;
+}
+
+
+/* --- Reset & Base --- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior-y: contain;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+input, textarea, select {
+  font: inherit;
+  color: inherit;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+
+/* ============================================================
+   AUTH GATE
+   ============================================================ */
+#auth-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#auth-gate::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(19, 74, 99, 0.55) 0%,
+    rgba(26, 26, 46, 0.85) 100%
+  );
+}
+
+.auth-card {
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 48px);
+  max-width: 360px;
+  padding: 40px 28px 36px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-xl);
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+}
+
+.auth-card .auth-logo {
+  width: 72px;
+  height: auto;
+  margin: 0 auto 20px;
+  opacity: 0.95;
+}
+
+.auth-card h1 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+
+.auth-card .auth-subtitle {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 32px;
+  font-weight: 400;
+}
+
+.pin-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.pin-inputs input {
+  width: 56px;
+  height: 64px;
+  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+  caret-color: var(--teal);
+  outline: none;
+}
+
+.pin-inputs input:focus {
+  border-color: var(--teal);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.pin-inputs input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.auth-error {
+  font-size: 0.8125rem;
+  color: #FF8A80;
+  min-height: 20px;
+  margin-bottom: 8px;
+  transition: opacity 0.2s var(--ease);
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: var(--blue);
+  border-radius: var(--radius);
+  transition: background 0.2s var(--ease), transform 0.1s var(--ease);
+}
+
+.auth-btn:active {
+  transform: scale(0.97);
+  background: var(--blue-dark);
+}
+
+/* Shake animation for wrong PIN */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 50%, 90% { transform: translateX(-6px); }
+  30%, 70% { transform: translateX(6px); }
+}
+
+.pin-shake {
+  animation: shake 0.5s var(--ease);
+}
+
+.pin-inputs.pin-shake input {
+  border-color: #FF8A80;
+}
+
+
+/* ============================================================
+   APP CONTAINER
+   ============================================================ */
+#app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  background: var(--bg);
+  position: relative;
+  padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 8px);
+}
+
+
+/* ============================================================
+   PAGE HEADERS
+   ============================================================ */
+.page-header {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  background: var(--blue);
+}
+
+.page-header img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(19, 74, 99, 0.1) 0%,
+    rgba(19, 74, 99, 0.65) 100%
+  );
+}
+
+.page-header-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 20px 16px;
+  z-index: 1;
+  color: #fff;
+}
+
+.page-header-content h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.page-header-content p {
+  font-size: 0.8125rem;
+  opacity: 0.85;
+  font-weight: 400;
+}
+
+
+/* ============================================================
+   TAB PANELS
+   ============================================================ */
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+  animation: fadeInUp 0.3s var(--ease) forwards;
+}
+.tab-panel.active.slide-left {
+  animation: slideInLeft 0.3s var(--ease) forwards;
+}
+.tab-panel.active.slide-right {
+  animation: slideInRight 0.3s var(--ease) forwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+
+
+/* ============================================================
+   SECTION TITLES
+   ============================================================ */
+.section-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  margin-bottom: 12px;
+}
+
+.section-title-sm {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  margin-bottom: 12px;
+}
+
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-4);
+  margin-bottom: 8px;
+}
+
+
+/* ============================================================
+   TODAY TAB
+   ============================================================ */
+
+/* Hero greeting */
+.today-hero {
+  position: relative;
+  padding: 20px 20px 16px;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+  color: #fff;
+  overflow: hidden;
+}
+
+.today-hero::after {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: rgba(0, 190, 214, 0.08);
+}
+
+.today-hero .greeting-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  opacity: 0.75;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.today-hero .greeting-name {
+  font-size: 1.625rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 2px;
+}
+
+.today-hero .greeting-detail {
+  font-size: 0.8125rem;
+  opacity: 0.7;
+}
+
+/* Progress bar */
+.progress-section {
+  padding: 16px 20px;
+}
+
+.progress-bar-wrapper {
+  background: var(--surface-2);
+  border-radius: var(--radius-full);
+  height: 8px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal), var(--teal-dark));
+  border-radius: var(--radius-full);
+  transition: width 0.6s var(--ease);
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8125rem;
+  color: var(--text-3);
+}
+
+.progress-label strong {
+  color: var(--teal);
+  font-weight: 600;
+}
+
+/* Timeline */
+.timeline {
+  padding: 0;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  position: relative;
+  transition: background .15s var(--ease);
+}
+
+.timeline-item:last-child {
+  border-bottom: none;
+}
+
+.timeline-item[data-type="group"] { border-left-color: var(--teal); }
+.timeline-item[data-type="food"] { border-left-color: var(--warm); }
+.timeline-item[data-type="clinic"] { border-left-color: var(--blue); }
+.timeline-item[data-type="extra"] { border-left-color: #9F7AEA; }
+
+.timeline-color-bar {
+  display: none;
+}
+
+.timeline-time {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-2);
+  min-width: 52px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.timeline-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.timeline-content h4 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+
+.timeline-content p {
+  font-size: 0.8125rem;
+  color: var(--text-3);
+  line-height: 1.4;
+}
+
+.timeline-item.completed {
+  opacity: 0.45;
+}
+
+.timeline-item.completed .timeline-content h4 {
+  text-decoration: line-through;
+}
+
+.timeline-item.now {
+  background: var(--teal-light);
+}
+
+.timeline-item.now::before {
+  content: 'NOW';
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--teal-dark);
+  letter-spacing: 0.05em;
+  background: rgba(0, 190, 214, 0.15);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Hydration timeline items */
+.timeline-item.hydration {
+  background: rgba(0, 190, 214, 0.04);
+  border-left-color: #B2EBF2;
+  padding: 6px 20px;
+}
+.timeline-item.hydration .timeline-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+.timeline-item.hydration .timeline-time {
+  font-size: 11px;
+}
+.hydration-icon {
+  font-size: 13px;
+  margin-right: 3px;
+}
+.hydration-note {
+  font-size: 10px;
+  color: var(--text-3);
+  margin-top: 1px;
+}
+
+/* Hydration tracker */
+.hydration-tracker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.hydration-tracker-icon { font-size: 20px; }
+.hydration-tracker-info { flex: 1; }
+.hydration-tracker-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.hydration-tracker-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-top: 4px;
+  overflow: hidden;
+}
+.hydration-tracker-fill {
+  height: 100%;
+  background: var(--teal);
+  border-radius: 2px;
+  transition: width .3s var(--ease);
+}
+.hydration-tracker-count {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--teal);
+  cursor: pointer;
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--teal-light);
+}
+.hydration-tracker-count:active { transform: scale(1.15); }
+
+/* Therapy read more toggle — removed (detail page now) */
+
+/* Resort gallery (horizontal scroll) */
+.resort-gallery {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 0 20px 4px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.resort-gallery::-webkit-scrollbar {
+  display: none;
+}
+
+.resort-gallery-card {
+  flex-shrink: 0;
+  min-width: 85%;
+  height: 140px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+  scroll-snap-align: center;
+  box-shadow: var(--shadow);
+}
+
+.resort-gallery-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.resort-gallery-card .gallery-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px 12px 10px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.55));
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+/* Similar therapies in detail page */
+.therapy-detail-similar { padding: 0 20px 100px; }
+.therapy-detail-similar-title { font-size: 14px; font-weight: 600; color: var(--text-2); margin-bottom: 12px; }
+.similar-cards { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; -webkit-overflow-scrolling: touch; }
+.similar-card { min-width: 140px; max-width: 140px; border-radius: var(--radius); overflow: hidden; background: var(--surface); box-shadow: var(--shadow-sm); cursor: pointer; flex-shrink: 0; }
+.similar-card img { width: 100%; height: 80px; object-fit: cover; }
+.similar-card-body { padding: 8px; }
+.similar-card-body h5 { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px; line-height: 1.3; }
+.similar-card-body span { font-size: 11px; color: var(--teal-dark); font-weight: 600; }
+
+/* Nutrition card */
+.nutrition-card {
+  margin: 16px 20px;
+  padding: 16px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.nutrition-card h3 {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.nutrition-card p {
+  font-size: 0.8125rem;
+  color: var(--text-3);
+  line-height: 1.5;
+}
+
+.nutrition-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.nutrition-stat {
+  text-align: center;
+  padding: 10px 4px;
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+}
+
+.nutrition-stat .stat-value {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--teal);
+}
+
+.nutrition-stat .stat-label {
+  font-size: 0.6875rem;
+  color: var(--text-4);
+  margin-top: 2px;
+}
+
+
+/* ============================================================
+   SCHEDULE TAB
+   ============================================================ */
+
+/* Date picker (horizontal pills) */
+.date-picker {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 16px 20px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.date-picker::-webkit-scrollbar {
+  display: none;
+}
+
+.date-pill {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 14px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  border: 2px solid transparent;
+  transition: all 0.2s var(--ease);
+  cursor: pointer;
+  scroll-snap-align: center;
+  min-width: 54px;
+}
+
+.date-pill .day-name {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-4);
+}
+
+.date-pill .day-num {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--text-2);
+}
+
+.date-pill.active {
+  background: var(--teal);
+  border-color: var(--teal);
+}
+
+.date-pill.active .day-name,
+.date-pill.active .day-num {
+  color: #fff;
+}
+
+.date-pill.today {
+  border-color: var(--teal);
+}
+
+/* Day stats */
+.day-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.day-stat {
+  text-align: center;
+}
+
+.day-stat .stat-num {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.day-stat .stat-label {
+  font-size: 0.6875rem;
+  color: var(--text-4);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Legend */
+.schedule-legend {
+  display: flex;
+  gap: 16px;
+  padding: 12px 20px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--text-3);
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-dot.group { background: var(--text-4); }
+.legend-dot.food { background: #48BB78; }
+.legend-dot.clinic { background: #ECC94B; }
+.legend-dot.extra { background: #F687B3; }
+
+/* Integrations list */
+.integrations-list {
+  display: flex;
+  flex-direction: column;
+}
+.integration-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.integration-item:last-child {
+  border-bottom: none;
+}
+.integration-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+.integration-info {
+  flex: 1;
+  min-width: 0;
+}
+.integration-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+.integration-desc {
+  font-size: 0.75rem;
+  color: var(--text-3);
+  line-height: 1.4;
+  margin-top: 2px;
+}
+.integration-action {
+  flex-shrink: 0;
+}
+.integration-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: var(--surface-2);
+  border-radius: var(--radius-full);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--text-4);
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   EXPLORE TAB
+   ============================================================ */
+
+/* Search */
+.explore-search {
+  padding: 16px 20px 8px;
+}
+
+.search-input-wrapper {
+  position: relative;
+}
+
+.search-input-wrapper svg,
+.search-input-wrapper .search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--text-4);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 14px 12px 42px;
+  font-size: 0.9375rem;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(0, 190, 214, 0.1);
+}
+
+.search-input::placeholder {
+  color: var(--text-4);
+}
+
+/* Category cards */
+.category-cards {
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.category-card {
+  position: relative;
+  height: 180px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.2s var(--ease);
+}
+
+.category-card:active {
+  transform: scale(0.98);
+}
+
+.category-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s var(--ease);
+}
+
+.category-card:hover img {
+  transform: scale(1.03);
+}
+
+.category-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 30%,
+    rgba(19, 74, 99, 0.75) 100%
+  );
+}
+
+.category-card-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  z-index: 1;
+  color: #fff;
+}
+
+.category-card-content h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 2px;
+}
+
+.category-card-content p {
+  font-size: 0.8125rem;
+  opacity: 0.8;
+}
+
+/* Therapy cards */
+.therapy-list {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.therapy-card {
+  display: flex;
+  gap: 14px;
+  padding: 12px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: transform .15s var(--ease), box-shadow .15s var(--ease);
+  position: relative;
+}
+.therapy-card:active { transform: scale(.98); }
+.therapy-card-img {
+  width: 88px;
+  height: 88px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--surface-2);
+}
+.therapy-card-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.therapy-card-body h4 {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 3px;
+}
+.therapy-card-snippet {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.therapy-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+.therapy-price {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--blue);
+}
+.therapy-duration {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.therapy-card .badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 10px;
+  z-index: 1;
+}
+.therapy-card .fav-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+}
+
+/* --- Therapy Detail Page --- */
+.therapy-detail {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  background: var(--bg);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.therapy-detail-hero {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+.therapy-detail-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.therapy-detail-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.45));
+}
+.therapy-detail-back {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 160;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  border: none;
+  transition: background .2s var(--ease);
+}
+.therapy-detail-back:active { background: rgba(0,0,0,0.55); }
+.therapy-detail-content {
+  padding: 24px 20px 120px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.therapy-detail-content h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+.therapy-detail-price-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.therapy-detail-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--blue);
+}
+.therapy-detail-dur {
+  font-size: 14px;
+  color: var(--text-3);
+}
+.therapy-detail-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 16px 0;
+}
+.therapy-detail-label {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  margin-bottom: 10px;
+}
+.therapy-detail-desc {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.7;
+}
+.therapy-detail-expect {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.therapy-detail-expect li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.5;
+  padding: 8px 0;
+}
+.therapy-detail-expect li::before {
+  content: '\2713';
+  color: var(--teal);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.therapy-detail-sticky {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 160;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 12px 20px calc(12px + var(--safe-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.therapy-detail-sticky-price {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+.therapy-detail-sticky-price span {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-3);
+}
+.therapy-detail-book {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--teal);
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  transition: background .2s var(--ease), transform .1s var(--ease);
+  text-decoration: none;
+}
+.therapy-detail-book:active {
+  transform: scale(0.97);
+  background: var(--teal-dark);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.badge-included {
+  background: var(--teal-light);
+  color: var(--teal-dark);
+}
+
+.badge-optional {
+  background: var(--warm-light);
+  color: var(--warm-dark);
+}
+
+.badge-popular {
+  background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+  color: #fff;
+}
+
+/* WhatsApp book button — moved to therapy detail page */
+
+
+/* ============================================================
+   INFO TAB
+   ============================================================ */
+.info-header {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.info-header img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.info-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 40%,
+    rgba(19, 74, 99, 0.6) 100%
+  );
+}
+
+.info-header-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  z-index: 1;
+  color: #fff;
+}
+
+.info-header-content h2 {
+  font-size: 1.375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Accordion */
+.accordion {
+  padding: 0 20px;
+}
+
+.accordion-item {
+  border-bottom: 1px solid var(--border);
+}
+
+.accordion-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 16px 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.2s var(--ease);
+}
+
+.accordion-trigger:hover {
+  color: var(--blue);
+}
+
+.accordion-arrow {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  transition: transform 0.25s var(--ease);
+  color: var(--text-4);
+}
+
+.accordion-item.open .accordion-arrow {
+  transform: rotate(180deg);
+  color: var(--teal);
+}
+
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s var(--ease);
+}
+
+.accordion-item.open .accordion-content {
+  max-height: 1000px;
+}
+
+.accordion-body {
+  padding: 0 0 16px;
+}
+
+.accordion-body p {
+  font-size: 0.875rem;
+  color: var(--text-2);
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+.accordion-body p:last-child {
+  margin-bottom: 0;
+}
+
+.accordion-body ul {
+  padding-left: 16px;
+  list-style: disc;
+}
+
+.accordion-body li {
+  font-size: 0.875rem;
+  color: var(--text-2);
+  line-height: 1.7;
+  margin-bottom: 4px;
+}
+
+
+/* ============================================================
+   ACTIVITY TYPE PILLS
+   ============================================================ */
+.activity-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.activity-pill::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.activity-pill.group {
+  background: rgba(160, 174, 192, 0.12);
+  color: var(--text-3);
+}
+.activity-pill.group::before { background: var(--text-4); }
+
+.activity-pill.food {
+  background: rgba(72, 187, 120, 0.1);
+  color: #2F855A;
+}
+.activity-pill.food::before { background: #48BB78; }
+
+.activity-pill.clinic {
+  background: rgba(236, 201, 75, 0.12);
+  color: #B7791F;
+}
+.activity-pill.clinic::before { background: #ECC94B; }
+
+.activity-pill.extra {
+  background: rgba(246, 135, 179, 0.1);
+  color: #B83280;
+}
+.activity-pill.extra::before { background: #F687B3; }
+
+/* ============================================================
+   BOTTOM NAV
+   ============================================================ */
+#bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 900;
+  padding-bottom: var(--safe-bottom);
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 4px 8px;
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: var(--text-4);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: color 0.2s var(--ease);
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-item svg {
+  width: 24px;
+  height: 24px;
+  transition: color 0.2s var(--ease);
+}
+
+.nav-item.active {
+  color: var(--teal);
+}
+
+.nav-item.active svg {
+  color: var(--teal);
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 2px;
+  background: var(--teal);
+  border-radius: 0 0 2px 2px;
+}
+
+
+/* ============================================================
+   FLOATING WHATSAPP HELP BUTTON
+   ============================================================ */
+#help-btn {
+  position: fixed;
+  bottom: calc(var(--nav-height) + var(--safe-bottom) + 16px);
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--whatsapp-green);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35);
+  z-index: 800;
+  cursor: pointer;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+#help-btn:active {
+  transform: scale(0.9);
+}
+
+#help-btn svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* Constrain to app width on larger screens */
+@media (min-width: 480px) {
+  #help-btn {
+    right: calc(50% - 240px + 20px);
+  }
+}
+
+
+/* ============================================================
+   GENERAL CARDS & UTILITIES
+   ============================================================ */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.card-padded {
+  padding: 16px;
+}
+
+.content-section {
+  padding: 20px;
+}
+
+.content-section + .content-section {
+  padding-top: 0;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0 20px;
+}
+
+/* Chip / tag */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  color: var(--text-2);
+  border: 1px solid var(--border);
+  transition: all 0.2s var(--ease);
+  cursor: pointer;
+}
+
+.chip.active {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border-radius: var(--radius);
+  transition: all 0.2s var(--ease);
+  cursor: pointer;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: var(--blue);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--blue-dark);
+}
+
+.btn-teal {
+  background: var(--teal);
+  color: #fff;
+}
+
+.btn-teal:hover {
+  background: var(--teal-dark);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--blue);
+  border: 1.5px solid var(--blue);
+}
+
+.btn-outline:hover {
+  background: var(--blue-light);
+}
+
+.btn-warm {
+  background: var(--warm);
+  color: #fff;
+}
+
+.btn-warm:hover {
+  background: var(--warm-dark);
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 0.8125rem;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text-4);
+}
+
+.empty-state svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 12px;
+  opacity: 0.4;
+}
+
+.empty-state p {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* Skeleton loading */
+.skeleton {
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--border) 50%, var(--surface-2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-line {
+  height: 14px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--border) 50%, var(--surface-2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-line:nth-child(2) { width: 85%; }
+.skeleton-line:nth-child(3) { width: 70%; }
+.skeleton-line:nth-child(4) { width: 90%; }
+
+.skeleton-block {
+  padding: 20px;
+}
+
+.skeleton-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+}
+
+.skeleton-card .skeleton-line:last-child {
+  margin-bottom: 0;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Pull-to-refresh indicator */
+#pull-indicator {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50px);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: transform 0.2s var(--ease), opacity 0.2s var(--ease);
+  opacity: 0;
+  pointer-events: none;
+}
+
+#pull-indicator.visible {
+  opacity: 1;
+}
+
+#pull-indicator.refreshing {
+  transform: translateX(-50%) translateY(20px);
+  opacity: 1;
+}
+
+#pull-indicator svg {
+  width: 20px;
+  height: 20px;
+  color: var(--teal);
+  transition: transform 0.2s var(--ease);
+}
+
+#pull-indicator.ready svg {
+  transform: rotate(180deg);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+#pull-indicator.refreshing svg {
+  animation: spin 0.8s linear infinite;
+}
+
+/* Scroll-to-top button */
+.scroll-top-btn {
+  position: fixed;
+  bottom: calc(var(--nav-height) + var(--safe-bottom) + 16px);
+  right: 16px;
+  z-index: 80;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: #fff;
+  border: none;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.7) translateY(10px);
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+  pointer-events: none;
+}
+
+.scroll-top-btn.visible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+}
+
+.scroll-top-btn:active {
+  transform: scale(0.92) translateY(0);
+}
+
+.scroll-top-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Progress ring */
+.progress-ring-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.progress-ring-circle-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 3;
+}
+
+.progress-ring-circle {
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s var(--ease);
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+
+/* Transitions */
+.transition-all {
+  transition: all 0.2s var(--ease);
+}
+
+/* Scroll containers */
+.scroll-x {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-x::-webkit-scrollbar {
+  display: none;
+}
+
+/* Text utilities */
+.text-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.text-center { text-align: center; }
+.text-muted { color: var(--text-3); }
+.text-sm { font-size: 0.8125rem; }
+.text-xs { font-size: 0.75rem; }
+
+/* Spacing */
+.mt-4 { margin-top: 4px; }
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mt-20 { margin-top: 20px; }
+.mb-4 { margin-bottom: 4px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-12 { margin-bottom: 12px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-20 { margin-bottom: 20px; }
+.px-20 { padding-left: 20px; padding-right: 20px; }
+.py-16 { padding-top: 16px; padding-bottom: 16px; }
+.p-16 { padding: 16px; }
+.p-20 { padding: 20px; }
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+
+/* Flex utilities */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-wrap { flex-wrap: wrap; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.flex-1 { flex: 1; }
+
+
+/* ============================================================
+   RESPONSIVE — Center on larger screens
+   ============================================================ */
+@media (min-width: 480px) {
+  body {
+    background: #E8E4DD;
+  }
+
+  #app {
+    box-shadow: var(--shadow-lg);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+}
+
+/* Taller hero on slightly larger phones */
+@media (min-height: 740px) {
+  .today-hero {
+    padding: 24px 20px 20px;
+  }
+
+  .page-header {
+    height: 220px;
+  }
+}
+
+
+/* ============================================================
+   EXTRA AUTH GATE STYLES
+   ============================================================ */
+.auth-logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.auth-tagline {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 32px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.auth-hint {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 20px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+#auth-gate.authenticated {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.program-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(0, 190, 214, 0.15);
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--teal);
+}
+
+.program-badge .badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--teal);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.today-updated {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-4);
+  padding: 12px 20px 4px;
+}
+
+
+/* Offline banner */
+.offline-banner {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: #EF4444;
+  color: white;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px;
+  letter-spacing: 0.02em;
+}
+.offline-banner.show { display: block; }
+
+/* ============================================================
+   FOCUS INDICATORS
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
+.nav-item:focus-visible,
+.date-pill:focus-visible,
+.accordion-trigger:focus-visible,
+.category-card:focus-visible,
+.btn:focus-visible,
+.therapy-detail-book:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+  border-radius: var(--radius);
+}
+
+.pin-inputs input:focus-visible {
+  outline: none; /* Already has custom focus style */
+}
+
+/* ============================================================
+   INSTALL BANNER
+   ============================================================ */
+.install-banner {
+  display: none;
+  position: fixed;
+  bottom: calc(var(--nav-height) + var(--safe-bottom) + 8px);
+  left: 12px;
+  right: 12px;
+  z-index: 90;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-lg);
+  animation: fadeInUp 0.3s ease forwards;
+  align-items: center;
+  gap: 12px;
+}
+.install-banner.show { display: flex; }
+.install-banner-text { flex: 1; }
+.install-banner-text strong { display: block; font-size: 14px; color: var(--text); }
+.install-banner-text span { font-size: 12px; color: var(--text-3); }
+.install-banner-btn {
+  padding: 10px 20px;
+  background: var(--teal);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.install-banner-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--text-4);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================
+   FAVORITES
+   ============================================================ */
+.fav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--text-4);
+  transition: color 0.2s, transform 0.2s;
+}
+.fav-btn:active { transform: scale(1.2); }
+.fav-btn.active { color: #EF4444; }
+.fav-btn svg { width: 20px; height: 20px; }
+
+.favorites-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 8px;
+}
+.favorites-count {
+  font-size: 12px;
+  color: var(--text-3);
+  background: var(--surface-2);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+.favorites-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  color: var(--text-3);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.favorites-filter-btn.active {
+  background: #EF4444;
+  color: white;
+  border-color: #EF4444;
+}
+
+.wishlist-ask-btn { display: block; width: calc(100% - 40px); margin: 16px 20px; padding: 14px; background: var(--whatsapp-green); color: #fff; border-radius: var(--radius); font-size: 14px; font-weight: 600; text-align: center; cursor: pointer; border: none; }
+.wishlist-ask-btn:active { background: #1ebe5d; }
+
+/* ============================================================
+   NEXT ACTIVITY BANNER
+   ============================================================ */
+.next-activity-banner {
+  margin: 0 20px 16px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, var(--teal-light), #E8F5E9);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+.next-activity-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.next-activity-icon svg { color: white; width: 18px; height: 18px; }
+.next-activity-text strong { display: block; font-size: 13px; color: var(--text); }
+.next-activity-text span { font-size: 12px; color: var(--text-3); }
+.next-activity-countdown {
+  margin-left: auto;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--teal-dark);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   COLLAPSIBLE TIMELINE
+   ============================================================ */
+.timeline-content p {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.2s ease, margin 0.3s ease;
+  margin-top: 0;
+}
+.timeline-item.expanded .timeline-content p {
+  max-height: 200px;
+  opacity: 1;
+  margin-top: 6px;
+}
+.timeline-expand {
+  background: none;
+  border: none;
+  color: var(--text-4);
+  padding: 2px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.timeline-item.expanded .timeline-expand {
+  transform: rotate(180deg);
+}
+.timeline-expand svg { width: 14px; height: 14px; }
+
+/* ============================================================
+   SHARE BUTTON & TOAST
+   ============================================================ */
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.share-btn:active { background: var(--surface-2); }
+
+.toast {
+  position: fixed;
+  bottom: calc(var(--nav-height) + var(--safe-bottom) + 16px);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--text);
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 200;
+  pointer-events: none;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.today-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ============================================================
+   NUTRITION MEALS
+   ============================================================ */
+.nutrition-meals { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+.nutrition-meals-title { font-size: 12px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+.nutrition-meal-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.nutrition-meal-item:last-child { border-bottom: none; }
+.nutrition-meal-time { font-size: 14px; font-weight: 600; color: var(--blue); min-width: 50px; }
+.nutrition-meal-name { font-size: 14px; color: var(--text); font-weight: 500; }
+
+/* Explore filter chips */
+.explore-chips { display: flex; gap: 8px; padding: 0 20px 12px; overflow-x: auto; scrollbar-width: none; }
+.explore-chips::-webkit-scrollbar { display: none; }
+.explore-chip { padding: 6px 14px; border-radius: var(--radius-full); font-size: 12px; font-weight: 500; background: var(--surface); border: 1px solid var(--border); color: var(--text-2); white-space: nowrap; cursor: pointer; transition: all 0.2s var(--ease); flex-shrink: 0; }
+.explore-chip.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+.explore-chip:active { transform: scale(0.95); }
+
+/* ============================================================
+   EXPLORE DRILL-DOWN ANIMATION
+   ============================================================ */
+#explore-categories.hidden,
+#explore-therapies.hidden {
+  display: block !important;
+  opacity: 0;
+  pointer-events: none;
+  height: 0;
+  overflow: hidden;
+}
+#explore-categories.hidden {
+  transform: translateX(-20px);
+}
+#explore-therapies.hidden {
+  transform: translateX(20px);
+}
+#explore-categories,
+#explore-therapies {
+  transition: opacity 0.25s ease, transform 0.25s ease, height 0.25s ease;
+}
+
+/* Weather card */
+
+/* Resort map */
+.map-locations { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.map-location-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--surface-2);
+  border-radius: var(--radius);
+}
+.map-location-icon { font-size: 24px; width: 40px; text-align: center; }
+.map-location-text { flex: 1; }
+.map-location-text strong { display: block; font-size: 13px; color: var(--text); }
+.map-location-text span { font-size: 12px; color: var(--text-3); }
+
+/* Activity rating stars */
+.rating-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+.rating-star {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  color: var(--border);
+  font-size: 18px;
+  transition: color 0.15s, transform 0.15s;
+}
+.rating-star:hover { transform: scale(1.2); }
+.rating-star.active { color: #F59E0B; }
+.rating-label { font-size: 11px; color: var(--text-4); margin-left: 8px; }
+
+
+/* ============================================================
+   SMART RECOMMENDATIONS
+   ============================================================ */
+.recommendations-section { padding: 16px 20px 8px; }
+.recommendations-section .section-title { margin-bottom: 4px; }
+.recommendations-label { font-size: 0.6875rem; color: var(--text-4); margin-bottom: 10px; }
+.recommendation-cards {
+  display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none;
+  -webkit-overflow-scrolling: touch; padding-bottom: 4px;
+}
+.recommendation-cards::-webkit-scrollbar { display: none; }
+.recommendation-card {
+  flex-shrink: 0; width: 220px; background: var(--surface); border-radius: var(--radius);
+  box-shadow: var(--shadow); cursor: pointer; transition: transform 0.2s var(--ease);
+  overflow: hidden; display: flex; flex-direction: column;
+}
+.recommendation-card:active { transform: scale(0.97); }
+.recommendation-card-img {
+  width: 100%; height: 110px; object-fit: cover; background: var(--surface-2);
+}
+.recommendation-card-body { padding: 12px; }
+.recommendation-card-body h4 { font-size: 0.8125rem; font-weight: 600; color: var(--text); margin-bottom: 3px; line-height: 1.3; }
+.recommendation-card-body p {
+  font-size: 0.6875rem; color: var(--text-3); line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.recommendation-card-footer {
+  display: flex; align-items: center; gap: 6px; margin-top: 6px;
+}
+.recommendation-card-footer .therapy-price { font-size: 13px; }
+.recommendation-card-footer .therapy-duration { font-size: 11px; }
+.recommendation-card .badge { margin-top: 6px; }
+
+/* ============================================================
+   EMERGENCY QUICK-DIAL
+   ============================================================ */
+.emergency-section { padding: 16px 20px 8px; }
+.emergency-btn {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 18px;
+  background: linear-gradient(135deg, #EF4444, #F97316); border-radius: var(--radius);
+  color: #fff; font-size: 0.9375rem; font-weight: 600; text-decoration: none;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+.emergency-btn:active { transform: scale(0.97); }
+.emergency-btn svg { width: 24px; height: 24px; flex-shrink: 0; }
+.emergency-wa-btn {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 18px;
+  background: var(--whatsapp-green); border-radius: var(--radius); color: #fff;
+  font-size: 0.875rem; font-weight: 600; text-decoration: none; margin-top: 8px;
+  transition: transform 0.15s var(--ease);
+}
+.emergency-wa-btn:active { transform: scale(0.97); }
+.emergency-wa-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+/* ============================================================
+   FAQ SUB-ACCORDION
+   ============================================================ */
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-item:last-child { border-bottom: none; }
+.faq-question {
+  display: flex; align-items: center; justify-content: space-between; width: 100%;
+  padding: 12px 0; font-size: 0.875rem; font-weight: 600; color: var(--text);
+  cursor: pointer; text-align: left; background: none; border: none;
+}
+.faq-question .faq-chevron {
+  width: 14px; height: 14px; flex-shrink: 0; transition: transform 0.25s var(--ease); color: var(--text-4);
+}
+.faq-item.open .faq-chevron { transform: rotate(180deg); color: var(--teal); }
+.faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s var(--ease); }
+.faq-item.open .faq-answer { max-height: 500px; }
+.faq-answer p { padding: 0 0 12px; font-size: 0.8125rem; color: var(--text-2); line-height: 1.6; }
+
+
+/* ============================================================
+   PAGE TRANSITION ANIMATIONS
+   ============================================================ */
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.tab-panel.slide-left { animation: slideInLeft 0.3s var(--ease) forwards; }
+.tab-panel.slide-right { animation: slideInRight 0.3s var(--ease) forwards; }
+
+/* ============================================================
+   IMAGE LAZY LOADING
+   ============================================================ */
+.lazy-img-wrapper {
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, var(--surface-2), var(--border));
+}
+.lazy-img-wrapper img { transition: opacity 0.4s var(--ease), filter 0.4s var(--ease); }
+.lazy-img-wrapper img.lazy-loading { opacity: 0; filter: blur(10px); }
+.lazy-img-wrapper img.lazy-loaded { opacity: 1; filter: blur(0); }
+.lazy-placeholder {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--surface-2) 0%, var(--border) 50%, var(--surface-2) 100%);
+  background-size: 200% 200%; animation: shimmer 1.5s infinite;
+}
+
+
+
+/* ============================================================
+   DAILY WELLNESS TIP
+   ============================================================ */
+.wellness-tip-card {
+  margin: 0 20px;
+  padding: 16px 16px 16px 20px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border-left: 4px solid var(--teal);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+.wellness-tip-card .tip-icon {
+  font-size: 20px;
+  margin-bottom: 6px;
+  display: block;
+}
+.wellness-tip-card .tip-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.wellness-tip-card .tip-text {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+/* ============================================================
+   GUEST FEEDBACK FORM
+   ============================================================ */
+.feedback-card {
+  margin: 0;
+  padding: 20px;
+  background: var(--surface);
+  border-radius: 0;
+  box-shadow: var(--shadow);
+  border-top: 1px solid var(--border);
+}
+.feedback-card .feedback-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.feedback-emojis {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 8px;
+}
+.feedback-emoji {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface-2);
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease);
+  cursor: pointer;
+}
+.feedback-emoji:active { transform: scale(0.9); }
+.feedback-emoji.selected {
+  border-color: var(--teal);
+  background: var(--teal-light);
+  transform: scale(1.1);
+}
+.feedback-card textarea {
+  width: 100%;
+  min-height: 40px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  resize: vertical;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+.feedback-card textarea:focus { outline: none; border-color: var(--teal); }
+.feedback-actions {
+  display: flex;
+  gap: 8px;
+}
+.feedback-actions button {
+  flex: 1;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.2s var(--ease);
+}
+.feedback-wa-btn {
+  background: var(--whatsapp-green);
+  color: #fff;
+}
+.feedback-wa-btn:active { background: #1ebe5d; }
+.feedback-submitted {
+  text-align: center;
+  padding: 12px;
+  font-size: 13px;
+  color: var(--teal);
+  font-weight: 500;
+}
+
+/* ============================================================
+   WHATSAPP QUICK MESSAGES
+   ============================================================ */
+.quick-msg-menu {
+  position: fixed;
+  right: 20px;
+  bottom: calc(var(--nav-height) + var(--safe-bottom) + 80px);
+  z-index: 799;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease);
+}
+.quick-msg-menu.open {
+  pointer-events: auto;
+  opacity: 1;
+}
+.quick-msg-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  transform: translateY(10px) scale(0.9);
+  opacity: 0;
+  transition: transform 0.25s var(--ease), opacity 0.25s var(--ease);
+  cursor: pointer;
+}
+.quick-msg-menu.open .quick-msg-item {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+.quick-msg-menu.open .quick-msg-item:nth-child(1) { transition-delay: 0ms; }
+.quick-msg-menu.open .quick-msg-item:nth-child(2) { transition-delay: 50ms; }
+.quick-msg-menu.open .quick-msg-item:nth-child(3) { transition-delay: 100ms; }
+.quick-msg-menu.open .quick-msg-item:nth-child(4) { transition-delay: 150ms; }
+.quick-msg-item:active { transform: scale(0.95); }
+.quick-msg-item .qm-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--teal-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+@media (min-width: 480px) {
+  .quick-msg-menu { right: calc(50% - 240px + 20px); }
+}
+
+/* ============================================================
+   ACTIVITY DURATION BADGE
+   ============================================================ */
+.duration-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--surface-2);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-3);
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* ============================================================
+   DAILY SUMMARY CARD
+   ============================================================ */
+.day-summary {
+  margin: 16px 20px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, var(--blue-light), var(--teal-light));
+  border-radius: var(--radius);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-around;
+}
+.day-summary-stat {
+  text-align: center;
+  min-width: 60px;
+}
+.day-summary-stat .summary-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--blue);
+}
+.day-summary-stat .summary-label {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+
+
+
+
+/* Data export/clear buttons */
+.data-actions { display: flex; flex-direction: column; gap: 10px; padding: 16px 20px; }
+.data-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 12px 16px; font-size: 0.875rem; font-weight: 600;
+  border-radius: var(--radius); cursor: pointer;
+  transition: background 0.2s var(--ease), transform 0.1s var(--ease);
+}
+.data-btn:active { transform: scale(0.97); }
+.data-btn.export-btn { background: var(--blue); color: #fff; border: none; }
+.data-btn.clear-btn { background: transparent; color: #E53E3E; border: 1.5px solid #E53E3E; }
+
+@media (prefers-reduced-motion: reduce) {
+  .today-hero, .page-header, .info-header { will-change: auto; }
+}
+
+
+/* Print stylesheet */
+@media print {
+  #bottom-nav, #help-btn, .scroll-top-btn,
+  #auth-gate, #splash, .offline-banner, .install-banner,
+  .pull-indicator, .emergency-bar,
+  .data-actions { display: none !important; }
+  #app { max-width: 100%; padding-bottom: 0; box-shadow: none; border: none; }
+  .tab-panel { display: block !important; page-break-after: always; }
+  body { background: #fff !important; color: #000 !important; }
+  .timeline-item { break-inside: avoid; }
+  .today-hero { background: #00609C !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+  </style>
+</head>
+<body>
+
+<!-- ==================== SPLASH SCREEN ==================== -->
+<div id="splash" style="position:fixed;inset:0;z-index:10000;background:#00609C;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity 0.5s">
+<script>window._splashStart=Date.now();</script>
+  <div style="font-family:'Playfair Display',serif;font-size:28px;color:white;font-weight:600">TheLifeCo</div>
+  <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:8px;letter-spacing:0.1em;text-transform:uppercase">Loading your portal...</div>
+</div>
+
+<!-- ==================== OFFLINE BANNER ==================== -->
+<div id="offline-banner" class="offline-banner">You're offline — showing cached content</div>
+
+<!-- ==================== AUTH GATE ==================== -->
+<div id="auth-gate" style="background-image:url(images/hero-resort.jpg)">
+  <div class="auth-card">
+    <div class="auth-logo-text">TheLifeCo</div>
+    <div class="auth-tagline">Holistic Wellbeing &middot; St. Lucia</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:16px;font-weight:500">Enter your 4-digit PIN</div>
+    <div class="pin-inputs">
+      <input type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" aria-label="PIN digit 1" />
+      <input type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" aria-label="PIN digit 2" />
+      <input type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" aria-label="PIN digit 3" />
+      <input type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" aria-label="PIN digit 4" />
+    </div>
+    <div class="auth-error" id="auth-error"></div>
+    <div class="auth-hint">Hint: Your check-in date (MMDD)</div>
+  </div>
+</div>
+
+<!-- ==================== APP CONTAINER ==================== -->
+<div id="app" style="display:none">
+
+  <div id="pull-indicator" aria-hidden="true"></div>
+
+  <!-- ========== TODAY TAB ========== -->
+  <div id="tab-today" class="tab-panel active">
+
+    <div class="today-hero">
+      <span class="greeting-label" id="greeting-label"></span>
+      <span class="greeting-name" id="greeting-name"></span>
+      <span class="greeting-detail" id="header-date"></span>
+      <div class="program-badge">
+        <span class="badge-dot" aria-hidden="true"></span>
+        <span id="program-badge-text"></span>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-label">
+        <span>Stay Progress</span>
+        <strong id="progress-pct"></strong>
+      </div>
+      <div class="progress-bar-wrapper">
+        <div class="progress-bar-fill" id="progress-bar"></div>
+      </div>
+    </div>
+
+    <div id="next-activity" class="next-activity-banner" style="display:none"></div>
+
+    <div class="content-section">
+      <div class="today-section-header">
+        <div class="section-title" id="today-section-title"></div>
+        <button class="share-btn" id="share-today-btn" type="button" style="display:none"></button>
+      </div>
+      <div class="timeline" id="today-timeline"></div>
+    </div>
+
+    <div class="content-section">
+      <div class="section-title">Your Resort</div>
+      <div class="resort-gallery">
+        <div class="resort-gallery-card">
+          <img src="/guest/_shared/images/hero-resort.jpg" alt="Ocean View Pool" loading="lazy" />
+          <div class="gallery-label" aria-hidden="true">Ocean View Pool</div>
+        </div>
+        <div class="resort-gallery-card">
+          <img src="/guest/_shared/images/hero-grounds.jpg" alt="Tropical Gardens" loading="lazy" />
+          <div class="gallery-label" aria-hidden="true">Tropical Gardens</div>
+        </div>
+        <div class="resort-gallery-card">
+          <img src="/guest/_shared/images/hero-lobby.jpg" alt="Wellness Lobby" loading="lazy" />
+          <div class="gallery-label" aria-hidden="true">Wellness Lobby</div>
+        </div>
+        <div class="resort-gallery-card">
+          <img src="/guest/_shared/images/hero-room.jpg" alt="Your Suite" loading="lazy" />
+          <div class="gallery-label" aria-hidden="true">Your Suite</div>
+        </div>
+      </div>
+    </div>
+
+
+    <div id="wellness-tip" class="content-section" style="display:none"></div>
+
+    <div class="content-section">
+      <div class="section-title">Nutrition Today</div>
+      <div id="nutrition-card" class="nutrition-card"></div>
+    </div>
+
+    <div id="feedback-section" class="content-section" style="display:none"></div>
+
+    <div class="today-updated" id="today-updated"></div>
+
+  </div>
+
+  <!-- ========== SCHEDULE TAB ========== -->
+  <div id="tab-schedule" class="tab-panel">
+
+    <div class="page-header">
+      <img src="/guest/_shared/images/yoga-beach.jpg" alt="Full Schedule" />
+      <div class="page-header-content">
+        <h1>Full Schedule</h1>
+        <p>March 9&ndash;15, 2026 &middot; St. Lucia</p>
+      </div>
+    </div>
+
+    <div class="date-picker" id="date-picker"></div>
+
+    <div class="day-stats" id="day-stats"></div>
+
+    <div class="schedule-legend">
+      <div class="legend-item"><span class="legend-dot group"></span> Group</div>
+      <div class="legend-item"><span class="legend-dot food"></span> Nutrition</div>
+      <div class="legend-item"><span class="legend-dot clinic"></span> Therapy</div>
+      <div class="legend-item"><span class="legend-dot extra"></span> Treatment</div>
+    </div>
+
+    <div class="timeline" id="schedule-timeline"></div>
+
+    <div id="schedule-skeleton" class="skeleton-block">
+      <div class="skeleton-card"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width:35%"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width:50%"></div><div class="skeleton-line"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width:45%"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+    </div>
+
+  </div>
+
+  <!-- ========== EXPLORE TAB ========== -->
+  <div id="tab-explore" class="tab-panel">
+
+    <div class="favorites-header" id="favorites-header">
+      <button class="favorites-filter-btn" id="favorites-filter-btn" type="button"></button>
+      <span class="favorites-count" id="favorites-count"></span>
+    </div>
+
+    <div class="explore-search">
+      <div class="search-input-wrapper">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="search-input" id="explore-search" type="text" placeholder="Search therapies..." />
+      </div>
+    </div>
+
+    <div id="explore-categories" class="category-cards"></div>
+
+    <div id="explore-therapies" class="therapy-list hidden"></div>
+
+    <div id="explore-back" class="hidden" style="padding:12px 20px">
+      <a class="btn btn-outline btn-sm" onclick="showExploreCategories()">&larr; Back to categories</a>
+    </div>
+
+    <div id="explore-skeleton" class="skeleton-block">
+      <div class="skeleton-card"><div class="skeleton-line" style="width:60%"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width:50%"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width:55%"></div><div class="skeleton-line"></div></div>
+    </div>
+
+  </div>
+
+  <!-- ========== INFO TAB ========== -->
+  <div id="tab-info" class="tab-panel">
+
+    <div class="info-header">
+      <img src="/guest/_shared/images/st-lucia-bay.jpg" alt="Guest Information" />
+      <div class="info-header-content">
+        <h2>Guest Information</h2>
+      </div>
+    </div>
+
+    <div class="accordion" id="info-accordion"></div>
+
+    <div id="info-skeleton" class="skeleton-block">
+      <div class="skeleton-card"><div class="skeleton-line" style="width:70%"></div><div class="skeleton-line"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width:55%"></div><div class="skeleton-line"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width:65%"></div><div class="skeleton-line"></div></div>
+      <div class="skeleton-card"><div class="skeleton-line" style="width:45%"></div><div class="skeleton-line"></div></div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ==================== INSTALL BANNER ==================== -->
+<div id="install-banner" class="install-banner">
+  <div class="install-banner-text">
+    <strong>Add to Home Screen</strong>
+    <span>Quick access to your portal</span>
+  </div>
+  <button class="install-banner-btn" id="install-btn" type="button">Install</button>
+  <button class="install-banner-close" id="install-close" type="button" aria-label="Close">&times;</button>
+</div>
+
+<!-- ==================== TOAST ==================== -->
+<div id="toast" class="toast"></div>
+
+<!-- ==================== BOTTOM NAV ==================== -->
+<nav id="bottom-nav">
+  <button class="nav-item active" data-tab="today">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span>Today</span>
+  </button>
+  <button class="nav-item" data-tab="schedule">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <span>Schedule</span>
+  </button>
+  <button class="nav-item" data-tab="explore">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+    <span>Explore</span>
+  </button>
+  <button class="nav-item" data-tab="info">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span>Info</span>
+  </button>
+</nav>
+
+<!-- ==================== WHATSAPP QUICK MESSAGE MENU ==================== -->
+<div id="quick-msg-menu" class="quick-msg-menu"></div>
+
+<!-- ==================== FLOATING WHATSAPP BUTTON ==================== -->
+<button id="help-btn" type="button" style="display:none" aria-label="WhatsApp Help">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</button>
+<script>
+'use strict';
+
+// =============================================================
+// AUTH GATE
+// =============================================================
+var SLUG = window.location.pathname.split('/guest/')[1];
+if (SLUG) SLUG = SLUG.replace(/\//g, '');
+var API_BASE = '/api/guest/' + SLUG;
+var AUTH_KEY = 'tlc_auth_' + window.location.pathname;
+
+function unlockApp() {
+  sessionStorage.setItem(AUTH_KEY, '1');
+  document.getElementById('auth-gate').classList.add('authenticated');
+  document.getElementById('app').style.display = '';
+  document.getElementById('bottom-nav').style.display = '';
+  document.getElementById('help-btn').style.display = '';
+  setTimeout(function() {
+    document.getElementById('auth-gate').style.display = 'none';
+  }, 500);
+}
+
+(function initAuth() {
+  if (sessionStorage.getItem(AUTH_KEY) === '1') {
+    document.getElementById('auth-gate').style.display = 'none';
+    document.getElementById('app').style.display = '';
+    document.getElementById('help-btn').style.display = '';
+    return;
+  }
+
+  document.getElementById('bottom-nav').style.display = 'none';
+  var inputs = document.querySelectorAll('.pin-inputs input');
+  var errorEl = document.getElementById('auth-error');
+
+  inputs[0].focus();
+
+  inputs.forEach(function(input, i) {
+    input.addEventListener('input', function() {
+      input.value = input.value.replace(/[^0-9]/g, '');
+      if (navigator.vibrate) navigator.vibrate(15);
+      if (input.value && i < 3) inputs[i + 1].focus();
+
+      var pin = '';
+      inputs.forEach(function(inp) { pin += inp.value; });
+      if (pin.length === 4) {
+        fetch(API_BASE, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin: pin })
+        }).then(function(r) { return r.json(); }).then(function(result) {
+          if (result.valid) {
+            inputs.forEach(function(inp) { inp.disabled = true; });
+            unlockApp();
+          } else {
+            errorEl.textContent = 'Incorrect PIN. Try again.';
+            var pinContainer = document.querySelector('.pin-inputs');
+            if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+            pinContainer.classList.add('pin-shake');
+            inputs.forEach(function(inp) {
+              inp.classList.add('error');
+              inp.value = '';
+            });
+            setTimeout(function() {
+              pinContainer.classList.remove('pin-shake');
+              inputs.forEach(function(inp) { inp.classList.remove('error'); });
+              inputs[0].focus();
+            }, 600);
+          }
+        }).catch(function() {
+          errorEl.textContent = 'Connection error. Try again.';
+          inputs.forEach(function(inp) { inp.value = ''; });
+          inputs[0].focus();
+        });
+      }
+    });
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Backspace' && !input.value && i > 0) {
+        inputs[i - 1].focus();
+        inputs[i - 1].value = '';
+      }
+      errorEl.textContent = '';
+    });
+
+    input.addEventListener('paste', function(e) {
+      e.preventDefault();
+      var paste = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, 4);
+      for (var j = 0; j < paste.length && j < 4; j++) {
+        inputs[j].value = paste[j];
+      }
+      if (paste.length >= 4) inputs[3].focus();
+      inputs[3].dispatchEvent(new Event('input'));
+    });
+  });
+})();
+
+// =============================================================
+// GUEST DATA (loaded dynamically from API)
+// =============================================================
+
+var GUEST = {};
+var DATA_LOADED = false;
+
+// Use current date
+var TODAY_DATE = new Date();
+
+var TYPE_LABELS = { group: 'Group', food: 'Nutrition', clinic: 'Therapy', extra: 'Treatment' };
+
+// These are populated by loadGuestData() from the API
+var DESCRIPTIONS = {};
+var SCHEDULE = {};
+var HYDRATION_SCHEDULE = [];
+var EXPLORE_CATEGORIES = [];
+var ONBOARDING_DATES = {};
+var INFO_SECTIONS = [
+  { id: 'your-programme', title: 'Your Programme', subs: ['method', 'nutrition', 'program', 'programs', 'predetox'] },
+  { id: 'resort-facilities', title: 'Resort & Facilities', subs: ['included', 'facilities', 'map', 'activities'] },
+  { id: 'policies-faq', title: 'Policies & FAQ', subs: ['cancellation', 'faq'] },
+  { id: 'contact-help', title: 'Contact & Help', subs: ['contact'] }
+];
+var INFO_CONTENT = {};
+var CATEGORY_IMAGES = {};
+var CATEGORY_COUNTS = {};
+var THERAPY_IMAGES = {};
+var THERAPY_PRICES = {};
+
+function loadGuestData() {
+  return fetch(API_BASE).then(function(r) {
+    if (!r.ok) throw new Error('Guest not found');
+    return r.json();
+  }).then(function(data) {
+    // Guest profile
+    GUEST = {
+      firstName: data.guest.firstName,
+      lastName: data.guest.lastName,
+      program: data.guest.programme,
+      checkIn: data.guest.checkIn,
+      totalDays: data.guest.duration,
+      waBase: data.guest.waBase || 'https://api.whatsapp.com/send?phone=17582861869'
+    };
+
+    // Schedule
+    SCHEDULE = data.schedule || {};
+
+    // Activity descriptions
+    DESCRIPTIONS = data.descriptions || {};
+
+    // Hydration
+    HYDRATION_SCHEDULE = (data.hydration || []).map(function(h) {
+      return { time: h.time, name: h.name, icon: h.icon, note: h.note };
+    });
+
+    // Explore categories + therapies
+    EXPLORE_CATEGORIES = (data.categories || []).map(function(cat) {
+      return {
+        id: cat.id,
+        title: cat.title,
+        therapies: cat.therapies || []
+      };
+    });
+
+    // Category images
+    CATEGORY_IMAGES = {};
+    (data.categories || []).forEach(function(cat) {
+      if (cat.image_path) CATEGORY_IMAGES[cat.id] = '/guest/_shared/' + cat.image_path;
+    });
+
+    // Category counts
+    CATEGORY_COUNTS = {};
+    EXPLORE_CATEGORIES.forEach(function(cat) {
+      CATEGORY_COUNTS[cat.id] = cat.therapies.length + ' therapies';
+    });
+
+    // Therapy images and prices
+    THERAPY_IMAGES = data.therapyImages || {};
+    THERAPY_PRICES = data.therapyPrices || {};
+
+    // Info content
+    INFO_CONTENT = data.infoContent || {};
+
+    // Onboarding dates (first 3 days of stay)
+    ONBOARDING_DATES = {};
+    var checkInDate = new Date(GUEST.checkIn + 'T00:00:00');
+    for (var d = 0; d < 3; d++) {
+      var dt = new Date(checkInDate);
+      dt.setDate(dt.getDate() + d);
+      ONBOARDING_DATES[dt.toISOString().slice(0, 10)] = true;
+    }
+
+    // Update page title with guest name
+    document.title = 'TheLifeCo · ' + GUEST.firstName;
+
+    DATA_LOADED = true;
+    return data;
+  });
+}
+
+// =============================================================
+// DOM HELPERS
+// =============================================================
+
+function h(tag, cls, text) {
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined && text !== null) e.textContent = String(text);
+  return e;
+}
+
+function appendTo(parent, child) {
+  parent.appendChild(child);
+  return child;
+}
+
+// =============================================================
+// TOAST
+// =============================================================
+
+function showToast(msg) {
+  var toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(function() { toast.classList.remove('show'); }, 2500);
+}
+
+// =============================================================
+// FAVORITES
+// =============================================================
+
+var FAVORITES_KEY = 'tlc_favorites';
+
+function getFavorites() {
+  try {
+    return JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
+  } catch(e) { return []; }
+}
+
+function toggleFavorite(name) {
+  var favs = getFavorites();
+  var idx = favs.indexOf(name);
+  if (idx === -1) {
+    favs.push(name);
+    if (navigator.vibrate) navigator.vibrate(50);
+  } else {
+    favs.splice(idx, 1);
+  }
+  try { localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs)); } catch(e) {}
+  updateFavoritesCount();
+  logEvent('explore', 'favorite', name);
+  return idx === -1;
+}
+
+function isFavorite(name) {
+  return getFavorites().indexOf(name) !== -1;
+}
+
+function updateFavoritesCount() {
+  var countEl = document.getElementById('favorites-count');
+  if (countEl) {
+    var count = getFavorites().length;
+    countEl.textContent = count + ' saved';
+  }
+}
+
+// =============================================================
+// RECENTLY VIEWED
+// =============================================================
+
+var RECENT_KEY = 'tlc_recent';
+
+function getRecent() {
+  try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; } catch(e) { return []; }
+}
+
+function addRecent(therapyName) {
+  try {
+    var recent = getRecent();
+    var idx = recent.indexOf(therapyName);
+    if (idx !== -1) recent.splice(idx, 1);
+    recent.unshift(therapyName);
+    if (recent.length > 5) recent = recent.slice(0, 5);
+    localStorage.setItem(RECENT_KEY, JSON.stringify(recent));
+  } catch(e) {}
+}
+
+
+// =============================================================
+// ANIMATED COUNTER
+// =============================================================
+
+function animateCountUp(element, target, duration, suffix) {
+  if (!element || isNaN(target)) return;
+  var start = 0;
+  var startTime = null;
+  suffix = suffix || '';
+  function step(timestamp) {
+    if (!startTime) startTime = timestamp;
+    var progress = Math.min((timestamp - startTime) / duration, 1);
+    var current = Math.round(progress * target);
+    element.textContent = current + suffix;
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      element.textContent = target + suffix;
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+
+// =============================================================
+// EXPORT / CLEAR DATA
+// =============================================================
+
+function exportAllData() {
+  try {
+    var data = { guest: GUEST.firstName + ' ' + GUEST.lastName, exportDate: new Date().toISOString(), appVersion: 'v3' };
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && k.indexOf('tlc_') === 0) {
+        try { data[k] = JSON.parse(localStorage.getItem(k)); } catch(e2) { data[k] = localStorage.getItem(k); }
+      }
+    }
+    var json = JSON.stringify(data, null, 2);
+    var blob = new Blob([json], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    var d = new Date();
+    a.download = 'thelifeco-data-' + d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0') + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Data exported successfully');
+    logEvent('data', 'export', 'json');
+  } catch(e) {
+    showToast('Export failed');
+  }
+}
+
+function clearAllData() {
+  var keys = [];
+  try {
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && k.indexOf('tlc_') === 0) keys.push(k);
+    }
+    keys.forEach(function(k) { localStorage.removeItem(k); });
+  } catch(e) {}
+  showToast('All data cleared');
+  logEvent('data', 'clear', keys.length + ' keys');
+}
+
+// =============================================================
+// SHARE SCHEDULE
+// =============================================================
+
+function shareSchedule(dateStr) {
+  logEvent('schedule', 'share', dateStr);
+  var activities = SCHEDULE[dateStr] || [];
+  var dayName = getDayName(dateStr);
+  var text = '\uD83C\uDF3F TheLifeCo St. Lucia \u2014 ' + dayName + '\n\n';
+  activities.forEach(function(a) {
+    text += a.time + ' \u00B7 ' + a.name + '\n';
+  });
+  text += '\n\u2728 ' + GUEST.program;
+  if (navigator.share) {
+    navigator.share({ title: 'My Schedule \u2014 ' + dayName, text: text });
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(function() {
+      showToast('Schedule copied to clipboard!');
+    });
+  }
+}
+
+// =============================================================
+// CHEVRON SVG HELPER
+// =============================================================
+
+function createChevronSvg() {
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  var polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+  polyline.setAttribute('points', '6 9 12 15 18 9');
+  svg.appendChild(polyline);
+  return svg;
+}
+
+// =============================================================
+// HEART SVG HELPER
+// =============================================================
+
+function createHeartSvg(filled) {
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', filled ? 'currentColor' : 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', 'M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z');
+  svg.appendChild(path);
+  return svg;
+}
+
+// =============================================================
+// CLOCK SVG HELPER
+// =============================================================
+
+function createClockSvg() {
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  circle.setAttribute('cx', '12'); circle.setAttribute('cy', '12'); circle.setAttribute('r', '10');
+  svg.appendChild(circle);
+  var l1 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+  l1.setAttribute('points', '12 6 12 12 16 14');
+  svg.appendChild(l1);
+  return svg;
+}
+
+// =============================================================
+// SHARE SVG HELPER
+// =============================================================
+
+function createShareSvg() {
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  svg.setAttribute('width', '14');
+  svg.setAttribute('height', '14');
+  var c1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  c1.setAttribute('cx', '18'); c1.setAttribute('cy', '5'); c1.setAttribute('r', '3');
+  svg.appendChild(c1);
+  var c2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  c2.setAttribute('cx', '6'); c2.setAttribute('cy', '12'); c2.setAttribute('r', '3');
+  svg.appendChild(c2);
+  var c3 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  c3.setAttribute('cx', '18'); c3.setAttribute('cy', '19'); c3.setAttribute('r', '3');
+  svg.appendChild(c3);
+  var l1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  l1.setAttribute('x1', '8.59'); l1.setAttribute('y1', '13.51');
+  l1.setAttribute('x2', '15.42'); l1.setAttribute('y2', '17.49');
+  svg.appendChild(l1);
+  var l2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  l2.setAttribute('x1', '15.41'); l2.setAttribute('y1', '6.51');
+  l2.setAttribute('x2', '8.59'); l2.setAttribute('y2', '10.49');
+  svg.appendChild(l2);
+  return svg;
+}
+
+// =============================================================
+// I18N
+// =============================================================
+
+var LANG = 'en';
+var STRINGS = {
+  en: {
+    goodMorning: 'Good morning',
+    goodAfternoon: 'Good afternoon',
+    goodEvening: 'Good evening',
+    stayProgress: 'Stay Progress',
+    yourResort: 'Your Resort',
+    nutritionToday: 'Nutrition Today',
+    fullSchedule: 'Full Schedule',
+    searchTherapies: 'Search therapies...',
+    backToCategories: '\u2190 Back to categories',
+    guestInfo: 'Guest Information',
+    bookViaWhatsapp: 'Book',
+    readMore: 'Read more',
+    readLess: 'Read less',
+    rateThis: 'Rate this',
+    rated: 'Rated',
+    copied: 'Schedule copied to clipboard!',
+    noActivities: 'No activities scheduled for this day.',
+    offline: 'You\'re offline \u2014 showing cached content',
+    addToHomeScreen: 'Add to Home Screen',
+    quickAccess: 'Quick access to your portal',
+    install: 'Install',
+    activities: 'Activities',
+    first: 'First',
+    last: 'Last',
+    today: 'Today',
+    schedule: 'Schedule',
+    explore: 'Explore',
+    info: 'Info',
+    favorites: 'Favorites',
+    popular: 'Popular',
+    recommended: 'Recommended',
+    optional: 'Optional'
+  }
+};
+
+function t(key) {
+  return (STRINGS[LANG] && STRINGS[LANG][key]) || key;
+}
+
+// =============================================================
+// ANALYTICS
+// =============================================================
+
+var ANALYTICS_KEY = 'tlc_analytics';
+
+function logEvent(category, action, label) {
+  try {
+    var events = JSON.parse(localStorage.getItem(ANALYTICS_KEY)) || [];
+    events.push({
+      t: Date.now(),
+      c: category,
+      a: action,
+      l: label || ''
+    });
+    if (events.length > 500) events = events.slice(-500);
+    localStorage.setItem(ANALYTICS_KEY, JSON.stringify(events));
+  } catch(e) {}
+}
+
+// =============================================================
+// RATINGS
+// =============================================================
+
+var RATINGS_KEY = 'tlc_ratings';
+
+function getRatings() {
+  try { return JSON.parse(localStorage.getItem(RATINGS_KEY)) || {}; } catch(e) { return {}; }
+}
+
+function setRating(dateStr, activityName, stars) {
+  var ratings = getRatings();
+  var key = dateStr + '|' + activityName;
+  ratings[key] = stars;
+  try { localStorage.setItem(RATINGS_KEY, JSON.stringify(ratings)); } catch(e) {}
+  if (navigator.vibrate) navigator.vibrate(30);
+  // Badge: zenMaster — rated 10+ activities
+  var ratedCount = Object.keys(ratings).length;
+}
+
+// =============================================================
+// GUEST FEEDBACK
+// =============================================================
+
+var FEEDBACK_KEY = 'tlc_feedback';
+
+function getFeedback() {
+  try { return JSON.parse(localStorage.getItem(FEEDBACK_KEY)) || {}; } catch(e) { return {}; }
+}
+
+function setFeedback(dateStr, emoji, text) {
+  try {
+    var fb = getFeedback();
+    fb[dateStr] = { emoji: emoji, text: text || '' };
+    localStorage.setItem(FEEDBACK_KEY, JSON.stringify(fb));
+  } catch(e) {}
+}
+
+function buildRatingStars(dateStr, activityName) {
+  var container = h('div', 'rating-container');
+  var ratings = getRatings();
+  var key = dateStr + '|' + activityName;
+  var currentRating = ratings[key] || 0;
+  var label;
+
+  for (var i = 1; i <= 5; i++) {
+    var star = h('button', 'rating-star' + (i <= currentRating ? ' active' : ''));
+    star.setAttribute('type', 'button');
+    star.setAttribute('aria-label', i + ' star');
+    star.textContent = '\u2605';
+    (function(rating) {
+      star.addEventListener('click', function(e) {
+        e.stopPropagation();
+        setRating(dateStr, activityName, rating);
+        var stars = container.querySelectorAll('.rating-star');
+        stars.forEach(function(s, idx) {
+          if (idx < rating) s.classList.add('active');
+          else s.classList.remove('active');
+        });
+        label.textContent = t('rated') + ' ' + rating + '/5';
+      });
+    })(i);
+    appendTo(container, star);
+  }
+
+  label = h('span', 'rating-label', currentRating > 0 ? t('rated') + ' ' + currentRating + '/5' : t('rateThis'));
+  appendTo(container, label);
+
+  return container;
+}
+
+// =============================================================
+// UTILITIES
+// =============================================================
+
+function getTodayStr() {
+  var y = TODAY_DATE.getFullYear();
+  var m = String(TODAY_DATE.getMonth() + 1);
+  var d = String(TODAY_DATE.getDate());
+  m = m.length < 2 ? '0' + m : m;
+  d = d.length < 2 ? '0' + d : d;
+  return y + '-' + m + '-' + d;
+}
+
+function formatDateLong(dateStr) {
+  var d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+function getDayNum(dateStr) {
+  var start = new Date(GUEST.checkIn + 'T00:00:00');
+  var d = new Date(dateStr + 'T00:00:00');
+  return Math.round((d - start) / 86400000) + 1;
+}
+
+function getGreeting() {
+  var hr = new Date().getHours();
+  if (hr < 12) return t('goodMorning');
+  if (hr < 17) return t('goodAfternoon');
+  return t('goodEvening');
+}
+
+function parseTimeMinutes(timeStr) {
+  var parts = timeStr.split(':');
+  return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+}
+
+function getDayName(dateStr) {
+  var d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { weekday: 'long' });
+}
+
+function getShortDay(dateStr) {
+  var d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { weekday: 'short' });
+}
+
+function getDayOfMonth(dateStr) {
+  var d = new Date(dateStr + 'T00:00:00');
+  return d.getDate();
+}
+
+// =============================================================
+// initToday
+// =============================================================
+
+
+function getNowMinutes() {
+  var now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
+
+function mergeHydrationItems(activities) {
+  var merged = [];
+  var all = activities.slice();
+  HYDRATION_SCHEDULE.forEach(function(hItem) {
+    var hMin = parseTimeMinutes(hItem.time);
+    var tooClose = false;
+    for (var i = 0; i < activities.length; i++) {
+      var aMin = parseTimeMinutes(activities[i].time);
+      if (Math.abs(hMin - aMin) < 30 && (activities[i].type === 'food')) {
+        tooClose = true;
+        break;
+      }
+    }
+    if (!tooClose) {
+      all.push({ time: hItem.time, name: hItem.name, type: 'hydration', icon: hItem.icon, note: hItem.note, _isHydration: true });
+    }
+  });
+  all.sort(function(a, b) { return parseTimeMinutes(a.time) - parseTimeMinutes(b.time); });
+  return all;
+}
+
+function buildTimelineItem(activity, dateStr, currentMinutes, isToday, nowMarkedRef, allActivities) {
+  var item = h('div', 'timeline-item');
+  item.setAttribute('data-type', activity.type);
+  var activityMinutes = parseTimeMinutes(activity.time);
+  if (isToday && activityMinutes < currentMinutes) {
+    item.className += ' completed';
+  } else if (isToday && !nowMarkedRef.value) {
+    item.className += ' now';
+    nowMarkedRef.value = true;
+  }
+  var colorBar = h('div', 'timeline-color-bar ' + activity.type);
+  colorBar.setAttribute('aria-hidden', 'true');
+  appendTo(item, colorBar);
+  var timeEl = h('div', 'timeline-time', activity.time);
+  // Duration badge
+  if (allActivities) {
+    var actIdx = -1;
+    for (var ai = 0; ai < allActivities.length; ai++) {
+      if (allActivities[ai].time === activity.time && allActivities[ai].name === activity.name) { actIdx = ai; break; }
+    }
+    if (actIdx >= 0 && actIdx < allActivities.length - 1) {
+      var curMin = parseTimeMinutes(allActivities[actIdx].time);
+      var nxtMin = parseTimeMinutes(allActivities[actIdx + 1].time);
+      var dur = nxtMin - curMin;
+      if (dur > 0) {
+        var durText = dur >= 60 ? Math.floor(dur / 60) + 'h' + (dur % 60 > 0 ? ' ' + (dur % 60) + 'm' : '') : dur + 'm';
+        appendTo(timeEl, h('span', 'duration-badge', durText));
+      }
+    }
+  }
+  appendTo(item, timeEl);
+  var content = h('div', 'timeline-content');
+  var nameEl = h('h4', null, activity.name);
+  nameEl.style.cssText = 'display:inline;';
+  appendTo(content, nameEl);
+  var desc = DESCRIPTIONS[activity.name] || '';
+  if (desc) {
+    var expandBtn = h('button', 'timeline-expand');
+    expandBtn.setAttribute('type', 'button');
+    expandBtn.setAttribute('aria-label', 'Expand');
+    expandBtn.appendChild(createChevronSvg());
+    appendTo(content, expandBtn);
+    appendTo(content, h('p', null, desc));
+  }
+  appendTo(item, content);
+  if (desc) {
+    item.style.cursor = 'pointer';
+    item.addEventListener('click', function(e) {
+      item.classList.toggle('expanded');
+    });
+  }
+  return item;
+}
+
+function buildHydrationTimelineItem(hydrationItem) {
+  var item = h('div', 'timeline-item hydration');
+  item.setAttribute('data-type', 'food');
+  var timeEl = h('div', 'timeline-time', hydrationItem.time);
+  appendTo(item, timeEl);
+  var content = h('div', 'timeline-content');
+  var nameRow = h('h4', 'timeline-name');
+  var iconSpan = h('span', 'hydration-icon', hydrationItem.icon);
+  appendTo(nameRow, iconSpan);
+  appendTo(nameRow, document.createTextNode(' ' + hydrationItem.name));
+  appendTo(content, nameRow);
+  if (hydrationItem.note) {
+    appendTo(content, h('div', 'hydration-note', hydrationItem.note));
+  }
+  appendTo(item, content);
+  return item;
+}
+
+function buildNextActivityBanner(activities) {
+  var banner = document.getElementById('next-activity');
+  if (!banner) return;
+  while (banner.firstChild) banner.removeChild(banner.firstChild);
+  var currentMinutes = getNowMinutes();
+  var nextActivity = null;
+  for (var i = 0; i < activities.length; i++) {
+    if (parseTimeMinutes(activities[i].time) > currentMinutes) {
+      nextActivity = activities[i];
+      break;
+    }
+  }
+  if (!nextActivity) { banner.style.display = 'none'; return; }
+  banner.style.display = '';
+  var iconDiv = h('div', 'next-activity-icon');
+  iconDiv.appendChild(createClockSvg());
+  appendTo(banner, iconDiv);
+  var textDiv = h('div', 'next-activity-text');
+  appendTo(textDiv, h('strong', null, 'Next: ' + nextActivity.name));
+  appendTo(textDiv, h('span', null, TYPE_LABELS[nextActivity.type] || nextActivity.type));
+  appendTo(banner, textDiv);
+  var diff = parseTimeMinutes(nextActivity.time) - currentMinutes;
+  var ct = '';
+  if (diff >= 60) { var hrs = Math.floor(diff / 60); var mins = diff % 60; ct = hrs + 'h' + (mins > 0 ? ' ' + mins + 'm' : ''); } else { ct = diff + 'm'; }
+  appendTo(banner, h('div', 'next-activity-countdown', ct));
+
+  // Make banner tappable — open therapy detail if matching
+  banner.onclick = null;
+  (function(actName) {
+    var matchedTherapy = null;
+    for (var ci = 0; ci < EXPLORE_CATEGORIES.length && !matchedTherapy; ci++) {
+      for (var ti = 0; ti < EXPLORE_CATEGORIES[ci].therapies.length; ti++) {
+        if (EXPLORE_CATEGORIES[ci].therapies[ti].name === actName) {
+          matchedTherapy = EXPLORE_CATEGORIES[ci].therapies[ti];
+          break;
+        }
+      }
+    }
+    if (matchedTherapy) {
+      banner.addEventListener('click', function() {
+        openTherapyDetail(matchedTherapy);
+      });
+    }
+  })(nextActivity.name);
+
+  // Session reminder toast when activity is within 15 minutes
+  var reminderKey = nextActivity.time + '_' + nextActivity.name;
+  if (diff <= 15 && diff > 0 && _lastRemindedActivity !== reminderKey) {
+    _lastRemindedActivity = reminderKey;
+    showToast('Starting in ' + diff + ' min: ' + nextActivity.name);
+    logEvent('reminder', 'toast', nextActivity.name);
+  }
+}
+
+var _nextActivityInterval = null;
+var _lastRemindedActivity = '';
+
+function initToday() {
+  var todayStr = getTodayStr();
+  var dayNum = getDayNum(todayStr);
+  var dates = Object.keys(SCHEDULE);
+  var stayStart = new Date(GUEST.checkIn + 'T00:00:00');
+  var stayEnd = new Date(dates[dates.length - 1] + 'T00:00:00');
+
+  // Before stay
+  if (TODAY_DATE < stayStart) {
+    var daysUntil = Math.ceil((stayStart - TODAY_DATE) / 86400000);
+    var nameEl0 = document.getElementById('greeting-name');
+    if (nameEl0) nameEl0.textContent = GUEST.firstName;
+    var gl = document.getElementById('greeting-label');
+    if (gl) gl.textContent = getGreeting();
+    var hd = document.getElementById('header-date');
+    if (hd) hd.textContent = formatDateLong(todayStr);
+    var be = document.getElementById('program-badge-text');
+    if (be) be.textContent = 'Arriving in ' + daysUntil + ' days';
+    var pe = document.getElementById('progress-pct');
+    if (pe) pe.textContent = '0%';
+    var st = document.getElementById('today-section-title');
+    if (st) st.textContent = 'Your stay begins ' + formatDateLong(GUEST.checkIn);
+    var tc = document.getElementById('today-timeline');
+    if (tc) { while (tc.firstChild) tc.removeChild(tc.firstChild); appendTo(tc, h('div', 'empty-state', 'Your wellness journey starts on ' + formatDateLong(GUEST.checkIn) + '. We cannot wait to welcome you!')); }
+    var ue = document.getElementById('today-updated');
+    if (ue) ue.textContent = 'Last updated ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return;
+  }
+
+  // After stay
+  if (TODAY_DATE > stayEnd) {
+    var nameEl1 = document.getElementById('greeting-name');
+    if (nameEl1) nameEl1.textContent = GUEST.firstName;
+    var gl2 = document.getElementById('greeting-label');
+    if (gl2) gl2.textContent = getGreeting();
+    var hd2 = document.getElementById('header-date');
+    if (hd2) hd2.textContent = formatDateLong(todayStr);
+    var be2 = document.getElementById('program-badge-text');
+    if (be2) be2.textContent = GUEST.program + ' \u00B7 Completed';
+    var pe2 = document.getElementById('progress-pct');
+    if (pe2) pe2.textContent = '100%';
+    setTimeout(function() { var b = document.getElementById('progress-bar'); if (b) b.style.width = '100%'; }, 120);
+    var st2 = document.getElementById('today-section-title');
+    if (st2) st2.textContent = 'Stay Complete';
+    var tc2 = document.getElementById('today-timeline');
+    if (tc2) {
+      while (tc2.firstChild) tc2.removeChild(tc2.firstChild);
+      var endCard = h('div', 'card card-padded');
+      endCard.style.cssText = 'margin: 16px 20px; text-align: center;';
+      appendTo(endCard, h('div', null, '\uD83C\uDF3F'));
+      endCard.lastChild.style.fontSize = '32px';
+      endCard.lastChild.style.marginBottom = '12px';
+      appendTo(endCard, h('h3', null, 'Thank You, ' + GUEST.firstName + '!'));
+      endCard.lastChild.style.cssText = 'font-size:17px;font-weight:700;margin-bottom:6px;color:var(--text);';
+      appendTo(endCard, h('p', null, 'Your wellness journey at TheLifeCo St. Lucia has been completed. We hope you feel renewed and energized.'));
+      endCard.lastChild.style.cssText = 'font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:16px;';
+      var rebookBtn = h('a', 'btn btn-teal btn-full');
+      rebookBtn.href = GUEST.waBase + '&text=' + encodeURIComponent('Hi, I\'d like to book my next retreat at TheLifeCo!');
+      rebookBtn.textContent = 'Book Your Next Retreat';
+      appendTo(endCard, rebookBtn);
+      appendTo(tc2, endCard);
+    }
+    var ue2 = document.getElementById('today-updated');
+    if (ue2) ue2.textContent = 'Last updated ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return;
+  }
+
+  // Within stay range
+  var nameEl2 = document.getElementById('greeting-name');
+  if (nameEl2) nameEl2.textContent = GUEST.firstName;
+  var greetingLabel = document.getElementById('greeting-label');
+  if (greetingLabel) greetingLabel.textContent = getGreeting();
+  var headerDateEl = document.getElementById('header-date');
+  if (headerDateEl) headerDateEl.textContent = formatDateLong(todayStr);
+  var badgeEl = document.getElementById('program-badge-text');
+  if (badgeEl) badgeEl.textContent = GUEST.program + ' \u00B7 Day ' + dayNum + ' of ' + GUEST.totalDays;
+  var pct = Math.round(((dayNum - 1) / GUEST.totalDays) * 100);
+  if (pct < 0) pct = 0;
+  if (pct > 100) pct = 100;
+  var pctEl = document.getElementById('progress-pct');
+  if (pctEl) {
+    pctEl.textContent = pct + '%';
+    // Add progress ring next to percentage
+    var existingRing = pctEl.querySelector('.progress-ring-wrap');
+    if (!existingRing) {
+      var ringWrap = document.createElement('span');
+      ringWrap.className = 'progress-ring-wrap';
+      var ringSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      ringSvg.setAttribute('width', '24');
+      ringSvg.setAttribute('height', '24');
+      ringSvg.setAttribute('viewBox', '0 0 24 24');
+      var bgCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      bgCircle.setAttribute('cx', '12');
+      bgCircle.setAttribute('cy', '12');
+      bgCircle.setAttribute('r', '10');
+      bgCircle.setAttribute('class', 'progress-ring-circle-bg');
+      ringSvg.appendChild(bgCircle);
+      var fgCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      fgCircle.setAttribute('cx', '12');
+      fgCircle.setAttribute('cy', '12');
+      fgCircle.setAttribute('r', '10');
+      fgCircle.setAttribute('class', 'progress-ring-circle');
+      var circumference = 2 * Math.PI * 10;
+      fgCircle.setAttribute('stroke-dasharray', String(circumference));
+      fgCircle.setAttribute('stroke-dashoffset', String(circumference));
+      ringSvg.appendChild(fgCircle);
+      ringWrap.appendChild(ringSvg);
+      pctEl.appendChild(ringWrap);
+      // Animate ring after brief delay
+      setTimeout(function() {
+        var offset = circumference - (pct / 100) * circumference;
+        fgCircle.setAttribute('stroke-dashoffset', String(offset));
+      }, 200);
+    }
+  }
+  setTimeout(function() { var barEl = document.getElementById('progress-bar'); if (barEl) barEl.style.width = pct + '%'; }, 120);
+
+  var sectionTitle = document.getElementById('today-section-title');
+  if (sectionTitle) {
+    if (ONBOARDING_DATES[todayStr]) {
+      sectionTitle.textContent = 'Onboarding Day';
+    } else {
+      sectionTitle.textContent = 'Day ' + dayNum + ' \u00B7 ' + getDayName(todayStr);
+    }
+  }
+
+  // Share button
+  var shareBtn = document.getElementById('share-today-btn');
+  if (shareBtn) {
+    while (shareBtn.firstChild) shareBtn.removeChild(shareBtn.firstChild);
+    shareBtn.appendChild(createShareSvg());
+    appendTo(shareBtn, document.createTextNode(' Share'));
+    shareBtn.style.display = '';
+    shareBtn.addEventListener('click', function() { shareSchedule(todayStr); });
+  }
+
+  // Build hydration tracker
+  var hydrationTrackerEl = document.getElementById('hydration-tracker');
+  if (!hydrationTrackerEl) {
+    hydrationTrackerEl = h('div', 'hydration-tracker');
+    hydrationTrackerEl.id = 'hydration-tracker';
+    var htIcon = h('div', 'hydration-tracker-icon', '\uD83D\uDCA7');
+    appendTo(hydrationTrackerEl, htIcon);
+    var htInfo = h('div', 'hydration-tracker-info');
+    appendTo(htInfo, h('div', 'hydration-tracker-label', 'Stay Hydrated'));
+    var htBar = h('div', 'hydration-tracker-bar');
+    var htFill = h('div', 'hydration-tracker-fill');
+    htFill.id = 'hydration-fill';
+    appendTo(htBar, htFill);
+    appendTo(htInfo, htBar);
+    appendTo(hydrationTrackerEl, htInfo);
+    var htCountBtn = h('div', 'hydration-tracker-count');
+    htCountBtn.id = 'hydration-count';
+    appendTo(hydrationTrackerEl, htCountBtn);
+    // Insert after progress section
+    var progressSection = document.querySelector('.progress-section');
+    if (progressSection && progressSection.nextSibling) {
+      progressSection.parentNode.insertBefore(hydrationTrackerEl, progressSection.nextSibling);
+    }
+  }
+  // Hydration tracker state
+  var htDayKey = 'tlc_hydration_' + todayStr;
+  var htCount = parseInt(localStorage.getItem(htDayKey) || '0', 10);
+  var htMax = 8;
+  function updateHydrationTracker() {
+    var countEl = document.getElementById('hydration-count');
+    var fillEl = document.getElementById('hydration-fill');
+    if (countEl) countEl.textContent = htCount + '/' + htMax;
+    if (fillEl) fillEl.style.width = Math.min(100, Math.round((htCount / htMax) * 100)) + '%';
+  }
+  updateHydrationTracker();
+  var htCountEl = document.getElementById('hydration-count');
+  if (htCountEl) {
+    htCountEl.addEventListener('click', function() {
+      htCount++;
+      if (htCount > htMax) htCount = 0;
+      try { localStorage.setItem(htDayKey, String(htCount)); } catch(e) {}
+      updateHydrationTracker();
+      if (navigator.vibrate) navigator.vibrate(15);
+    });
+  }
+
+  // Build today timeline
+  var activities = SCHEDULE[todayStr] || [];
+  var mergedActivities = mergeHydrationItems(activities);
+  var timelineContainer = document.getElementById('today-timeline');
+  if (timelineContainer) {
+    while (timelineContainer.firstChild) timelineContainer.removeChild(timelineContainer.firstChild);
+    var currentMinutes = getNowMinutes();
+    var nowMarkedRef = { value: false };
+    mergedActivities.forEach(function(activity) {
+      if (activity._isHydration) {
+        appendTo(timelineContainer, buildHydrationTimelineItem(activity));
+      } else {
+        appendTo(timelineContainer, buildTimelineItem(activity, todayStr, currentMinutes, true, nowMarkedRef, activities));
+      }
+    });
+    if (activities.length === 0) {
+      appendTo(timelineContainer, h('div', 'empty-state', 'No activities scheduled for today.'));
+    }
+  }
+
+  // Next activity banner
+  buildNextActivityBanner(activities);
+  if (_nextActivityInterval) clearInterval(_nextActivityInterval);
+  _nextActivityInterval = setInterval(function() { buildNextActivityBanner(activities); }, 60000);
+
+  // Nutrition card
+  var nutritionCard = document.getElementById('nutrition-card');
+  if (nutritionCard) {
+    while (nutritionCard.firstChild) nutritionCard.removeChild(nutritionCard.firstChild);
+    appendTo(nutritionCard, h('h3', null, 'Green Salad Program'));
+    appendTo(nutritionCard, h('p', null, '750\u2013850 calories per day \u00B7 100% plant-based whole-food meals'));
+    var statsGrid = h('div', 'nutrition-stats');
+    var stat1 = h('div', 'nutrition-stat');
+    appendTo(stat1, h('div', 'nutrition-stat-value', '750-850'));
+    appendTo(stat1, h('div', 'nutrition-stat-label', 'Calories'));
+    appendTo(statsGrid, stat1);
+    var stat2 = h('div', 'nutrition-stat');
+    appendTo(stat2, h('div', 'nutrition-stat-value', 'Plant'));
+    appendTo(stat2, h('div', 'nutrition-stat-label', 'Based'));
+    appendTo(statsGrid, stat2);
+    var stat3 = h('div', 'nutrition-stat');
+    appendTo(stat3, h('div', 'nutrition-stat-value', 'Day ' + dayNum));
+    appendTo(stat3, h('div', 'nutrition-stat-label', 'Progress'));
+    appendTo(statsGrid, stat3);
+    appendTo(nutritionCard, statsGrid);
+
+    // Meal list from today schedule
+    var meals = activities.filter(function(a) { return a.type === 'food'; });
+    if (meals.length > 0) {
+      var mealList = h('div', 'nutrition-meals');
+      appendTo(mealList, h('div', 'nutrition-meals-title', "Today's Meals"));
+      meals.forEach(function(meal) {
+        var mealItem = h('div', 'nutrition-meal-item');
+        appendTo(mealItem, h('span', 'nutrition-meal-time', meal.time));
+        appendTo(mealItem, h('span', 'nutrition-meal-name', meal.name));
+        appendTo(mealList, mealItem);
+      });
+      appendTo(nutritionCard, mealList);
+    } else {
+      var emptyMeals = h('div', 'nutrition-meals');
+      appendTo(emptyMeals, h('div', 'nutrition-meals-title', "Today's Meals"));
+      appendTo(emptyMeals, h('p', 'empty-state text-sm', 'No meals scheduled for today. Check the full schedule for details.'));
+      appendTo(nutritionCard, emptyMeals);
+    }
+  }
+
+
+
+  // =============================================================
+  // DAILY WELLNESS TIP
+  // =============================================================
+  (function buildWellnessTip() {
+    var tipEl = document.getElementById('wellness-tip');
+    if (!tipEl) return;
+    while (tipEl.firstChild) tipEl.removeChild(tipEl.firstChild);
+    var wtTips = [
+      'Stay hydrated \u2014 aim for 2-3 liters of water today',
+      'Listen to your body. Light headaches are normal during detox',
+      'Try a 10-minute meditation to complement your cleanse',
+      'You are halfway! Your body is adjusting beautifully',
+      'Gentle walking or yoga enhances lymphatic drainage',
+      'Journal your energy levels \u2014 you may notice improvements',
+      'Congratulations on completing your cleanse journey!'
+    ];
+    var wtIdx = dayNum - 1;
+    if (wtIdx < 0) wtIdx = 0;
+    if (wtIdx >= wtTips.length) wtIdx = wtTips.length - 1;
+    var wtCard = h('div', 'wellness-tip-card');
+    appendTo(wtCard, h('span', 'tip-icon', '\uD83C\uDF3F'));
+    appendTo(wtCard, h('div', 'tip-label', 'Day ' + dayNum + ' Tip'));
+    appendTo(wtCard, h('div', 'tip-text', wtTips[wtIdx]));
+    appendTo(tipEl, wtCard);
+    tipEl.style.display = '';
+  })();
+
+  // =============================================================
+  // GUEST FEEDBACK FORM
+  // =============================================================
+  (function buildFeedbackForm() {
+    var fbSec = document.getElementById('feedback-section');
+    if (!fbSec) return;
+    while (fbSec.firstChild) fbSec.removeChild(fbSec.firstChild);
+    var allFb = getFeedback();
+    var curFb = allFb[todayStr];
+    var fbCard = h('div', 'feedback-card');
+    appendTo(fbCard, h('div', 'feedback-title', 'How was your day?'));
+    if (curFb) {
+      var fbIconList = ['\uD83D\uDE29', '\uD83D\uDE1F', '\uD83D\uDE10', '\uD83D\uDE0A', '\uD83E\uDD29'];
+      var fbDoneEl = h('div', 'feedback-submitted');
+      fbDoneEl.textContent = 'You rated today ' + (fbIconList[curFb.emoji - 1] || '') + (curFb.text ? ' \u2014 ' + curFb.text : '');
+      appendTo(fbCard, fbDoneEl);
+      appendTo(fbSec, fbCard);
+      fbSec.style.display = '';
+      return;
+    }
+    var fbEmojiDiv = h('div', 'feedback-emojis');
+    var fbEmojiData = [
+      { val: 1, icon: '\uD83D\uDE29', label: 'Terrible' },
+      { val: 2, icon: '\uD83D\uDE1F', label: 'Bad' },
+      { val: 3, icon: '\uD83D\uDE10', label: 'Okay' },
+      { val: 4, icon: '\uD83D\uDE0A', label: 'Good' },
+      { val: 5, icon: '\uD83E\uDD29', label: 'Amazing' }
+    ];
+    var fbSelEmoji = 0;
+    fbEmojiData.forEach(function(ed) {
+      var eBtn = h('button', 'feedback-emoji');
+      eBtn.setAttribute('type', 'button');
+      eBtn.setAttribute('aria-label', ed.label);
+      eBtn.textContent = ed.icon;
+      eBtn.addEventListener('click', function() {
+        fbSelEmoji = ed.val;
+        fbEmojiDiv.querySelectorAll('.feedback-emoji').forEach(function(b) { b.classList.remove('selected'); });
+        eBtn.classList.add('selected');
+        setFeedback(todayStr, ed.val, '');
+      });
+      appendTo(fbEmojiDiv, eBtn);
+    });
+    appendTo(fbCard, fbEmojiDiv);
+    var fbTxt = document.createElement('textarea');
+    fbTxt.placeholder = 'Any comments? (optional)';
+    fbTxt.setAttribute('rows', '2');
+    fbCard.appendChild(fbTxt);
+    var fbActs = h('div', 'feedback-actions');
+    var fbWaBtn = h('button', 'feedback-wa-btn', 'Send Feedback');
+    fbWaBtn.setAttribute('type', 'button');
+    fbWaBtn.addEventListener('click', function() {
+      if (!fbSelEmoji) { showToast('Please select a rating'); return; }
+      setFeedback(todayStr, fbSelEmoji, fbTxt.value);
+      var eLbl = fbEmojiData[fbSelEmoji - 1] ? fbEmojiData[fbSelEmoji - 1].icon + ' ' + fbEmojiData[fbSelEmoji - 1].label : '';
+      var fbMsg = 'Day ' + dayNum + ' Feedback: ' + eLbl;
+      if (fbTxt.value.trim()) fbMsg += '\n' + fbTxt.value.trim();
+      location.href = GUEST.waBase + '&text=' + encodeURIComponent(fbMsg);
+      logEvent('feedback', 'whatsapp', String(fbSelEmoji));
+    });
+    appendTo(fbActs, fbWaBtn);
+    appendTo(fbCard, fbActs);
+    appendTo(fbSec, fbCard);
+    fbSec.style.display = '';
+  })();
+
+  // Today updated - dynamic
+  var updatedEl = document.getElementById('today-updated');
+  if (updatedEl) {
+    updatedEl.textContent = 'Last updated ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+}
+
+// =============================================================
+// initSchedule
+// =============================================================
+
+function initSchedule() {
+  var skelSchedule = document.getElementById('schedule-skeleton');
+  if (skelSchedule) skelSchedule.parentNode.removeChild(skelSchedule);
+  var dateScroll = document.getElementById('date-picker');
+  if (!dateScroll) return;
+  var todayStr = getTodayStr();
+  var dates = Object.keys(SCHEDULE);
+  var activeDate = dates.indexOf(todayStr) !== -1 ? todayStr : dates[0];
+
+  dates.forEach(function(dateStr) {
+    var d = new Date(dateStr + 'T00:00:00');
+    var pill = h('button', 'date-pill');
+    pill.setAttribute('type', 'button');
+    if (dateStr === todayStr) pill.className += ' today';
+    if (dateStr === activeDate) pill.className += ' active';
+
+    var dayName = h('span', 'day-name', d.toLocaleDateString('en-US', { weekday: 'short' }));
+    appendTo(pill, dayName);
+    var dayNum = h('span', 'day-num', String(d.getDate()));
+    appendTo(pill, dayNum);
+
+    pill.addEventListener('click', function() {
+      dateScroll.querySelectorAll('.date-pill').forEach(function(p) {
+        p.classList.remove('active');
+      });
+      pill.classList.add('active');
+      loadScheduleDay(dateStr);
+    });
+
+    appendTo(dateScroll, pill);
+  });
+
+  // Auto-scroll to active pill
+  var activePill = dateScroll.querySelector('.date-pill.active');
+  if (activePill) {
+    setTimeout(function() {
+      activePill.scrollIntoView({ inline: 'center', behavior: 'smooth' });
+    }, 100);
+  }
+
+  loadScheduleDay(activeDate);
+}
+
+function loadScheduleDay(dateStr) {
+  var timelineContainer = document.getElementById('schedule-timeline');
+  if (!timelineContainer) return;
+
+  while (timelineContainer.firstChild) timelineContainer.removeChild(timelineContainer.firstChild);
+
+  var activities = SCHEDULE[dateStr] || [];
+
+  // Day stats
+  var statsContainer = document.getElementById('day-stats');
+  if (statsContainer) {
+    while (statsContainer.firstChild) statsContainer.removeChild(statsContainer.firstChild);
+
+    var totalCount = activities.length;
+    var firstTime = activities.length > 0 ? activities[0].time : '--:--';
+    var lastTime = activities.length > 0 ? activities[activities.length - 1].time : '--:--';
+
+    var s1 = h('div', 'day-stat');
+    appendTo(s1, h('span', 'stat-num', String(totalCount)));
+    appendTo(s1, h('span', 'stat-label', t('activities')));
+    appendTo(statsContainer, s1);
+
+    var s2 = h('div', 'day-stat');
+    appendTo(s2, h('span', 'stat-num', firstTime));
+    appendTo(s2, h('span', 'stat-label', t('first')));
+    appendTo(statsContainer, s2);
+
+    var s3 = h('div', 'day-stat');
+    appendTo(s3, h('span', 'stat-num', lastTime));
+    appendTo(s3, h('span', 'stat-label', t('last')));
+    appendTo(statsContainer, s3);
+  }
+
+  // Build timeline items
+  var todayStr = getTodayStr();
+  var isToday = dateStr === todayStr;
+  var currentMinutes = getNowMinutes();
+  var nowMarkedRef = { value: false };
+  var mergedActivities = mergeHydrationItems(activities);
+
+  mergedActivities.forEach(function(activity) {
+    if (activity._isHydration) {
+      appendTo(timelineContainer, buildHydrationTimelineItem(activity));
+    } else {
+      var item = buildTimelineItem(activity, dateStr, currentMinutes, isToday, nowMarkedRef, activities);
+      // Add rating stars for completed schedule items
+      var activityMinutes = parseTimeMinutes(activity.time);
+      var isCompletedSched = isToday && activityMinutes < currentMinutes;
+      if (isCompletedSched && typeof buildRatingStars === 'function') {
+        var contentEl = item.querySelector('.timeline-content');
+        if (contentEl) appendTo(contentEl, buildRatingStars(dateStr, activity.name));
+      }
+      appendTo(timelineContainer, item);
+    }
+  });
+
+  if (activities.length === 0) {
+    var empty = h('div', 'empty-state', t('noActivities'));
+    appendTo(timelineContainer, empty);
+  }
+
+  // Daily Summary Card
+  if (activities.length > 0) {
+    var summaryCard = h('div', 'day-summary');
+    // Total activities
+    var sumStat1 = h('div', 'day-summary-stat');
+    appendTo(sumStat1, h('div', 'summary-value', String(activities.length)));
+    appendTo(sumStat1, h('div', 'summary-label', 'Activities'));
+    appendTo(summaryCard, sumStat1);
+    // Type breakdown
+    var typeCounts = {};
+    activities.forEach(function(a) {
+      var label = TYPE_LABELS[a.type] || a.type;
+      typeCounts[label] = (typeCounts[label] || 0) + 1;
+    });
+    var breakdownParts = [];
+    var tk;
+    for (tk in typeCounts) {
+      breakdownParts.push(typeCounts[tk] + ' ' + tk.toLowerCase());
+    }
+    var sumStat2 = h('div', 'day-summary-stat');
+    appendTo(sumStat2, h('div', 'summary-value', breakdownParts.join(', ')));
+    appendTo(sumStat2, h('div', 'summary-label', 'Breakdown'));
+    sumStat2.querySelector('.summary-value').style.fontSize = '13px';
+    appendTo(summaryCard, sumStat2);
+    // Total hours
+    var firstMin = parseTimeMinutes(activities[0].time);
+    var lastMin = parseTimeMinutes(activities[activities.length - 1].time);
+    var totalMin = lastMin - firstMin;
+    var totalHrs = totalMin >= 60 ? Math.floor(totalMin / 60) + 'h ' + (totalMin % 60) + 'm' : totalMin + 'm';
+    var sumStat3 = h('div', 'day-summary-stat');
+    appendTo(sumStat3, h('div', 'summary-value', totalHrs));
+    appendTo(sumStat3, h('div', 'summary-label', 'Total Span'));
+    appendTo(summaryCard, sumStat3);
+    appendTo(timelineContainer, summaryCard);
+  }
+}
+
+// =============================================================
+// initExplore
+// =============================================================
+
+function initExplore() {
+  var skelExplore = document.getElementById('explore-skeleton');
+  if (skelExplore) skelExplore.parentNode.removeChild(skelExplore);
+  var categoriesContainer = document.getElementById('explore-categories');
+  var therapiesContainer = document.getElementById('explore-therapies');
+  var backBtn = document.getElementById('explore-back');
+  var searchInput = document.getElementById('explore-search');
+
+  if (!categoriesContainer) return;
+
+  // Build category cards
+  EXPLORE_CATEGORIES.forEach(function(cat) {
+    var card = h('div', 'category-card');
+
+    var imgWrapper = h('div', 'lazy-img-wrapper');
+    imgWrapper.style.cssText = 'width:100%;height:100%;';
+    var placeholder = h('div', 'lazy-placeholder');
+    appendTo(imgWrapper, placeholder);
+    var img = document.createElement('img');
+    img.className = 'lazy-loading';
+    img.setAttribute('data-src', CATEGORY_IMAGES[cat.id] || '');
+    img.alt = cat.title;
+    appendTo(imgWrapper, img);
+    appendTo(card, imgWrapper);
+
+    var cardContent = h('div', 'category-card-content');
+    appendTo(cardContent, h('h3', null, cat.title));
+    appendTo(cardContent, h('p', null, CATEGORY_COUNTS[cat.id] || ''));
+    appendTo(card, cardContent);
+
+    card.addEventListener('click', function() {
+      logEvent('explore', 'category', cat.title);
+      categoriesContainer.classList.add('hidden');
+      if (therapiesContainer) therapiesContainer.classList.remove('hidden');
+      if (backBtn) backBtn.classList.remove('hidden');
+      buildTherapyCards(cat);
+    });
+
+    appendTo(categoriesContainer, card);
+  });
+
+  // Smart Recommendations section
+  (function buildRecommendations() {
+    var scheduledNames = {};
+    var dates = Object.keys(SCHEDULE);
+    dates.forEach(function(dateStr) {
+      SCHEDULE[dateStr].forEach(function(a) {
+        scheduledNames[a.name] = true;
+      });
+    });
+    // Find therapy types from schedule that match explore categories
+    var scheduledKeywords = [];
+    Object.keys(scheduledNames).forEach(function(name) {
+      var lower = name.toLowerCase();
+      if (lower.indexOf('yoga') !== -1) scheduledKeywords.push('yoga');
+      if (lower.indexOf('massage') !== -1) scheduledKeywords.push('massage');
+      if (lower.indexOf('meditation') !== -1 || lower.indexOf('breathwork') !== -1) scheduledKeywords.push('meditation');
+      if (lower.indexOf('bio-hacking') !== -1 || lower.indexOf('pemf') !== -1 || lower.indexOf('ems') !== -1) scheduledKeywords.push('biohacking');
+      if (lower.indexOf('pressotherapy') !== -1 || lower.indexOf('lymphatic') !== -1) scheduledKeywords.push('lymphatic');
+      if (lower.indexOf('mindful') !== -1) scheduledKeywords.push('mind');
+      if (lower.indexOf('immune') !== -1 || lower.indexOf('alkalize') !== -1) scheduledKeywords.push('immune');
+      if (lower.indexOf('blood') !== -1) scheduledKeywords.push('clinical');
+    });
+    // Find related therapies not in schedule
+    var recommendations = [];
+    EXPLORE_CATEGORIES.forEach(function(cat) {
+      cat.therapies.forEach(function(therapy) {
+        if (scheduledNames[therapy.name]) return;
+        var tLower = therapy.name.toLowerCase() + ' ' + therapy.desc.toLowerCase();
+        var relevant = false;
+        scheduledKeywords.forEach(function(kw) {
+          if (tLower.indexOf(kw) !== -1) relevant = true;
+        });
+        if (therapy.popular || therapy.recommended) relevant = true;
+        if (relevant && recommendations.length < 4) {
+          recommendations.push(therapy);
+        }
+      });
+    });
+    if (recommendations.length === 0) return;
+    var recSection = h('div', 'recommendations-section');
+    appendTo(recSection, h('div', 'section-title', 'Recommended For You'));
+    appendTo(recSection, h('div', 'recommendations-label', 'Based on your schedule'));
+    var recCards = h('div', 'recommendation-cards');
+    recommendations.forEach(function(therapy) {
+      var recCard = h('div', 'recommendation-card');
+      // Image
+      var recImgUrl = THERAPY_IMAGES[therapy.name] || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop';
+      var recImg = document.createElement('img');
+      recImg.className = 'recommendation-card-img';
+      recImg.src = recImgUrl;
+      recImg.alt = therapy.name;
+      appendTo(recCard, recImg);
+      // Body
+      var recBody = h('div', 'recommendation-card-body');
+      appendTo(recBody, h('h4', null, therapy.name));
+      var snippet = therapy.desc.length > 70 ? therapy.desc.substring(0, 70) + '...' : therapy.desc;
+      appendTo(recBody, h('p', null, snippet));
+      // Price footer
+      var recPriceInfo = THERAPY_PRICES[therapy.name];
+      if (recPriceInfo) {
+        var recFooter = h('div', 'recommendation-card-footer');
+        appendTo(recFooter, h('span', 'therapy-price', '$' + recPriceInfo.price));
+        appendTo(recFooter, h('span', 'therapy-duration', recPriceInfo.duration));
+        appendTo(recBody, recFooter);
+      }
+      if (therapy.popular) appendTo(recBody, h('span', 'badge badge-popular', 'Popular'));
+      else if (therapy.recommended) appendTo(recBody, h('span', 'badge badge-included', 'Recommended'));
+      appendTo(recCard, recBody);
+      recCard.addEventListener('click', function() {
+        logEvent('explore', 'recommendation', therapy.name);
+        openTherapyDetail(therapy);
+      });
+      appendTo(recCards, recCard);
+    });
+    appendTo(recSection, recCards);
+    // Insert after categories
+    categoriesContainer.parentNode.insertBefore(recSection, categoriesContainer.nextSibling);
+  })();
+
+  // Init lazy loading for category images
+  initLazyImages();
+
+  // Back button
+  if (backBtn) {
+    backBtn.addEventListener('click', function() {
+      categoriesContainer.classList.remove('hidden');
+      if (therapiesContainer) therapiesContainer.classList.add('hidden');
+      backBtn.classList.add('hidden');
+    });
+  }
+
+  // Global search across all categories
+  var _searchTimer = null;
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      var q = searchInput.value.toLowerCase().trim();
+      if (q.length === 0) {
+        // Show categories, hide therapies
+        categoriesContainer.classList.remove('hidden');
+        if (therapiesContainer) therapiesContainer.classList.add('hidden');
+        if (backBtn) backBtn.classList.add('hidden');
+        return;
+      }
+      // Debounced search analytics
+      clearTimeout(_searchTimer);
+      _searchTimer = setTimeout(function() { logEvent('explore', 'search', q); }, 800);
+      // Search across all categories
+      categoriesContainer.classList.add('hidden');
+      if (therapiesContainer) therapiesContainer.classList.remove('hidden');
+      if (backBtn) backBtn.classList.remove('hidden');
+      // Build filtered results
+      while (therapiesContainer.firstChild) therapiesContainer.removeChild(therapiesContainer.firstChild);
+      EXPLORE_CATEGORIES.forEach(function(cat) {
+        cat.therapies.forEach(function(therapy) {
+          if (therapy.name.toLowerCase().indexOf(q) !== -1 || therapy.desc.toLowerCase().indexOf(q) !== -1) {
+            var card = buildSingleTherapyCard(therapy);
+            appendTo(therapiesContainer, card);
+          }
+        });
+      });
+      if (!therapiesContainer.firstChild) {
+        appendTo(therapiesContainer, h('div', 'empty-state', 'No therapies found for "' + searchInput.value + '"'));
+      }
+    });
+  }
+
+  // Quick filter chips
+  var chipContainer = h('div', 'explore-chips');
+  var chips = [
+    { label: 'Popular', filter: function(t2) { return t2.popular; } },
+    { label: 'Under $100', filter: function(t2) { var p = THERAPY_PRICES[t2.name]; return p && p.price < 100; } },
+    { label: '30 min', filter: function(t2) { var p = THERAPY_PRICES[t2.name]; return p && p.duration.indexOf('30') !== -1; } },
+    { label: 'Recommended', filter: function(t2) { return t2.recommended; } }
+  ];
+  chips.forEach(function(chip) {
+    var btn = h('button', 'explore-chip');
+    btn.setAttribute('type', 'button');
+    btn.textContent = chip.label;
+    btn.addEventListener('click', function() {
+      btn.classList.toggle('active');
+      chipContainer.querySelectorAll('.explore-chip').forEach(function(b) {
+        if (b !== btn) b.classList.remove('active');
+      });
+      if (!btn.classList.contains('active')) {
+        if (categoriesContainer) categoriesContainer.classList.remove('hidden');
+        if (therapiesContainer) therapiesContainer.classList.add('hidden');
+        if (backBtn) backBtn.classList.add('hidden');
+        return;
+      }
+      if (categoriesContainer) categoriesContainer.classList.add('hidden');
+      if (therapiesContainer) therapiesContainer.classList.remove('hidden');
+      if (backBtn) backBtn.classList.remove('hidden');
+      while (therapiesContainer.firstChild) therapiesContainer.removeChild(therapiesContainer.firstChild);
+      var results = [];
+      EXPLORE_CATEGORIES.forEach(function(cat) {
+        cat.therapies.forEach(function(therapy) {
+          if (chip.filter(therapy)) results.push(therapy);
+        });
+      });
+      if (results.length === 0) {
+        appendTo(therapiesContainer, h('div', 'empty-state', 'No therapies match this filter.'));
+      } else {
+        results.forEach(function(therapy) {
+          appendTo(therapiesContainer, buildSingleTherapyCard(therapy));
+        });
+      }
+    });
+    appendTo(chipContainer, btn);
+  });
+  var searchWrapper = document.querySelector('.explore-search');
+  if (searchWrapper && searchWrapper.parentNode) {
+    searchWrapper.parentNode.insertBefore(chipContainer, searchWrapper.nextSibling);
+  }
+}
+
+function buildSingleTherapyCard(therapy) {
+  var card = h('div', 'therapy-card');
+  card.setAttribute('data-name', therapy.name);
+
+  // Image
+  var imgUrl = THERAPY_IMAGES[therapy.name] || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop';
+  var img = document.createElement('img');
+  img.className = 'therapy-card-img';
+  img.src = imgUrl;
+  img.alt = therapy.name;
+  appendTo(card, img);
+
+  // Badge on image
+  if (therapy.popular) {
+    appendTo(card, h('span', 'badge badge-popular', t('popular')));
+  } else if (therapy.recommended) {
+    appendTo(card, h('span', 'badge badge-included', t('recommended')));
+  }
+
+  // Body
+  var body = h('div', 'therapy-card-body');
+  appendTo(body, h('h4', null, therapy.name));
+
+  // Snippet
+  var snippet = therapy.desc.length > 80 ? therapy.desc.substring(0, 80) + '...' : therapy.desc;
+  appendTo(body, h('p', 'therapy-card-snippet', snippet));
+
+  // Footer with price + duration
+  var priceInfo = THERAPY_PRICES[therapy.name];
+  if (priceInfo) {
+    var footer = h('div', 'therapy-card-footer');
+    appendTo(footer, h('span', 'therapy-price', '$' + priceInfo.price));
+    appendTo(footer, h('span', 'therapy-duration', priceInfo.duration));
+    appendTo(body, footer);
+  }
+
+  appendTo(card, body);
+
+  // Favorite button (top-right)
+  var favBtn = h('button', 'fav-btn' + (isFavorite(therapy.name) ? ' active' : ''));
+  favBtn.setAttribute('type', 'button');
+  favBtn.setAttribute('aria-label', 'Favorite');
+  favBtn.appendChild(createHeartSvg(isFavorite(therapy.name)));
+  favBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    var nowFav = toggleFavorite(therapy.name);
+    favBtn.className = 'fav-btn' + (nowFav ? ' active' : '');
+    while (favBtn.firstChild) favBtn.removeChild(favBtn.firstChild);
+    favBtn.appendChild(createHeartSvg(nowFav));
+  });
+  appendTo(card, favBtn);
+
+  // Whole card clickable -> detail page
+  card.addEventListener('click', function() {
+    logEvent('explore', 'therapy', therapy.name);
+    addRecent(therapy.name);
+    openTherapyDetail(therapy);
+  });
+
+  return card;
+}
+
+// =============================================================
+// THERAPY DETAIL PAGE
+// =============================================================
+
+var _therapyDetailEl = null;
+
+function openTherapyDetail(therapy) {
+  if (_therapyDetailEl) closeTherapyDetail();
+
+  var priceInfo = THERAPY_PRICES[therapy.name] || { price: 0, duration: '' };
+  var imgUrl = THERAPY_IMAGES[therapy.name] || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop';
+
+  // Push history state for back button
+  history.pushState({ therapyDetail: true }, '');
+
+  var overlay = h('div', 'therapy-detail');
+
+  // Hero image
+  var hero = h('div', 'therapy-detail-hero');
+  var heroImg = document.createElement('img');
+  heroImg.src = imgUrl;
+  heroImg.alt = therapy.name;
+  appendTo(hero, heroImg);
+  appendTo(overlay, hero);
+
+  // Back button
+  var backBtn = h('button', 'therapy-detail-back');
+  backBtn.setAttribute('type', 'button');
+  backBtn.setAttribute('aria-label', 'Back');
+  backBtn.textContent = '\u2190';
+  backBtn.addEventListener('click', function() {
+    history.back();
+  });
+  appendTo(overlay, backBtn);
+
+  // Content area
+  var content = h('div', 'therapy-detail-content');
+
+  // Title
+  appendTo(content, h('h2', null, therapy.name));
+
+  // Badge
+  if (therapy.popular) {
+    appendTo(content, h('span', 'badge badge-popular', t('popular')));
+  } else if (therapy.recommended) {
+    appendTo(content, h('span', 'badge badge-included', t('recommended')));
+  } else {
+    appendTo(content, h('span', 'badge badge-optional', t('optional')));
+  }
+
+  // Price + Duration row
+  var priceRow = h('div', 'therapy-detail-price-row');
+  priceRow.style.marginTop = '12px';
+  appendTo(priceRow, h('span', 'therapy-detail-price', '$' + priceInfo.price));
+  appendTo(priceRow, h('span', 'therapy-detail-dur', '\u00B7 ' + priceInfo.duration));
+  appendTo(content, priceRow);
+
+  // Divider
+  appendTo(content, h('div', 'therapy-detail-divider'));
+
+  // About section
+  appendTo(content, h('div', 'therapy-detail-label', 'About this therapy'));
+  appendTo(content, h('p', 'therapy-detail-desc', therapy.desc));
+
+  // Divider
+  appendTo(content, h('div', 'therapy-detail-divider'));
+
+  // What to expect
+  appendTo(content, h('div', 'therapy-detail-label', 'What to expect'));
+  var expectList = h('ul', 'therapy-detail-expect');
+
+  var durItem = h('li');
+  durItem.textContent = 'Session duration: ' + priceInfo.duration;
+  appendTo(expectList, durItem);
+
+  var certItem = h('li');
+  certItem.textContent = 'Performed by certified therapists';
+  appendTo(expectList, certItem);
+
+  // Context-aware third point
+  var thirdPoint = 'No downtime required';
+  var nameLower = therapy.name.toLowerCase();
+  if (nameLower.indexOf('iv') !== -1 || nameLower.indexOf('infusion') !== -1 || nameLower.indexOf('nad') !== -1) {
+    thirdPoint = 'Relax in a comfortable recliner during treatment';
+  } else if (nameLower.indexOf('massage') !== -1 || nameLower.indexOf('reflexology') !== -1) {
+    thirdPoint = 'Wear comfortable clothing; oils provided';
+  } else if (nameLower.indexOf('sauna') !== -1 || nameLower.indexOf('plunge') !== -1 || nameLower.indexOf('bath') !== -1) {
+    thirdPoint = 'Towels and robes provided';
+  } else if (nameLower.indexOf('meditation') !== -1 || nameLower.indexOf('psychology') !== -1 || nameLower.indexOf('braintap') !== -1) {
+    thirdPoint = 'Quiet, private setting for deep focus';
+  } else if (nameLower.indexOf('stem cell') !== -1 || nameLower.indexOf('ozone') !== -1 || nameLower.indexOf('blood') !== -1) {
+    thirdPoint = 'Medical supervision throughout the session';
+  }
+  var thirdItem = h('li');
+  thirdItem.textContent = thirdPoint;
+  appendTo(expectList, thirdItem);
+
+  appendTo(content, expectList);
+
+  // Similar therapies section
+  (function() {
+    var therapyCat = null;
+    for (var ci = 0; ci < EXPLORE_CATEGORIES.length; ci++) {
+      for (var ti = 0; ti < EXPLORE_CATEGORIES[ci].therapies.length; ti++) {
+        if (EXPLORE_CATEGORIES[ci].therapies[ti].name === therapy.name) {
+          therapyCat = EXPLORE_CATEGORIES[ci];
+          break;
+        }
+      }
+      if (therapyCat) break;
+    }
+    if (therapyCat) {
+      var similar = [];
+      for (var si = 0; si < therapyCat.therapies.length; si++) {
+        if (therapyCat.therapies[si].name !== therapy.name && similar.length < 3) {
+          similar.push(therapyCat.therapies[si]);
+        }
+      }
+      if (similar.length > 0) {
+        var simSection = h('div', 'therapy-detail-similar');
+        appendTo(simSection, h('div', 'therapy-detail-similar-title', 'You Might Also Like'));
+        var simCards = h('div', 'similar-cards');
+        similar.forEach(function(sim) {
+          var simCard = h('div', 'similar-card');
+          var simImg = document.createElement('img');
+          simImg.src = THERAPY_IMAGES[sim.name] || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop';
+          simImg.alt = sim.name;
+          appendTo(simCard, simImg);
+          var simBody = h('div', 'similar-card-body');
+          appendTo(simBody, h('h5', null, sim.name));
+          var simPrice = THERAPY_PRICES[sim.name];
+          if (simPrice) {
+            appendTo(simBody, h('span', null, '$' + simPrice.price));
+          }
+          appendTo(simCard, simBody);
+          simCard.addEventListener('click', function() {
+            openTherapyDetail(sim);
+          });
+          appendTo(simCards, simCard);
+        });
+        appendTo(simSection, simCards);
+        appendTo(content, simSection);
+      }
+    }
+  })();
+
+  appendTo(overlay, content);
+
+  // Sticky bottom bar
+  var stickyBar = h('div', 'therapy-detail-sticky');
+  var stickyPriceEl = h('div', 'therapy-detail-sticky-price', '$' + priceInfo.price);
+  var perSession = h('span');
+  perSession.textContent = ' / session';
+  appendTo(stickyPriceEl, perSession);
+  appendTo(stickyBar, stickyPriceEl);
+
+  var waMsg = encodeURIComponent('Hi, I\'d like to book ' + therapy.name + ' please.');
+  var bookBtn = h('a', 'therapy-detail-book');
+  bookBtn.href = GUEST.waBase + '&text=' + waMsg;
+  bookBtn.textContent = 'Book Now';
+  bookBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    logEvent('booking', 'whatsapp', therapy.name);
+  });
+  appendTo(stickyBar, bookBtn);
+
+  appendTo(overlay, stickyBar);
+
+  document.body.appendChild(overlay);
+  _therapyDetailEl = overlay;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeTherapyDetail() {
+  if (_therapyDetailEl) {
+    document.body.removeChild(_therapyDetailEl);
+    _therapyDetailEl = null;
+    document.body.style.overflow = '';
+  }
+}
+
+function buildTherapyCards(cat) {
+  var therapiesContainer = document.getElementById('explore-therapies');
+  if (!therapiesContainer) return;
+  while (therapiesContainer.firstChild) therapiesContainer.removeChild(therapiesContainer.firstChild);
+
+  cat.therapies.forEach(function(therapy) {
+    appendTo(therapiesContainer, buildSingleTherapyCard(therapy));
+  });
+}
+
+// =============================================================
+// initInfo
+// =============================================================
+
+function initInfo() {
+  var skelInfo = document.getElementById('info-skeleton');
+  if (skelInfo) skelInfo.parentNode.removeChild(skelInfo);
+  var accordion = document.getElementById('info-accordion');
+  if (!accordion) return;
+
+  // Emergency Quick-Dial section at the top
+  var emergencySection = h('div', 'emergency-section');
+  var emergencyLink = h('a', 'emergency-btn');
+  emergencyLink.href = 'tel:+17582861869';
+  // Phone SVG
+  var phoneSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  phoneSvg.setAttribute('viewBox', '0 0 24 24');
+  phoneSvg.setAttribute('fill', 'none');
+  phoneSvg.setAttribute('stroke', 'currentColor');
+  phoneSvg.setAttribute('stroke-width', '2');
+  phoneSvg.setAttribute('stroke-linecap', 'round');
+  phoneSvg.setAttribute('stroke-linejoin', 'round');
+  var phonePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  phonePath.setAttribute('d', 'M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z');
+  phoneSvg.appendChild(phonePath);
+  emergencyLink.appendChild(phoneSvg);
+  appendTo(emergencyLink, h('span', null, 'Emergency: Call Now'));
+  emergencyLink.addEventListener('click', function() { logEvent('info', 'emergency-call', 'phone'); });
+  appendTo(emergencySection, emergencyLink);
+
+  // WhatsApp secondary button
+  var waBtn = h('a', 'emergency-wa-btn');
+  waBtn.href = GUEST.waBase;
+  var waSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  waSvg.setAttribute('viewBox', '0 0 24 24');
+  waSvg.setAttribute('fill', 'currentColor');
+  var waPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  waPath.setAttribute('d', 'M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z');
+  waSvg.appendChild(waPath);
+  waBtn.appendChild(waSvg);
+  appendTo(waBtn, h('span', null, 'Resort WhatsApp'));
+  waBtn.addEventListener('click', function() { logEvent('info', 'emergency-wa', 'whatsapp'); });
+  appendTo(emergencySection, waBtn);
+
+  accordion.parentNode.insertBefore(emergencySection, accordion);
+
+  INFO_SECTIONS.forEach(function(section) {
+    var item = h('div', 'accordion-item');
+
+    var trigger = h('button', 'accordion-trigger');
+    trigger.setAttribute('type', 'button');
+
+    var titleSpan = h('span', null, section.title);
+    appendTo(trigger, titleSpan);
+
+    // Arrow SVG
+    var arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    arrowSvg.setAttribute('viewBox', '0 0 24 24');
+    arrowSvg.setAttribute('fill', 'none');
+    arrowSvg.setAttribute('stroke', 'currentColor');
+    arrowSvg.setAttribute('stroke-width', '2');
+    arrowSvg.setAttribute('width', '16');
+    arrowSvg.setAttribute('height', '16');
+    var polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    polyline.setAttribute('points', '6 9 12 15 18 9');
+    arrowSvg.appendChild(polyline);
+    appendTo(trigger, arrowSvg);
+
+    var content = h('div', 'accordion-content');
+    var body = h('div', 'accordion-body');
+    var subs = section.subs || [section.id];
+    subs.forEach(function(subId) {
+      appendTo(body, buildInfoContent(subId));
+    });
+    appendTo(content, body);
+
+    trigger.addEventListener('click', function() {
+      item.classList.toggle('open');
+    });
+
+    appendTo(item, trigger);
+    appendTo(item, content);
+    appendTo(accordion, item);
+  });
+
+  // Integrations accordion section
+  (function buildIntegrationsSection() {
+    var intItem = h('div', 'accordion-item');
+    var intTrigger = h('button', 'accordion-trigger');
+    intTrigger.setAttribute('type', 'button');
+    appendTo(intTrigger, h('span', null, 'Integrations'));
+    var intArrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    intArrow.setAttribute('viewBox', '0 0 24 24');
+    intArrow.setAttribute('fill', 'none');
+    intArrow.setAttribute('stroke', 'currentColor');
+    intArrow.setAttribute('stroke-width', '2');
+    intArrow.setAttribute('width', '16');
+    intArrow.setAttribute('height', '16');
+    var intPoly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    intPoly.setAttribute('points', '6 9 12 15 18 9');
+    intArrow.appendChild(intPoly);
+    appendTo(intTrigger, intArrow);
+    var intContent = h('div', 'accordion-content');
+    var intBody = h('div', 'accordion-body');
+    var intList = h('div', 'integrations-list');
+    var integrations = [
+      { icon: '\u2764\uFE0F', name: 'Apple Health', desc: 'Track wellness metrics like sleep, heart rate, and activity during your stay.', action: 'soon' },
+      { icon: '\uD83C\uDFC3', name: 'Google Fit', desc: 'Sync your resort activities and wellness data with Google Fit.', action: 'soon' },
+      { icon: '\uD83D\uDEB4', name: 'Strava', desc: 'Log resort walks, yoga sessions, and functional training as Strava activities.', action: 'soon' },
+      { icon: '\uD83C\uDFB5', name: 'Spotify', desc: 'Curated wellness playlists for meditation, yoga, and relaxation sessions.', action: 'soon' }
+    ];
+    integrations.forEach(function(integ) {
+      var row = h('div', 'integration-item');
+      appendTo(row, h('div', 'integration-icon', integ.icon));
+      var info = h('div', 'integration-info');
+      appendTo(info, h('div', 'integration-name', integ.name));
+      appendTo(info, h('div', 'integration-desc', integ.desc));
+      appendTo(row, info);
+      var actionWrap = h('div', 'integration-action');
+      appendTo(actionWrap, h('span', 'integration-badge', 'Coming Soon'));
+      appendTo(row, actionWrap);
+      appendTo(intList, row);
+    });
+    appendTo(intBody, intList);
+    appendTo(intContent, intBody);
+    intTrigger.addEventListener('click', function() { intItem.classList.toggle('open'); });
+    appendTo(intItem, intTrigger);
+    appendTo(intItem, intContent);
+    appendTo(accordion, intItem);
+  })();
+
+  // Export/Clear data buttons
+  var dataSection = h('div', 'data-actions');
+  var exportBtn = h('button', 'data-btn export-btn', 'Export My Data');
+  exportBtn.setAttribute('type', 'button');
+  exportBtn.addEventListener('click', function() { exportAllData(); });
+  appendTo(dataSection, exportBtn);
+  var clearBtn = h('button', 'data-btn clear-btn', 'Clear My Data');
+  clearBtn.setAttribute('type', 'button');
+  clearBtn.addEventListener('click', function() {
+    if (confirm('Are you sure you want to clear all your data? This includes favorites, ratings, and preferences.')) {
+      clearAllData();
+    }
+  });
+  appendTo(dataSection, clearBtn);
+  accordion.parentNode.appendChild(dataSection);
+}
+
+function buildInfoContent(id) {
+  var wrapper = h('div');
+
+  if (id === 'method') {
+    appendTo(wrapper, h('p', null, INFO_CONTENT.method.intro));
+
+    appendTo(wrapper, h('strong', null, 'Core Foundations:'));
+    var ul1 = h('ul');
+    INFO_CONTENT.method.coreFoundations.forEach(function(item) {
+      appendTo(ul1, h('li', null, item));
+    });
+    appendTo(wrapper, ul1);
+
+    // gap
+    appendTo(wrapper, h('div', 'spacer'));
+
+    appendTo(wrapper, h('strong', null, 'Natural vs. Accelerated Aging:'));
+    var ul2 = h('ul');
+    INFO_CONTENT.method.naturalVsAccelerated.forEach(function(item) {
+      appendTo(ul2, h('li', null, item));
+    });
+    appendTo(wrapper, ul2);
+
+    appendTo(wrapper, h('strong', null, 'The 8 Pillars:'));
+    var ol1 = h('ol');
+    INFO_CONTENT.method.eightPillars.forEach(function(item) {
+      appendTo(ol1, h('li', null, item));
+    });
+    appendTo(wrapper, ol1);
+
+  } else if (id === 'program') {
+    appendTo(wrapper, h('p', null, INFO_CONTENT.program.calNote));
+
+    appendTo(wrapper, h('strong', null, 'Daily Protocol:'));
+    var ul3 = h('ul');
+    INFO_CONTENT.program.dailyProtocol.forEach(function(item) {
+      appendTo(ul3, h('li', null, item));
+    });
+    appendTo(wrapper, ul3);
+
+    appendTo(wrapper, h('strong', null, 'What to Expect:'));
+    var ul4 = h('ul');
+    INFO_CONTENT.program.whatToExpect.forEach(function(item) {
+      appendTo(ul4, h('li', null, item));
+    });
+    appendTo(wrapper, ul4);
+
+  } else if (id === 'nutrition') {
+    appendTo(wrapper, h('p', null, INFO_CONTENT.nutrition.intro));
+
+    INFO_CONTENT.nutrition.plans.forEach(function(plan) {
+      var planDiv = h('div', 'nutrition-plan' + (plan.isCurrent ? ' highlight' : ''));
+      var nameEl = h('strong', null, plan.name);
+      appendTo(planDiv, nameEl);
+      appendTo(planDiv, h('span', 'nutrition-plan-cals', ' ' + plan.cals));
+      appendTo(planDiv, h('p', null, plan.desc));
+      appendTo(wrapper, planDiv);
+    });
+
+  } else if (id === 'included') {
+    var subcategories = [
+      { label: 'Accommodation & Nutrition', key: 'accommodationNutrition' },
+      { label: 'Consultations & Assessments', key: 'consultationsAssessments' },
+      { label: 'Daily Clinic Services', key: 'dailyClinic' },
+      { label: 'SPA & Wellness Amenities', key: 'spaWellness' },
+      { label: 'Daily Group Programs', key: 'dailyGroupPrograms' },
+      { label: 'Unlimited Throughout Your Stay', key: 'unlimited' }
+    ];
+    subcategories.forEach(function(sub) {
+      appendTo(wrapper, h('strong', null, sub.label));
+      var ul = h('ul');
+      INFO_CONTENT.included[sub.key].forEach(function(item) {
+        appendTo(ul, h('li', null, item));
+      });
+      appendTo(wrapper, ul);
+    });
+
+  } else if (id === 'programs') {
+    appendTo(wrapper, h('p', null, INFO_CONTENT.programs.intro));
+
+    INFO_CONTENT.programs.list.forEach(function(prog) {
+      appendTo(wrapper, h('strong', null, prog[0]));
+      appendTo(wrapper, h('p', null, prog[1]));
+    });
+
+  } else if (id === 'facilities') {
+    var ul5 = h('ul');
+    INFO_CONTENT.facilities.forEach(function(item) {
+      appendTo(ul5, h('li', null, item));
+    });
+    appendTo(wrapper, ul5);
+
+  } else if (id === 'map') {
+    appendTo(wrapper, h('p', null, 'TheLifeCo St. Lucia \u00B7 Sugar Beach, Soufrière'));
+
+    var locations = [
+      { icon: '\uD83C\uDFCA', name: 'Swimming Pool & Lounge', area: 'Central Grounds' },
+      { icon: '\uD83E\uDDD8', name: 'Yoga Pavilion', area: 'Beach Level' },
+      { icon: '\uD83C\uDFE5', name: 'Medical Clinic', area: 'Main Building, 1st Floor' },
+      { icon: '\uD83D\uDC86', name: 'Spa & Massage Center', area: 'West Wing' },
+      { icon: '\uD83C\uDF43', name: 'Bio-Hacking Lab', area: 'East Wing' },
+      { icon: '\uD83C\uDF7D\uFE0F', name: 'Restaurant & Juice Bar', area: 'Main Building, Ground Floor' },
+      { icon: '\uD83C\uDFD6\uFE0F', name: 'Private Beach', area: 'Waterfront' },
+      { icon: '\uD83E\uDDD6', name: 'Sauna, Steam & Hammam', area: 'Spa Level' },
+      { icon: '\uD83C\uDFCB\uFE0F', name: 'Fitness Center', area: 'East Wing, Ground Floor' },
+      { icon: '\uD83D\uDECF\uFE0F', name: 'Guest Rooms', area: 'Floors 1-3' },
+      { icon: '\uD83D\uDCCB', name: 'Reception & Front Desk', area: 'Main Entrance' }
+    ];
+
+    var mapGrid = h('div', 'map-locations');
+    locations.forEach(function(loc) {
+      var item = h('div', 'map-location-item');
+      appendTo(item, h('span', 'map-location-icon', loc.icon));
+      var textDiv = h('div', 'map-location-text');
+      appendTo(textDiv, h('strong', null, loc.name));
+      appendTo(textDiv, h('span', null, loc.area));
+      appendTo(item, textDiv);
+      appendTo(mapGrid, item);
+    });
+    appendTo(wrapper, mapGrid);
+
+  } else if (id === 'activities') {
+    var ul6 = h('ul');
+    INFO_CONTENT.activities.forEach(function(item) {
+      appendTo(ul6, h('li', null, item));
+    });
+    appendTo(wrapper, ul6);
+
+  } else if (id === 'cancellation') {
+    var ul7 = h('ul');
+    INFO_CONTENT.cancellation.rules.forEach(function(rule) {
+      appendTo(ul7, h('li', null, rule));
+    });
+    appendTo(wrapper, ul7);
+    appendTo(wrapper, h('p', null, INFO_CONTENT.cancellation.note));
+
+  } else if (id === 'predetox') {
+    appendTo(wrapper, h('p', null, INFO_CONTENT.predetox.intro));
+    var ul8 = h('ul');
+    INFO_CONTENT.predetox.steps.forEach(function(step) {
+      appendTo(ul8, h('li', null, step));
+    });
+    appendTo(wrapper, ul8);
+
+  } else if (id === 'faq') {
+    INFO_CONTENT.faq.forEach(function(faqItem) {
+      var faqEl = h('div', 'faq-item');
+      var qBtn = h('button', 'faq-question');
+      qBtn.setAttribute('type', 'button');
+      appendTo(qBtn, h('span', null, faqItem.q));
+      var chevSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      chevSvg.setAttribute('class', 'faq-chevron');
+      chevSvg.setAttribute('viewBox', '0 0 24 24');
+      chevSvg.setAttribute('fill', 'none');
+      chevSvg.setAttribute('stroke', 'currentColor');
+      chevSvg.setAttribute('stroke-width', '2');
+      var chevPoly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+      chevPoly.setAttribute('points', '6 9 12 15 18 9');
+      chevSvg.appendChild(chevPoly);
+      qBtn.appendChild(chevSvg);
+      appendTo(faqEl, qBtn);
+      var ansDiv = h('div', 'faq-answer');
+      appendTo(ansDiv, h('p', null, faqItem.a));
+      appendTo(faqEl, ansDiv);
+      qBtn.addEventListener('click', function() { faqEl.classList.toggle('open'); });
+      appendTo(wrapper, faqEl);
+    });
+
+  } else if (id === 'contact') {
+    appendTo(wrapper, h('p', null, INFO_CONTENT.contact.intro));
+    var contactList = h('ul');
+    INFO_CONTENT.contact.items.forEach(function(item) {
+      var li = h('li');
+      var labelEl = h('strong', null, item.label + ': ');
+      appendTo(li, labelEl);
+      if (item.phone) {
+        var phoneLink = h('a', null, item.value + ' (' + item.phone + ')');
+        phoneLink.href = 'tel:' + item.phone;
+        phoneLink.style.color = 'var(--teal)';
+        appendTo(li, phoneLink);
+      } else if (item.label === 'WhatsApp Group') {
+        var waLink = h('a', null, item.value);
+        waLink.href = GUEST.waBase;
+        waLink.style.color = 'var(--whatsapp-green)';
+        appendTo(li, waLink);
+      } else {
+        appendTo(li, document.createTextNode(item.value));
+      }
+      appendTo(contactList, li);
+    });
+    appendTo(wrapper, contactList);
+  }
+
+  return wrapper;
+}
+
+// =============================================================
+// IMAGE LAZY LOADING
+// =============================================================
+
+function initLazyImages() {
+  if (!('IntersectionObserver' in window)) {
+    // Fallback: load all immediately
+    document.querySelectorAll('img[data-src]').forEach(function(img) {
+      img.src = img.getAttribute('data-src');
+      img.classList.remove('lazy-loading');
+      img.classList.add('lazy-loaded');
+      var placeholder = img.parentNode.querySelector('.lazy-placeholder');
+      if (placeholder) placeholder.style.display = 'none';
+    });
+    return;
+  }
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var img = entry.target;
+        var src = img.getAttribute('data-src');
+        if (src) {
+          img.src = src;
+          img.removeAttribute('data-src');
+          img.addEventListener('load', function() {
+            img.classList.remove('lazy-loading');
+            img.classList.add('lazy-loaded');
+            var placeholder = img.parentNode.querySelector('.lazy-placeholder');
+            if (placeholder) placeholder.style.display = 'none';
+          });
+          img.addEventListener('error', function() {
+            img.classList.remove('lazy-loading');
+            img.classList.add('lazy-loaded');
+          });
+        }
+        observer.unobserve(img);
+      }
+    });
+  }, { rootMargin: '100px' });
+  document.querySelectorAll('img[data-src]').forEach(function(img) {
+    observer.observe(img);
+  });
+}
+
+// =============================================================
+// TAB SWITCHING
+// =============================================================
+
+var tabs = {
+  today:    { initialized: false },
+  schedule: { initialized: false },
+  explore:  { initialized: false },
+  info:     { initialized: false }
+};
+
+var TAB_ORDER = ['today', 'schedule', 'explore', 'info'];
+var _previousTabIndex = 0;
+
+function switchTab(tabId, skipHistory) {
+  logEvent('nav', 'tab', tabId);
+  var newIndex = TAB_ORDER.indexOf(tabId);
+  if (newIndex === -1) newIndex = 0;
+
+  // Hide all tab panels
+  document.querySelectorAll('.tab-panel').forEach(function(panel) {
+    panel.classList.remove('active');
+    panel.classList.remove('slide-left');
+    panel.classList.remove('slide-right');
+  });
+
+  // Show selected with directional animation
+  var selectedPanel = document.getElementById('tab-' + tabId);
+  if (selectedPanel) {
+    if (newIndex > _previousTabIndex) {
+      selectedPanel.classList.add('slide-right');
+    } else if (newIndex < _previousTabIndex) {
+      selectedPanel.classList.add('slide-left');
+    }
+    selectedPanel.classList.add('active');
+  }
+  _previousTabIndex = newIndex;
+
+  // Update nav active state
+  document.querySelectorAll('.nav-item').forEach(function(btn) {
+    var isActive = btn.getAttribute('data-tab') === tabId;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+  });
+
+  // Lazy init
+  if (!tabs[tabId].initialized) {
+    tabs[tabId].initialized = true;
+    if (tabId === 'schedule') initSchedule();
+    if (tabId === 'explore') initExplore();
+    if (tabId === 'info') initInfo();
+  }
+
+  // Push history state (change #9)
+  if (!skipHistory) {
+    history.pushState({ tab: tabId }, '', '#' + tabId);
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Browser back/forward support (change #9)
+window.addEventListener('popstate', function(e) {
+  // Close therapy detail page on back
+  if (_therapyDetailEl) {
+    closeTherapyDetail();
+    return;
+  }
+  if (e.state && e.state.tab) {
+    switchTab(e.state.tab, true);
+  } else {
+    var hash = location.hash.replace('#', '');
+    if (hash && tabs[hash]) {
+      switchTab(hash, true);
+    } else {
+      switchTab('today', true);
+    }
+  }
+});
+
+// Event listeners on nav items
+document.querySelectorAll('.nav-item').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    if (navigator.vibrate) navigator.vibrate(10);
+    switchTab(btn.getAttribute('data-tab'));
+  });
+});
+
+
+// =============================================================
+// SESSION TIMEOUT
+// =============================================================
+
+(function initSessionTimeout() {
+  var TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
+  var WARNING_MS = 25 * 60 * 1000; // 25 minutes
+  var _sessionTimer = null;
+  var _warningTimer = null;
+
+  function resetSessionTimer() {
+    if (_sessionTimer) clearTimeout(_sessionTimer);
+    if (_warningTimer) clearTimeout(_warningTimer);
+    _warningTimer = setTimeout(function() {
+      showToast('Session expires in 5 minutes');
+    }, WARNING_MS);
+    _sessionTimer = setTimeout(function() {
+      try { sessionStorage.removeItem(AUTH_KEY); } catch(e) {}
+      location.reload();
+    }, TIMEOUT_MS);
+  }
+
+  resetSessionTimer();
+  ['click', 'touchstart', 'keydown'].forEach(function(evt) {
+    document.addEventListener(evt, resetSessionTimer, { passive: true });
+  });
+})();
+
+
+// =============================================================
+// ANIMATED COUNTER (IntersectionObserver)
+// =============================================================
+
+(function initAnimatedCounters() {
+  if (!('IntersectionObserver' in window)) return;
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !entry.target.getAttribute('data-counted')) {
+        entry.target.setAttribute('data-counted', '1');
+        var text = entry.target.textContent;
+        var numMatch = text.match(/(\d+)/);
+        if (numMatch) {
+          var target = parseInt(numMatch[1], 10);
+          var suffix = text.replace(numMatch[1], '');
+          animateCountUp(entry.target, target, 800, suffix);
+        }
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  // Observe progress percentage
+  var pctEl = document.getElementById('progress-pct');
+  if (pctEl) {
+    pctEl.classList.add('animate-count');
+    observer.observe(pctEl);
+  }
+
+  // Observe stat numbers
+  function observeStatNums() {
+    var statNums = document.querySelectorAll('.stat-num');
+    statNums.forEach(function(el) {
+      if (!el.getAttribute('data-counted') && !el.classList.contains('animate-count')) {
+        el.classList.add('animate-count');
+        observer.observe(el);
+      }
+    });
+  }
+
+  // Run initially and on mutation for dynamically built content
+  observeStatNums();
+  var appEl = document.getElementById('app');
+  if (appEl && window.MutationObserver) {
+    var mo = new MutationObserver(function() {
+      observeStatNums();
+    });
+    mo.observe(appEl, { childList: true, subtree: true });
+  }
+})();
+
+// =============================================================
+// BOOT
+// =============================================================
+
+(function() {
+  // Load guest data from API before initializing
+  loadGuestData().then(function() {
+    initToday();
+    tabs.today.initialized = true;
+
+    // Check hash for initial tab
+    var hash = location.hash.replace('#', '');
+    if (hash && tabs[hash]) {
+      switchTab(hash, true);
+    }
+    // Fade splash after data loads
+    var splash = document.getElementById('splash');
+    if (splash) {
+      var splashStart = window._splashStart || Date.now();
+      var elapsed = Date.now() - splashStart;
+      var remaining = Math.max(0, 800 - elapsed);
+      setTimeout(function() {
+        splash.style.opacity = '0';
+        setTimeout(function() { splash.style.display = 'none'; }, 500);
+      }, remaining);
+    }
+  }).catch(function(err) {
+    var splash = document.getElementById('splash');
+    if (splash) {
+      while (splash.firstChild) splash.removeChild(splash.firstChild);
+      var errMsg = document.createElement('p');
+      errMsg.textContent = 'Unable to load guest data. Please check your connection.';
+      errMsg.style.cssText = 'color:#00609C;font-size:16px;padding:20px;text-align:center';
+      splash.appendChild(errMsg);
+      splash.style.opacity = '1';
+    }
+    console.error('Failed to load guest data:', err);
+  });
+
+  // These don't depend on guest data, so run immediately
+
+  // WhatsApp FAB with Quick Messages
+  var helpBtn = document.getElementById('help-btn');
+  var quickMenu = document.getElementById('quick-msg-menu');
+  if (helpBtn && quickMenu) {
+    // Build quick message items
+    var quickMsgs = [
+      { icon: '\uD83D\uDCAC', label: 'Open Chat', msg: '' },
+      { icon: '\u23F0', label: 'Running late', msg: 'Hi, I am running a bit late for my next session. Please let the team know.' },
+      { icon: '\uD83D\uDE4B', label: 'Need assistance', msg: 'Hi, I need some assistance at the resort. Could someone help me?' },
+      { icon: '\uD83C\uDF7D\uFE0F', label: 'Room service', msg: 'Hi, I would like to request room service. Please let me know the available options.' }
+    ];
+    quickMsgs.forEach(function(qm) {
+      var qmItem = h('div', 'quick-msg-item');
+      appendTo(qmItem, h('span', 'qm-icon', qm.icon));
+      appendTo(qmItem, h('span', null, qm.label));
+      qmItem.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var url = GUEST.waBase;
+        if (qm.msg) url += '&text=' + encodeURIComponent(qm.msg);
+        location.href = url;
+        quickMenu.classList.remove('open');
+        logEvent('whatsapp', 'quick-msg', qm.label);
+      });
+      appendTo(quickMenu, qmItem);
+    });
+
+    var qmOpen = false;
+    helpBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      qmOpen = !qmOpen;
+      quickMenu.classList.toggle('open', qmOpen);
+    });
+    document.addEventListener('click', function(e) {
+      if (qmOpen && !quickMenu.contains(e.target) && e.target !== helpBtn) {
+        qmOpen = false;
+        quickMenu.classList.remove('open');
+      }
+    });
+
+  }
+
+  // Service worker registration (change #12)
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/guest/' + SLUG + '/sw.js', { scope: '/guest/' + SLUG + '/' }).catch(function() {
+      // SW unavailable when opened as file:// - app works without it
+    });
+  }
+
+  // Offline indicator (change #13)
+  window.addEventListener('online', function() {
+    document.getElementById('offline-banner').classList.remove('show');
+  });
+  window.addEventListener('offline', function() {
+    document.getElementById('offline-banner').classList.add('show');
+  });
+  if (!navigator.onLine) {
+    document.getElementById('offline-banner').classList.add('show');
+  }
+
+  // Splash screen fadeout handled in loadGuestData().then() above
+
+  // Install prompt
+  var deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    var banner = document.getElementById('install-banner');
+    if (banner && !localStorage.getItem('tlc_install_dismissed')) {
+      banner.style.display = '';
+    }
+  });
+  var installBtn = document.getElementById('install-btn');
+  if (installBtn) {
+    installBtn.addEventListener('click', function() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function(result) {
+          deferredPrompt = null;
+          document.getElementById('install-banner').style.display = 'none';
+        });
+      }
+    });
+  }
+  var installClose = document.getElementById('install-close');
+  if (installClose) {
+    installClose.addEventListener('click', function() {
+      document.getElementById('install-banner').style.display = 'none';
+      localStorage.setItem('tlc_install_dismissed', '1');
+    });
+  }
+
+  // Keyboard navigation for tabs (arrow keys)
+  document.addEventListener('keydown', function(e) {
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) return;
+    var tabOrder = ['today', 'schedule', 'explore', 'info'];
+    var activeNav = document.querySelector('.nav-item.active');
+    if (!activeNav) return;
+    var currentTab = activeNav.getAttribute('data-tab');
+    var currentIdx = tabOrder.indexOf(currentTab);
+    if (e.key === 'ArrowLeft' && currentIdx > 0) {
+      e.preventDefault();
+      switchTab(tabOrder[currentIdx - 1]);
+    } else if (e.key === 'ArrowRight' && currentIdx < tabOrder.length - 1) {
+      e.preventDefault();
+      switchTab(tabOrder[currentIdx + 1]);
+    }
+  });
+
+  // Favorites filter init
+  updateFavoritesCount();
+  var favFilterBtn = document.getElementById('favorites-filter-btn');
+  if (favFilterBtn) {
+    favFilterBtn.textContent = 'Wishlist';
+    var favFilterActive = false;
+    favFilterBtn.addEventListener('click', function() {
+      favFilterActive = !favFilterActive;
+      favFilterBtn.classList.toggle('active', favFilterActive);
+      var categoriesContainer = document.getElementById('explore-categories');
+      var therapiesContainer = document.getElementById('explore-therapies');
+      var backBtn = document.getElementById('explore-back');
+      if (favFilterActive) {
+        var favs = getFavorites();
+        if (categoriesContainer) categoriesContainer.classList.add('hidden');
+        if (therapiesContainer) therapiesContainer.classList.remove('hidden');
+        if (backBtn) backBtn.classList.remove('hidden');
+        if (therapiesContainer) {
+          while (therapiesContainer.firstChild) therapiesContainer.removeChild(therapiesContainer.firstChild);
+          EXPLORE_CATEGORIES.forEach(function(cat) {
+            cat.therapies.forEach(function(therapy) {
+              if (favs.indexOf(therapy.name) !== -1) {
+                appendTo(therapiesContainer, buildSingleTherapyCard(therapy));
+              }
+            });
+          });
+          if (!therapiesContainer.firstChild) {
+            appendTo(therapiesContainer, h('div', 'empty-state', 'No favorites saved yet. Tap the heart icon on any therapy to save it.'));
+          } else {
+            // Add "Ask About These" WhatsApp button
+            var askBtn = h('button', 'wishlist-ask-btn');
+            askBtn.setAttribute('type', 'button');
+            askBtn.textContent = 'Ask About These';
+            askBtn.addEventListener('click', function() {
+              var msg = 'Hi! I\'m interested in these therapies:\n\n' + favs.join('\n') + '\n\nCould you help me book them?';
+              location.href = GUEST.waBase + '&text=' + encodeURIComponent(msg);
+            });
+            appendTo(therapiesContainer, askBtn);
+          }
+        }
+      } else {
+        if (categoriesContainer) categoriesContainer.classList.remove('hidden');
+        if (therapiesContainer) therapiesContainer.classList.add('hidden');
+        if (backBtn) backBtn.classList.add('hidden');
+      }
+    });
+  }
+
+  // Resort gallery lazy loading
+  var galleryImgs = document.querySelectorAll('.resort-gallery-card img');
+  galleryImgs.forEach(function(img) {
+    var parent = img.parentNode;
+    parent.classList.add('lazy-img-wrapper');
+    var placeholder = h('div', 'lazy-placeholder');
+    parent.insertBefore(placeholder, img);
+    var realSrc = img.getAttribute('src');
+    img.setAttribute('data-src', realSrc);
+    img.removeAttribute('src');
+    img.className = 'lazy-loading';
+  });
+  initLazyImages();
+
+  // Resort gallery auto-scroll
+  var resortGallery = document.querySelector('.resort-gallery');
+  if (resortGallery) {
+    var _resortIdx = 0;
+    var resortCards = resortGallery.querySelectorAll('.resort-gallery-card');
+    setInterval(function() {
+      _resortIdx = (_resortIdx + 1) % resortCards.length;
+      resortCards[_resortIdx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }, 4000);
+  }
+
+  // =============================================================
+  // PULL-TO-REFRESH
+  // =============================================================
+  (function initPullToRefresh() {
+    var pullIndicator = document.getElementById('pull-indicator');
+    if (!pullIndicator) return;
+
+    // Build refresh arrow SVG inside indicator
+    var arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    arrowSvg.setAttribute('viewBox', '0 0 24 24');
+    arrowSvg.setAttribute('fill', 'none');
+    arrowSvg.setAttribute('stroke', 'currentColor');
+    arrowSvg.setAttribute('stroke-width', '2');
+    arrowSvg.setAttribute('stroke-linecap', 'round');
+    arrowSvg.setAttribute('stroke-linejoin', 'round');
+    var arrowPath1 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    arrowPath1.setAttribute('points', '23 4 23 10 17 10');
+    arrowSvg.appendChild(arrowPath1);
+    var arrowPath2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    arrowPath2.setAttribute('d', 'M20.49 15a9 9 0 1 1-2.12-9.36L23 10');
+    arrowSvg.appendChild(arrowPath2);
+    pullIndicator.appendChild(arrowSvg);
+
+    var startY = 0;
+    var pulling = false;
+    var threshold = 60;
+
+    var appContainer = document.getElementById('app');
+
+    appContainer.addEventListener('touchstart', function(e) {
+      if (window.scrollY === 0) {
+        startY = e.touches[0].clientY;
+        pulling = true;
+      }
+    }, { passive: true });
+
+    appContainer.addEventListener('touchmove', function(e) {
+      if (!pulling) return;
+      if (window.scrollY > 0) {
+        pulling = false;
+        pullIndicator.classList.remove('visible', 'ready');
+        pullIndicator.style.transform = 'translateX(-50%) translateY(-50px)';
+        return;
+      }
+      var dy = e.touches[0].clientY - startY;
+      if (dy < 0) return;
+      var progress = Math.min(dy / threshold, 1.5);
+      var translateY = Math.min(dy * 0.4, 60) - 50;
+      pullIndicator.style.transform = 'translateX(-50%) translateY(' + translateY + 'px)';
+      pullIndicator.classList.add('visible');
+      if (dy > threshold) {
+        pullIndicator.classList.add('ready');
+      } else {
+        pullIndicator.classList.remove('ready');
+      }
+    }, { passive: true });
+
+    appContainer.addEventListener('touchend', function() {
+      if (!pulling) return;
+      pulling = false;
+      if (pullIndicator.classList.contains('ready')) {
+        pullIndicator.classList.remove('ready');
+        pullIndicator.classList.add('refreshing');
+        pullIndicator.style.transform = 'translateX(-50%) translateY(20px)';
+        logEvent('app', 'pull-to-refresh', '');
+        setTimeout(function() { location.reload(); }, 600);
+      } else {
+        pullIndicator.classList.remove('visible');
+        pullIndicator.style.transform = 'translateX(-50%) translateY(-50px)';
+      }
+    }, { passive: true });
+  })();
+
+  // =============================================================
+  // SCROLL-TO-TOP BUTTON
+  // =============================================================
+  (function initScrollToTop() {
+    var btn = h('button', 'scroll-top-btn');
+    btn.setAttribute('type', 'button');
+    btn.setAttribute('aria-label', 'Scroll to top');
+    var svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svgEl.setAttribute('viewBox', '0 0 24 24');
+    svgEl.setAttribute('fill', 'none');
+    svgEl.setAttribute('stroke', 'currentColor');
+    svgEl.setAttribute('stroke-width', '2.5');
+    svgEl.setAttribute('stroke-linecap', 'round');
+    svgEl.setAttribute('stroke-linejoin', 'round');
+    var line1 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    line1.setAttribute('points', '18 15 12 9 6 15');
+    svgEl.appendChild(line1);
+    btn.appendChild(svgEl);
+    var appEl = document.getElementById('app');
+    if (appEl) appEl.appendChild(btn);
+
+    var scrollTimer = null;
+    window.addEventListener('scroll', function() {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function() {
+        if (window.scrollY > 300) {
+          btn.classList.add('visible');
+        } else {
+          btn.classList.remove('visible');
+        }
+      }, 50);
+    }, { passive: true });
+
+    btn.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      logEvent('nav', 'scroll-to-top', '');
+    });
+  })();
+
+})();
+
+</script>
+</body>
+</html>

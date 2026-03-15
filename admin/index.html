@@ -6,6 +6,7 @@
 <title>TheLifeCo Admin Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -167,9 +168,17 @@ tr:hover td { background: rgba(0,96,156,0.02); }
 .parse-step-check { color: var(--green); }
 @media (max-width: 1024px) { .stats-row { grid-template-columns: repeat(2, 1fr); } .grid-dashboard { grid-template-columns: 1fr; } .grid-2 { grid-template-columns: 1fr; } }
 @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .main { margin-left: 0; } .hamburger { display: block; } .content { padding: 20px 16px; } .topbar { padding: 12px 16px; } .stats-row { grid-template-columns: 1fr; } .detail-grid { grid-template-columns: 1fr; } .today-section { grid-template-columns: 1fr; } .guest-detail-header { flex-direction: column; text-align: center; } .quick-actions { flex-direction: column; } .activity-row-builder { flex-wrap: wrap; } }
+.auth-gate { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 500; }
+.auth-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 40px; width: 100%; max-width: 400px; border: 1px solid var(--border); }
+.auth-card h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; color: var(--navy); }
+.auth-card p { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 24px; }
+.auth-error { background: var(--red-light); color: var(--red); padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 16px; display: none; }
+.auth-error.visible { display: block; }
+.nav-item-logout { margin-top: auto; }
 </style>
 </head>
 <body>
+<div class="auth-gate" id="authGate"></div>
 <div class="sidebar" id="sidebar"></div>
 <div class="main">
   <div class="topbar" id="topbar"></div>
@@ -257,7 +266,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
   function openModal() { document.getElementById('modalOverlay').classList.add('open'); }
   function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
 
-  var TODAY_STR = '2026-03-14';
+  var TODAY_STR = new Date().toISOString().slice(0, 10);
   var TOTAL_ROOMS = 20;
 
   var ICONS = {
@@ -285,51 +294,230 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     arrowLeft: ['M19 12H5', 'M12 19l-7-7 7-7'],
   };
 
-  // -- Data Store --
-  var STORAGE_KEY = 'tlc_admin';
-  function defaultStore() {
+  // -- Auth --
+  var AUTH_TOKEN_KEY = 'tlc_admin_token';
+
+  function getAuthToken() { return sessionStorage.getItem(AUTH_TOKEN_KEY); }
+  function setAuthToken(token) { sessionStorage.setItem(AUTH_TOKEN_KEY, token); }
+  function clearAuthToken() { sessionStorage.removeItem(AUTH_TOKEN_KEY); }
+
+  function authHeaders() {
     return {
-      guests: [
-        { id: 'g1', firstName: 'Hasan', lastName: 'Akkaya', email: 'hasan@example.com', whatsapp: '+90 555 123 4567', checkin: '2026-03-09', duration: 7, programme: 'Green Salad', room: '204', notes: 'Vegan preferences', status: 'active', pin: '0309', schedule: null, createdAt: '2026-03-08T10:00:00Z' },
-        { id: 'g2', firstName: 'Sarah', lastName: 'Johnson', email: 'sarah.j@example.com', whatsapp: '+1 555 987 6543', checkin: '2026-03-12', duration: 14, programme: 'Master Detox', room: '112', notes: '', status: 'active', pin: '0312', schedule: null, createdAt: '2026-03-11T09:00:00Z' },
-        { id: 'g3', firstName: 'Marco', lastName: 'Rossi', email: 'marco.r@example.com', whatsapp: '+39 333 456 7890', checkin: '2026-03-20', duration: 7, programme: 'Green Juice Cleanse', room: '301', notes: 'First visit', status: 'upcoming', pin: '0320', schedule: null, createdAt: '2026-03-14T08:00:00Z' }
-      ],
-      templates: [
-        { id: 't1', name: '7-Day Green Salad Standard', programme: 'Green Salad', duration: 7, createdAt: '2026-02-15T12:00:00Z' },
-        { id: 't2', name: '14-Day Master Detox', programme: 'Master Detox', duration: 14, createdAt: '2026-02-20T12:00:00Z' },
-        { id: 't3', name: '7-Day Water Fasting', programme: 'Water Fasting', duration: 7, createdAt: '2026-03-01T12:00:00Z' }
-      ],
-      pdfHistory: [
-        { id: 'p1', filename: 'Mr. Hasan Program.pdf', guest: 'Hasan Akkaya', uploadedAt: '2026-03-08T10:05:00Z', status: 'parsed' },
-        { id: 'p2', filename: 'Sarah Johnson Detox Plan.pdf', guest: 'Sarah Johnson', uploadedAt: '2026-03-11T09:15:00Z', status: 'parsed' }
-      ],
-      activityLog: [
-        { id: 'a1', time: '2026-03-14T08:30:00Z', action: 'Guest Created', user: 'Admin', details: 'Created portal for Marco Rossi' },
-        { id: 'a2', time: '2026-03-12T11:00:00Z', action: 'PDF Uploaded', user: 'Admin', details: 'Uploaded schedule for Sarah Johnson' },
-        { id: 'a3', time: '2026-03-11T09:00:00Z', action: 'Guest Created', user: 'Admin', details: 'Created portal for Sarah Johnson' },
-        { id: 'a4', time: '2026-03-09T14:20:00Z', action: 'Settings Updated', user: 'Admin', details: 'Updated portal base URL' },
-        { id: 'a5', time: '2026-03-08T10:00:00Z', action: 'Guest Created', user: 'Admin', details: 'Created portal for Hasan Akkaya' }
-      ],
-      settings: {
-        autoPin: true, welcomeMsg: true, guestFeedback: true, sessionTimeout: true,
-        resortName: 'TheLifeCo Well-Being', whatsappNumber: '17582861869',
-        portalBaseUrl: 'https://thelifeco.app/guest/',
-        defaultDuration: 7
-      }
+      'Authorization': 'Bearer ' + getAuthToken(),
+      'Content-Type': 'application/json'
     };
   }
 
-  function loadStore() {
-    try { var raw = localStorage.getItem(STORAGE_KEY); if (raw) return JSON.parse(raw); } catch(e) {}
-    var s = defaultStore(); saveStore(s); return s;
-  }
-  function saveStore(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
-  function addLog(action, details) {
-    store.activityLog.unshift({ id: generateId(), time: new Date().toISOString(), action: action, user: 'Admin', details: details });
-    saveStore(store);
+  function buildLoginForm() {
+    var gate = document.getElementById('authGate');
+    clearEl(gate);
+    gate.style.display = 'flex';
+    document.getElementById('sidebar').style.display = 'none';
+    document.querySelector('.main').style.display = 'none';
+
+    var card = el('div', { className: 'auth-card' });
+    card.appendChild(el('h1', { textContent: 'TheLifeCo Admin' }));
+    card.appendChild(el('p', { textContent: 'Sign in to manage guest portals' }));
+
+    var errorEl = el('div', { className: 'auth-error', id: 'authError' });
+    card.appendChild(errorEl);
+
+    var emailGroup = el('div', { className: 'form-group' });
+    emailGroup.appendChild(el('label', { className: 'form-label', textContent: 'Email' }));
+    var emailInput = el('input', { className: 'form-input', type: 'email', placeholder: 'admin@thelifeco.com', id: 'loginEmail' });
+    emailGroup.appendChild(emailInput);
+    card.appendChild(emailGroup);
+
+    var passGroup = el('div', { className: 'form-group' });
+    passGroup.appendChild(el('label', { className: 'form-label', textContent: 'Password' }));
+    var passInput = el('input', { className: 'form-input', type: 'password', placeholder: 'Enter password', id: 'loginPassword' });
+    passGroup.appendChild(passInput);
+    card.appendChild(passGroup);
+
+    var loginBtn = el('button', { className: 'btn btn-primary', textContent: 'Sign In', style: 'width:100%;justify-content:center;padding:12px' });
+    loginBtn.addEventListener('click', function() { doLogin(emailInput.value, passInput.value, errorEl, loginBtn); });
+    passInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(emailInput.value, passInput.value, errorEl, loginBtn); });
+    card.appendChild(loginBtn);
+
+    gate.appendChild(card);
   }
 
-  var store = loadStore();
+  function doLogin(email, password, errorEl, btn) {
+    if (!email || !password) {
+      errorEl.textContent = 'Please enter email and password.';
+      errorEl.classList.add('visible');
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Signing in...';
+    errorEl.classList.remove('visible');
+
+    fetch('/api/admin/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: password })
+    })
+    .then(function(res) {
+      if (!res.ok) return res.json().then(function(data) { throw new Error(data.error || 'Invalid credentials'); });
+      return res.json();
+    })
+    .then(function(data) {
+      setAuthToken(data.token);
+      showApp();
+    })
+    .catch(function(err) {
+      errorEl.textContent = err.message || 'Login failed. Please try again.';
+      errorEl.classList.add('visible');
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+    });
+  }
+
+  function validateToken() {
+    var token = getAuthToken();
+    if (!token) return Promise.resolve(false);
+    return fetch('/api/admin/auth', {
+      method: 'GET',
+      headers: authHeaders()
+    }).then(function(res) { return res.ok; }).catch(function() { return false; });
+  }
+
+  function logout() {
+    clearAuthToken();
+    buildLoginForm();
+  }
+
+  function showApp() {
+    document.getElementById('authGate').style.display = 'none';
+    document.getElementById('sidebar').style.display = '';
+    document.querySelector('.main').style.display = '';
+    loadAllData().then(function() { render(); });
+  }
+
+  // -- API-based Data Store --
+  var store = { guests: [], templates: [], pdfHistory: [], activityLog: [], settings: {} };
+
+  function apiFetch(path, opts) {
+    opts = opts || {};
+    opts.headers = authHeaders();
+    return fetch(path, opts).then(function(res) {
+      if (res.status === 401) { logout(); throw new Error('Session expired'); }
+      if (!res.ok) return res.json().then(function(d) { throw new Error(d.error || 'API error'); });
+      if (res.status === 204) return null;
+      return res.json();
+    });
+  }
+
+  function loadAllData() {
+    return Promise.all([
+      apiFetch('/api/admin/guests'),
+      apiFetch('/api/admin/templates'),
+      apiFetch('/api/admin/settings'),
+      apiFetch('/api/admin/log')
+    ]).then(function(results) {
+      store.guests = (results[0] || []).map(function(g) {
+        g.status = computeStatus(g);
+        return g;
+      });
+      store.templates = results[1] || [];
+      store.settings = results[2] || {};
+      store.activityLog = results[3] || [];
+    }).catch(function(err) {
+      if (err.message !== 'Session expired') showAdminToast('Failed to load data: ' + err.message);
+    });
+  }
+
+  function computeStatus(g) {
+    var checkout = guestCheckoutDate(g.checkin, g.duration);
+    if (checkout <= TODAY_STR) return 'completed';
+    if (g.checkin <= TODAY_STR) return 'active';
+    return 'upcoming';
+  }
+
+  function guestCheckoutDate(checkin, duration) {
+    var d = new Date(checkin);
+    d.setDate(d.getDate() + duration);
+    return d.toISOString().slice(0, 10);
+  }
+
+  function apiCreateGuest(guestData) {
+    return apiFetch('/api/admin/guests', {
+      method: 'POST',
+      body: JSON.stringify(guestData)
+    }).then(function(created) {
+      created.status = computeStatus(created);
+      store.guests.push(created);
+      return created;
+    });
+  }
+
+  function apiUpdateGuest(id, guestData) {
+    return apiFetch('/api/admin/guests/' + id, {
+      method: 'PUT',
+      body: JSON.stringify(guestData)
+    }).then(function(updated) {
+      updated.status = computeStatus(updated);
+      store.guests = store.guests.map(function(g) { return g.id === id ? updated : g; });
+      return updated;
+    });
+  }
+
+  function apiDeleteGuest(id) {
+    return apiFetch('/api/admin/guests/' + id, {
+      method: 'DELETE'
+    }).then(function() {
+      store.guests = store.guests.filter(function(g) { return g.id !== id; });
+    });
+  }
+
+  function apiSaveSettings(settings) {
+    return apiFetch('/api/admin/settings', {
+      method: 'PUT',
+      body: JSON.stringify(settings)
+    }).then(function(updated) {
+      store.settings = updated;
+      return updated;
+    });
+  }
+
+  function apiCreateTemplate(tpl) {
+    return apiFetch('/api/admin/templates', {
+      method: 'POST',
+      body: JSON.stringify(tpl)
+    }).then(function(created) {
+      store.templates.push(created);
+      return created;
+    });
+  }
+
+  function apiDeleteTemplate(id) {
+    return apiFetch('/api/admin/templates/' + id, {
+      method: 'DELETE'
+    }).then(function() {
+      store.templates = store.templates.filter(function(t) { return t.id !== id; });
+    });
+  }
+
+  function apiGetSchedule(guestId) {
+    return apiFetch('/api/admin/schedule/' + guestId);
+  }
+
+  function apiSaveSchedule(guestId, schedule) {
+    return apiFetch('/api/admin/schedule/' + guestId, {
+      method: 'PUT',
+      body: JSON.stringify({ schedule: schedule })
+    });
+  }
+
+  function addLog(action, details) {
+    // Fire-and-forget log to API
+    apiFetch('/api/admin/log', {
+      method: 'POST',
+      body: JSON.stringify({ action: action, details: details })
+    }).then(function(entry) {
+      if (entry) store.activityLog.unshift(entry);
+    }).catch(function() { /* silently fail */ });
+  }
   var currentPage = 'dashboard';
   var detailGuestId = null;
 
@@ -337,20 +525,13 @@ tr:hover td { background: rgba(0,96,156,0.02); }
 
   // -- Computed helpers --
   function guestCheckout(g) {
-    var d = new Date(g.checkin); d.setDate(d.getDate() + g.duration);
-    return d.toISOString().slice(0,10);
+    return guestCheckoutDate(g.checkin, g.duration);
   }
   function guestDaysLeft(g) {
     var checkout = new Date(guestCheckout(g));
     var now = new Date(TODAY_STR);
     var diff = Math.ceil((checkout - now) / 86400000);
     return diff > 0 ? diff : 0;
-  }
-  function autoStatus(g) {
-    var co = guestCheckout(g);
-    if (co <= TODAY_STR) return 'completed';
-    if (g.checkin <= TODAY_STR) return 'active';
-    return 'upcoming';
   }
   function isCheckoutToday(g) { return guestCheckout(g) === TODAY_STR; }
   function isCheckinToday(g) { return g.checkin === TODAY_STR; }
@@ -411,6 +592,16 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       });
       nav.appendChild(s);
     });
+
+    // Logout nav item
+    var logoutSection = el('div', { className: 'nav-section', style: 'margin-top:auto;border-top:1px solid rgba(255,255,255,0.1);padding-top:12px' });
+    var logoutItem = el('div', { className: 'nav-item' });
+    logoutItem.appendChild(svgIcon(ICONS.x));
+    logoutItem.appendChild(el('span', { textContent: 'Logout' }));
+    logoutItem.addEventListener('click', function() { logout(); });
+    logoutSection.appendChild(logoutItem);
+    nav.appendChild(logoutSection);
+
     sb.appendChild(nav);
     sb.appendChild(el('div', { className: 'sidebar-footer', textContent: 'v2.0 \u2014 Enhanced Admin' }));
   }
@@ -741,11 +932,13 @@ tr:hover td { background: rgba(0,96,156,0.02); }
 
   function deleteGuest(g) {
     if (!confirm('Delete ' + g.firstName + ' ' + g.lastName + '? This cannot be undone.')) return;
-    store.guests = store.guests.filter(function(gg) { return gg.id !== g.id; });
-    addLog('Guest Deleted', 'Deleted guest: ' + g.firstName + ' ' + g.lastName);
-    saveStore(store);
-    render();
-    showAdminToast('Guest deleted');
+    apiDeleteGuest(g.id).then(function() {
+      addLog('Guest Deleted', 'Deleted guest: ' + g.firstName + ' ' + g.lastName);
+      render();
+      showAdminToast('Guest deleted');
+    }).catch(function(err) {
+      showAdminToast('Failed to delete: ' + err.message);
+    });
   }
 
   // -- Guest Detail Page --
@@ -809,7 +1002,12 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       cIcon.appendChild(svgIcon(ICONS.check, 18));
       compAct.appendChild(cIcon);
       compAct.appendChild(el('span', { className: 'action-card-text', textContent: 'Mark Completed' }));
-      compAct.addEventListener('click', function() { g.status = 'completed'; addLog('Status Changed', g.firstName + ' ' + g.lastName + ' marked as completed'); saveStore(store); render(); });
+      compAct.addEventListener('click', function() {
+        apiUpdateGuest(g.id, { status_override: 'completed' }).then(function() {
+          addLog('Status Changed', g.firstName + ' ' + g.lastName + ' marked as completed');
+          render();
+        }).catch(function(err) { showAdminToast('Error: ' + err.message); });
+      });
       actions.appendChild(compAct);
     }
     if (g.status === 'upcoming' && g.checkin <= TODAY_STR) {
@@ -818,7 +1016,12 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       aIcon.appendChild(svgIcon(ICONS.check, 18));
       actAct.appendChild(aIcon);
       actAct.appendChild(el('span', { className: 'action-card-text', textContent: 'Mark Active' }));
-      actAct.addEventListener('click', function() { g.status = 'active'; addLog('Status Changed', g.firstName + ' ' + g.lastName + ' marked as active'); saveStore(store); render(); });
+      actAct.addEventListener('click', function() {
+        apiUpdateGuest(g.id, { status_override: 'active' }).then(function() {
+          addLog('Status Changed', g.firstName + ' ' + g.lastName + ' marked as active');
+          render();
+        }).catch(function(err) { showAdminToast('Error: ' + err.message); });
+      });
       actions.appendChild(actAct);
     }
 
@@ -997,7 +1200,6 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     submitBtn.appendChild(document.createTextNode(existing ? 'Update Guest' : 'Create Guest Portal'));
     submitBtn.addEventListener('click', function() {
       var guestData = {
-        id: existing ? existing.id : generateId(),
         firstName: inputs.firstName.value.trim(),
         lastName: inputs.lastName.value.trim(),
         email: inputs.email.value.trim(),
@@ -1007,21 +1209,21 @@ tr:hover td { background: rgba(0,96,156,0.02); }
         programme: inputs.programme.value,
         room: inputs.room.value.trim(),
         notes: inputs.notes.value.trim(),
-        status: inputs.checkin.value <= TODAY_STR ? 'active' : 'upcoming',
         pin: inputs.checkin.value ? inputs.checkin.value.slice(5).replace('-', '') : '0000',
-        schedule: manualSchedule.length > 0 ? manualSchedule : (existing ? existing.schedule : null),
-        createdAt: existing ? existing.createdAt : new Date().toISOString()
+        schedule: manualSchedule.length > 0 ? manualSchedule : (existing ? existing.schedule : null)
       };
       if (!guestData.firstName || !guestData.lastName) { alert('Please enter guest name.'); return; }
 
-      if (existing) {
-        store.guests = store.guests.map(function(g) { return g.id === existing.id ? guestData : g; });
-        addLog('Guest Updated', 'Updated portal for ' + guestData.firstName + ' ' + guestData.lastName);
-      } else {
-        store.guests.push(guestData);
-        addLog('Guest Created', 'Created portal for ' + guestData.firstName + ' ' + guestData.lastName);
-      }
-      saveStore(store);
+      submitBtn.disabled = true;
+      submitBtn.textContent = existing ? 'Updating...' : 'Creating...';
+
+      var apiCall = existing
+        ? apiUpdateGuest(existing.id, guestData)
+        : apiCreateGuest(guestData);
+
+      apiCall.then(function(savedGuest) {
+        guestData = savedGuest;
+        addLog(existing ? 'Guest Updated' : 'Guest Created', (existing ? 'Updated' : 'Created') + ' portal for ' + guestData.firstName + ' ' + guestData.lastName);
 
       // Show success
       var sb2 = document.getElementById('create-success');
@@ -1057,6 +1259,11 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       sb2.appendChild(waRow);
 
       editingGuest = null;
+      }).catch(function(err) {
+        showAdminToast('Error: ' + err.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = existing ? 'Update Guest' : 'Create Guest Portal';
+      });
     });
     submitRow.appendChild(submitBtn);
     if (existing) {
@@ -1280,9 +1487,10 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       var delBtn = el('button', { className: 'btn btn-outline btn-sm', textContent: 'Delete' });
       delBtn.addEventListener('click', function() {
         if (!confirm('Delete template "' + t.name + '"?')) return;
-        store.templates = store.templates.filter(function(tt) { return tt.id !== t.id; });
-        addLog('Template Deleted', 'Deleted template: ' + t.name);
-        render();
+        apiDeleteTemplate(t.id).then(function() {
+          addLog('Template Deleted', 'Deleted template: ' + t.name);
+          render();
+        }).catch(function(err) { showAdminToast('Error: ' + err.message); });
       });
       actTd.appendChild(delBtn);
       tr.appendChild(actTd);
@@ -1362,9 +1570,15 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     saveBtn.addEventListener('click', function() {
       var name = tplInputs['tpl-name'].value.trim();
       if (!name) { alert('Enter template name'); return; }
-      store.templates.push({ id: generateId(), name: name, programme: tplInputs['tpl-programme'].value, duration: parseInt(tplInputs['tpl-duration'].value, 10) || 7, createdAt: new Date().toISOString() });
-      addLog('Template Created', 'Created template: ' + name);
-      closeModal(); render();
+      saveBtn.disabled = true;
+      apiCreateTemplate({ name: name, programme: tplInputs['tpl-programme'].value, duration: parseInt(tplInputs['tpl-duration'].value, 10) || 7 })
+        .then(function() {
+          addLog('Template Created', 'Created template: ' + name);
+          closeModal(); render();
+        }).catch(function(err) {
+          showAdminToast('Error: ' + err.message);
+          saveBtn.disabled = false;
+        });
     });
     mf.appendChild(saveBtn);
     modal.appendChild(mf);
@@ -1400,7 +1614,14 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       toggle.addEventListener('click', function() {
         store.settings[t.key] = !store.settings[t.key];
         toggle.classList.toggle('on');
-        saveStore(store);
+        var update = {};
+        update[t.key] = store.settings[t.key];
+        apiSaveSettings(Object.assign({}, store.settings, update)).catch(function(err) {
+          // Revert on failure
+          store.settings[t.key] = !store.settings[t.key];
+          toggle.classList.toggle('on');
+          showAdminToast('Error: ' + err.message);
+        });
       });
       row.appendChild(toggle);
       cb1.appendChild(row);
@@ -1430,12 +1651,23 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     });
     var saveSettingsBtn = el('button', { className: 'btn btn-primary', textContent: 'Save Configuration', style: 'margin-top:8px' });
     saveSettingsBtn.addEventListener('click', function() {
+      var newSettings = {};
       configFields.forEach(function(f) {
-        store.settings[f.key] = f.type === 'number' ? parseInt(configInputs[f.key].value, 10) : configInputs[f.key].value.trim();
+        newSettings[f.key] = f.type === 'number' ? parseInt(configInputs[f.key].value, 10) : configInputs[f.key].value.trim();
       });
-      addLog('Settings Updated', 'Resort configuration updated');
-      saveStore(store);
-      showAdminToast('Settings saved successfully');
+      saveSettingsBtn.disabled = true;
+      saveSettingsBtn.textContent = 'Saving...';
+      apiSaveSettings(Object.assign({}, store.settings, newSettings))
+        .then(function() {
+          addLog('Settings Updated', 'Resort configuration updated');
+          showAdminToast('Settings saved successfully');
+          saveSettingsBtn.disabled = false;
+          saveSettingsBtn.textContent = 'Save Configuration';
+        }).catch(function(err) {
+          showAdminToast('Error: ' + err.message);
+          saveSettingsBtn.disabled = false;
+          saveSettingsBtn.textContent = 'Save Configuration';
+        });
     });
     cb2.appendChild(saveSettingsBtn);
     card2.appendChild(cb2);
@@ -1466,19 +1698,8 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     importBtn.appendChild(document.createTextNode(' Import'));
     var importFile = el('input', { type: 'file', accept: '.json', style: 'display:none' });
     importBtn.addEventListener('click', function() { importFile.click(); });
-    importFile.addEventListener('change', function() {
-      var f = importFile.files[0]; if (!f) return;
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          store = JSON.parse(e.target.result);
-          saveStore(store);
-          addLog('Data Imported', 'Imported data from JSON file');
-          render();
-          showAdminToast('Data imported successfully');
-        } catch(err) { alert('Invalid JSON file.'); }
-      };
-      reader.readAsText(f);
+    importFile.addEventListener('click', function() {
+      showAdminToast('Import is not supported in API mode. Use the API to manage data.');
     });
     btnRow.appendChild(importBtn);
     btnRow.appendChild(importFile);
@@ -1487,12 +1708,7 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     clearBtn.appendChild(svgIcon(ICONS.trash, 16));
     clearBtn.appendChild(document.createTextNode(' Clear All Data'));
     clearBtn.addEventListener('click', function() {
-      if (confirm('This will delete all data and reset to defaults. Continue?')) {
-        store = defaultStore(); saveStore(store);
-        addLog('Data Cleared', 'All data reset to defaults');
-        render();
-        showAdminToast('Data cleared');
-      }
+      showAdminToast('Data reset is not supported in API mode. Contact your system administrator.');
     });
     btnRow.appendChild(clearBtn);
     cb3.appendChild(btnRow);
@@ -1557,7 +1773,15 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     content.appendChild(fn());
   }
 
-  render();
+  // -- Init with auth check --
+  validateToken().then(function(valid) {
+    if (valid) {
+      showApp();
+    } else {
+      clearAuthToken();
+      buildLoginForm();
+    }
+  });
 })();
 </script>
 </body>

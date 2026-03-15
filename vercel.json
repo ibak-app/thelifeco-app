@@ -1,0 +1,27 @@
+{
+  "rewrites": [
+    { "source": "/guest/:slug", "destination": "/guest/_shell/index.html" },
+    { "source": "/guest/:slug/", "destination": "/guest/_shell/index.html" },
+    { "source": "/guest/:slug/sw.js", "destination": "/guest/_shared/sw.js" },
+    { "source": "/guest/:slug/manifest.json", "destination": "/api/guest/manifest" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
+      ]
+    },
+    {
+      "source": "/guest/_shared/sw.js",
+      "headers": [
+        { "key": "Service-Worker-Allowed", "value": "/guest/" },
+        { "key": "Cache-Control", "value": "no-cache" },
+        { "key": "Content-Type", "value": "application/javascript" }
+      ]
+    }
+  ]
+}
