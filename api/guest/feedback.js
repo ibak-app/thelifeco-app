@@ -48,6 +48,6 @@ export default async function handler(req, res) {
     return res.status(201).json({ success: true, feedback: data });
   } catch (err) {
     console.error('Feedback API error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error', detail: err.message });
   }
 }
