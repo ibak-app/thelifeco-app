@@ -58,8 +58,9 @@ async function handlePut(req, res, user) {
 
   const dbUpdates = {};
   for (const [key, value] of Object.entries(updates)) {
-    const dbKey = fieldMap[key] || key;
-    dbUpdates[dbKey] = value;
+    if (fieldMap[key]) {
+      dbUpdates[fieldMap[key]] = value;
+    }
   }
 
   dbUpdates.updated_at = new Date().toISOString();

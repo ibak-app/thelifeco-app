@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#00609C" />
   <meta name="description" content="TheLifeCo St. Lucia — Personalized Guest Portal" />
   <title>TheLifeCo · Guest Portal</title>
-  <link rel="manifest" href="manifest.json" />
+  <link rel="manifest" id="manifest-link" href="manifest.json" />
   <link rel="icon" type="image/png" href="/icons/icon-192.png" />
   <link rel="apple-touch-icon" href="/icons/icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -256,6 +256,7 @@ ul, ol {
 #app {
   max-width: 480px;
   margin: 0 auto;
+  min-height: 100vh;
   min-height: 100dvh;
   background: var(--bg);
   position: relative;
@@ -2660,7 +2661,7 @@ ul, ol {
 <div id="offline-banner" class="offline-banner">You're offline — showing cached content</div>
 
 <!-- ==================== AUTH GATE ==================== -->
-<div id="auth-gate" style="background-image:url(images/hero-resort.jpg)">
+<div id="auth-gate" style="background-image:url(/guest/_shared/images/hero-resort.jpg)">
   <div class="auth-card">
     <div class="auth-logo-text">TheLifeCo</div>
     <div class="auth-tagline">Holistic Wellbeing &middot; St. Lucia</div>
@@ -2885,8 +2886,17 @@ ul, ol {
 // =============================================================
 var SLUG = window.location.pathname.split('/guest/')[1];
 if (SLUG) SLUG = SLUG.replace(/\//g, '');
+if (!SLUG) {
+  var errDiv = document.createElement('div');
+  errDiv.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100vh;color:#fff;font-size:18px;text-align:center;padding:20px;background:#00609C';
+  errDiv.textContent = 'Invalid guest link. Please use the link provided to you.';
+  document.body.appendChild(errDiv);
+}
 var API_BASE = '/api/guest/' + SLUG;
 var AUTH_KEY = 'tlc_auth_' + window.location.pathname;
+// Set manifest href dynamically for PWA installability
+var manifestLink = document.getElementById('manifest-link');
+if (manifestLink && SLUG) manifestLink.href = '/api/guest/manifest?slug=' + SLUG;
 
 function unlockApp() {
   sessionStorage.setItem(AUTH_KEY, '1');
@@ -2897,6 +2907,7 @@ function unlockApp() {
   setTimeout(function() {
     document.getElementById('auth-gate').style.display = 'none';
   }, 500);
+  if (typeof startSessionTimeout === 'function') startSessionTimeout();
 }
 
 (function initAuth() {
@@ -2904,6 +2915,7 @@ function unlockApp() {
     document.getElementById('auth-gate').style.display = 'none';
     document.getElementById('app').style.display = '';
     document.getElementById('help-btn').style.display = '';
+    if (typeof startSessionTimeout === 'function') startSessionTimeout();
     return;
   }
 
@@ -3041,7 +3053,7 @@ function loadGuestData() {
     // Category images
     CATEGORY_IMAGES = {};
     (data.categories || []).forEach(function(cat) {
-      if (cat.image_path) CATEGORY_IMAGES[cat.id] = '/guest/_shared/' + cat.image_path;
+      if (cat.imagePath) CATEGORY_IMAGES[cat.id] = '/guest/_shared/' + cat.imagePath;
     });
 
     // Category counts
@@ -3694,7 +3706,7 @@ function initToday() {
   var dayNum = getDayNum(todayStr);
   var dates = Object.keys(SCHEDULE);
   var stayStart = new Date(GUEST.checkIn + 'T00:00:00');
-  var stayEnd = new Date(dates[dates.length - 1] + 'T00:00:00');
+  var stayEnd = dates.length ? new Date(dates[dates.length - 1] + 'T00:00:00') : new Date(stayStart.getTime() + (GUEST.totalDays || 7) * 86400000);
 
   // Before stay
   if (TODAY_DATE < stayStart) {
@@ -5137,7 +5149,10 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
 // SESSION TIMEOUT
 // =============================================================
 
-(function initSessionTimeout() {
+var _sessionTimeoutStarted = false;
+function startSessionTimeout() {
+  if (_sessionTimeoutStarted) return;
+  _sessionTimeoutStarted = true;
   var TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
   var WARNING_MS = 25 * 60 * 1000; // 25 minutes
   var _sessionTimer = null;
@@ -5159,7 +5174,7 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
   ['click', 'touchstart', 'keydown'].forEach(function(evt) {
     document.addEventListener(evt, resetSessionTimer, { passive: true });
   });
-})();
+}
 
 
 // =============================================================
@@ -5246,7 +5261,7 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
       while (splash.firstChild) splash.removeChild(splash.firstChild);
       var errMsg = document.createElement('p');
       errMsg.textContent = 'Unable to load guest data. Please check your connection.';
-      errMsg.style.cssText = 'color:#00609C;font-size:16px;padding:20px;text-align:center';
+      errMsg.style.cssText = 'color:#ffffff;font-size:16px;padding:20px;text-align:center';
       splash.appendChild(errMsg);
       splash.style.opacity = '1';
     }
@@ -5299,7 +5314,7 @@ document.querySelectorAll('.nav-item').forEach(function(btn) {
 
   // Service worker registration (change #12)
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/guest/' + SLUG + '/sw.js', { scope: '/guest/' + SLUG + '/' }).catch(function() {
+    navigator.serviceWorker.register('/guest/_shared/sw.js', { scope: '/guest/' + SLUG + '/' }).catch(function() {
       // SW unavailable when opened as file:// - app works without it
     });
   }

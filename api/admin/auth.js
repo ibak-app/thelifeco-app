@@ -9,6 +9,8 @@ export default async function handler(req, res) {
 
   try {
     switch (req.method) {
+      case 'GET':
+        return await handleValidate(req, res);
       case 'POST':
         return await handleSignIn(req, res);
       case 'DELETE':
@@ -20,6 +22,28 @@ export default async function handler(req, res) {
     console.error('Auth API error:', err);
     return res.status(500).json({ error: 'Internal server error' });
   }
+}
+
+async function handleValidate(req, res) {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  if (!token) {
+    return res.status(401).json({ error: 'Missing authorization token' });
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    global: { headers: { Authorization: `Bearer ${token}` } },
+  });
+
+  const { data: { user }, error } = await supabase.auth.getUser();
+
+  if (error || !user) {
+    return res.status(401).json({ error: 'Invalid or expired token' });
+  }
+
+  return res.status(200).json({
+    valid: true,
+    user: { id: user.id, email: user.email },
+  });
 }
 
 async function handleSignIn(req, res) {
@@ -37,7 +61,8 @@ async function handleSignIn(req, res) {
   });
 
   if (error) {
-    return res.status(401).json({ error: error.message });
+    console.error('Auth error:', error.message);
+    return res.status(401).json({ error: 'Invalid email or password' });
   }
 
   return res.status(200).json({

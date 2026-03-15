@@ -16,21 +16,28 @@ export function supabaseWithAuth(req) {
 }
 
 // CORS headers for all API responses
-export const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
+const ALLOWED_ORIGINS = ['https://thelifeco.app', 'https://www.thelifeco.app'];
+
+export function getCorsHeaders(req) {
+  const origin = req?.headers?.origin || '';
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  };
+}
 
 // Handle CORS preflight
 export function handleCors(req, res) {
-  if (req.method === 'OPTIONS') {
-    res.status(200).json({});
-    return true;
-  }
-  Object.entries(corsHeaders).forEach(([key, value]) => {
+  const headers = getCorsHeaders(req);
+  Object.entries(headers).forEach(([key, value]) => {
     res.setHeader(key, value);
   });
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return true;
+  }
   return false;
 }
 
