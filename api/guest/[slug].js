@@ -23,10 +23,13 @@ async function checkRateLimit(slug) {
 }
 
 async function recordAttempt(slug) {
-  await supabaseAdmin
-    .from('activity_log')
-    .insert({ action: 'pin_attempt', details: slug, user_display: 'guest' })
-    .catch(err => console.error('Rate limit record error:', err));
+  try {
+    await supabaseAdmin
+      .from('activity_log')
+      .insert({ action: 'pin_attempt', details: slug, user_display: 'guest' });
+  } catch (err) {
+    console.error('Rate limit record error:', err);
+  }
 }
 
 export default async function handler(req, res) {
@@ -55,7 +58,7 @@ export default async function handler(req, res) {
     }
   } catch (err) {
     console.error('Guest API error:', err);
-    return res.status(500).json({ error: 'Internal server error', debug: err.message });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 }
 
