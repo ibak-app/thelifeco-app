@@ -1,19 +1,5 @@
 import { supabaseAdmin, handleCors } from '../_lib/supabase.js';
 
-export const config = { api: { bodyParser: false } };
-
-function parseBody(req) {
-  return new Promise((resolve, reject) => {
-    let data = '';
-    req.on('data', chunk => { data += chunk; });
-    req.on('end', () => {
-      try { resolve(JSON.parse(data)); }
-      catch (e) { reject(new Error('Invalid request body')); }
-    });
-    req.on('error', reject);
-  });
-}
-
 export default async function handler(req, res) {
   if (handleCors(req, res)) return;
 
@@ -22,13 +8,29 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { slug, category, content } = await parseBody(req);
+    let body;
+    try {
+      body = req.body;
+    } catch (e) {
+      // Vercel body parser failed — read raw body
+      body = await new Promise((resolve, reject) => {
+        let data = '';
+        req.on('data', chunk => { data += chunk; });
+        req.on('end', () => { try { resolve(JSON.parse(data)); } catch (e2) { reject(e2); } });
+        req.on('error', reject);
+      });
+    }
+    if (!body || typeof body !== 'object') {
+      return res.status(400).json({ error: 'Invalid request body' });
+    }
+
+    const { slug, category, content } = body;
 
     if (!slug || !category || !content) {
       return res.status(400).json({ error: 'Missing slug, category, or content' });
     }
 
-    if (content.length > 5000) {
+    if (String(content).length > 5000) {
       return res.status(400).json({ error: 'Content exceeds maximum length of 5000 characters' });
     }
 
@@ -49,7 +51,7 @@ export default async function handler(req, res) {
       .insert({
         guest_id: guest.id,
         category,
-        content,
+        content: String(content),
       })
       .select()
       .single();
@@ -62,6 +64,6 @@ export default async function handler(req, res) {
     return res.status(201).json({ success: true, feedback: data });
   } catch (err) {
     console.error('Feedback API error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: err.message || 'Internal server error' });
   }
 }
