@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -1237,8 +1238,78 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     var schedCard = el('div', { className: 'card' });
     var sch = el('div', { className: 'card-header' });
     sch.appendChild(el('h2', { textContent: 'Schedule' }));
+    var schedBtnRow = el('div', { style: 'display:flex;gap:8px' });
     var editSchedBtn = el('button', { className: 'btn btn-outline btn-sm', textContent: 'Edit Schedule' });
-    sch.appendChild(editSchedBtn);
+    schedBtnRow.appendChild(editSchedBtn);
+    var pdfSchedBtn = el('button', { className: 'btn btn-teal btn-sm' });
+    pdfSchedBtn.appendChild(svgIcon(ICONS.upload, 14));
+    pdfSchedBtn.appendChild(document.createTextNode(' Import PDF'));
+    var pdfSchedInput = el('input', { type: 'file', accept: '.pdf', style: 'display:none' });
+    pdfSchedBtn.addEventListener('click', function() { pdfSchedInput.click(); });
+    pdfSchedInput.addEventListener('change', function() {
+      var file = pdfSchedInput.files[0];
+      if (!file || file.type !== 'application/pdf') { showAdminToast('Please select a PDF file.'); return; }
+      if (typeof pdfjsLib === 'undefined') { showAdminToast('PDF library not loaded.'); return; }
+      clearEl(scb);
+      scb.appendChild(el('div', { className: 'spinner' }));
+      scb.appendChild(el('div', { style: 'text-align:center;margin-top:8px;color:var(--text-secondary);font-size:0.85rem', textContent: 'Parsing PDF...' }));
+      parseProgrammePDF(file).then(function(result) {
+        if (!result || !result.days || result.days.length === 0) {
+          clearEl(scb); scb.appendChild(el('div', { style: 'color:var(--red);padding:16px', textContent: 'Could not parse schedule from PDF.' }));
+          return;
+        }
+        clearEl(scb);
+        // Show preview
+        var totalActs = 0;
+        result.days.forEach(function(d) { totalActs += (result.schedule[d] || []).length; });
+        scb.appendChild(el('div', { className: 'parse-step' }, [
+          el('div', { className: 'parse-step-title' }, [el('span', { className: 'parse-step-check', textContent: '\u2713 ' }), document.createTextNode(totalActs + ' activities from ' + result.days.length + ' days')]),
+          el('div', { style: 'font-size:0.82rem;color:var(--text-muted);margin-top:4px', textContent: 'From: ' + file.name })
+        ]));
+        result.days.forEach(function(date, idx) {
+          var acts = result.schedule[date] || [];
+          if (!acts.length) return;
+          var dayEl = el('div', { className: 'schedule-day' });
+          var dayLabel = new Date(date + 'T12:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+          dayEl.appendChild(el('div', { className: 'schedule-day-title', textContent: 'Day ' + (idx + 1) + ' \u2014 ' + dayLabel }));
+          acts.forEach(function(act) {
+            var r2 = el('div', { style: 'display:flex;align-items:center;gap:8px;padding:2px 0;font-size:0.82rem' });
+            r2.appendChild(el('span', { style: 'color:var(--text-muted);width:42px;flex-shrink:0;font-family:monospace', textContent: act.time }));
+            r2.appendChild(el('span', { textContent: act.name }));
+            dayEl.appendChild(r2);
+          });
+          scb.appendChild(dayEl);
+        });
+        // Save/cancel buttons
+        var saveRow2 = el('div', { style: 'margin-top:16px;display:flex;gap:10px' });
+        var savePdfBtn = el('button', { className: 'btn btn-primary', textContent: 'Save This Schedule' });
+        savePdfBtn.addEventListener('click', function() {
+          savePdfBtn.disabled = true; savePdfBtn.textContent = 'Saving...';
+          var pdfSchedule = result.days.map(function(date, idx) {
+            return { title: 'Day ' + (idx + 1), activities: (result.schedule[date] || []).map(function(a) { return { time: a.time, name: a.name, type: a.type }; }) };
+          });
+          apiSaveSchedule(g.id, pdfSchedule, g.checkIn).then(function() {
+            showAdminToast('Schedule imported and saved.');
+            addLog('PDF Uploaded', 'Imported PDF schedule for ' + g.firstName + ' ' + g.lastName + ' (' + totalActs + ' activities)');
+            render();
+          }).catch(function(err) {
+            showAdminToast('Error: ' + err.message);
+            savePdfBtn.disabled = false; savePdfBtn.textContent = 'Save This Schedule';
+          });
+        });
+        saveRow2.appendChild(savePdfBtn);
+        var cancelPdf = el('button', { className: 'btn btn-outline', textContent: 'Cancel' });
+        cancelPdf.addEventListener('click', function() { render(); });
+        saveRow2.appendChild(cancelPdf);
+        scb.appendChild(saveRow2);
+      }).catch(function(err) {
+        clearEl(scb); scb.appendChild(el('div', { style: 'color:var(--red);padding:16px', textContent: 'Parse error: ' + err.message }));
+      });
+      pdfSchedInput.value = '';
+    });
+    schedBtnRow.appendChild(pdfSchedBtn);
+    schedBtnRow.appendChild(pdfSchedInput);
+    sch.appendChild(schedBtnRow);
     schedCard.appendChild(sch);
     var scb = el('div', { className: 'card-body' });
     scb.appendChild(el('div', { className: 'spinner' }));
@@ -1395,12 +1466,8 @@ tr:hover td { background: rgba(0,96,156,0.02); }
       manualPane.style.display = 'block'; uploadPane.style.display = 'none';
     });
 
-    // Upload zone - disabled, coming soon
-    var zone = el('div', { className: 'upload-zone', style: 'opacity:0.5;cursor:default' });
-    zone.appendChild(el('div', { className: 'upload-zone-icon' }, [svgIcon(ICONS.upload, 40)]));
-    zone.appendChild(el('div', { className: 'upload-zone-text', textContent: 'PDF import coming soon' }));
-    zone.appendChild(el('div', { className: 'upload-zone-sub', textContent: 'Use the Manual tab to build schedules.' }));
-    uploadPane.appendChild(zone);
+    // Upload zone - PDF import
+    buildUploadZone(uploadPane, inputs, manualSchedule, manualPane, manualTabBtn, uploadTabBtn);
     rcb.appendChild(uploadPane);
 
     // Manual schedule builder
@@ -1617,7 +1684,280 @@ tr:hover td { background: rgba(0,96,156,0.02); }
     }
   }
 
-  // PDF Parse - placeholder (not yet implemented)
+  // -- PDF Programme Parser --
+  if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+  }
+
+  function inferActivityType(name) {
+    var n = name.toLowerCase();
+    if (/alkalize|wheatgrass|kelp|nettle|salad|enzym|probiotic|immune boost|juice|smoothie|broth|tea|supplement|vitamin|mineral|calori/.test(n)) return 'food';
+    if (/pressotherapy|lymphatic|iv\s|iv$|ozone|colon|hydrotherapy|biohacking|blood|infusion/.test(n)) return 'clinic';
+    if (/wellness therap|biohacking|extra|massage(?!.*class)|facial|acupuncture|reflexolog/.test(n)) return 'extra';
+    return 'group';
+  }
+
+  function parseProgrammePDF(file) {
+    return file.arrayBuffer().then(function(ab) {
+      return pdfjsLib.getDocument({ data: new Uint8Array(ab) }).promise;
+    }).then(function(pdf) {
+      return pdf.getPage(1).then(function(page) {
+        var vp = page.getViewport({ scale: 1 });
+        return page.getTextContent().then(function(tc) {
+          var items = [];
+          tc.items.forEach(function(item) {
+            if (!item.str.trim()) return;
+            items.push({ text: item.str.trim(), x: Math.round(item.transform[4]), y: Math.round(vp.height - item.transform[5]) });
+          });
+          items.sort(function(a, b) { return a.y - b.y || a.x - b.x; });
+
+          // Extract year from date field (DD.MM.YYYY)
+          var year = new Date().getFullYear();
+          items.forEach(function(item) { var m = item.text.match(/(\d{2})\.(\d{2})\.(\d{4})/); if (m) year = parseInt(m[3]); });
+
+          // Find day headers: "Thu 12 March", "Fri 13 March" etc.
+          var dayPat = /^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/i;
+          var monthMap = { jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12 };
+          var dayHeaders = [];
+          items.forEach(function(item) {
+            var m = item.text.match(dayPat);
+            if (m) {
+              var mn = monthMap[m[3].toLowerCase().slice(0,3)];
+              var ds = year + '-' + String(mn).padStart(2,'0') + '-' + String(parseInt(m[2])).padStart(2,'0');
+              dayHeaders.push({ x: item.x, date: ds, y: item.y });
+            }
+          });
+          dayHeaders.sort(function(a, b) { return a.x - b.x; });
+          if (dayHeaders.length === 0) return null;
+
+          // Extract guest name - capitalized multi-word text near top, not a known label
+          var guestName = '';
+          items.filter(function(i) { return i.y < dayHeaders[0].y; }).forEach(function(item) {
+            if (/^[A-Z][a-z]+\s+[A-Z][a-zA-Z]/.test(item.text) && !/Programme|TheLifeCo|St\.?\s*Lucia|Program/.test(item.text)) {
+              guestName = item.text;
+            }
+          });
+
+          // Extract programme name
+          var programme = '';
+          items.forEach(function(item) {
+            var m = item.text.match(/^(.+?)\s*Program(me)?\s*$/i);
+            if (m && m[1].length > 2) programme = m[1].trim();
+          });
+          if (!programme) {
+            items.forEach(function(item) {
+              if (/^(Master Detox|Green Salad|Green Juice|Water Fasting|Low Calorie|Intermittent Fasting|Ketogenic|Mental Wellness|Get Fit)/i.test(item.text)) {
+                programme = item.text.replace(/\s*Program(me)?\s*$/i, '').trim();
+              }
+            });
+          }
+
+          // Column boundaries from day headers
+          var timeColMax = dayHeaders[0].x - 10;
+          var colBounds = dayHeaders.map(function(dh, i) {
+            return { date: dh.date, left: dh.x - 10, right: i < dayHeaders.length - 1 ? dayHeaders[i + 1].x - 10 : 9999 };
+          });
+
+          // Time slots: HH:MM items in the time column, below header
+          var headerY = dayHeaders[0].y;
+          var timeSlots = [];
+          items.forEach(function(item) {
+            if (item.x < timeColMax && item.y > headerY && /^\d{2}:\d{2}$/.test(item.text)) {
+              // Deduplicate: skip if same time within 8px y
+              var dup = timeSlots.some(function(ts) { return ts.time === item.text && Math.abs(ts.y - item.y) < 8; });
+              if (!dup) timeSlots.push({ time: item.text, y: item.y });
+            }
+          });
+          timeSlots.sort(function(a, b) { return a.y - b.y; });
+
+          // Build schedule grid
+          var schedule = {};
+          colBounds.forEach(function(col) { schedule[col.date] = []; });
+
+          for (var ti = 0; ti < timeSlots.length; ti++) {
+            var yStart = timeSlots[ti].y - 5;
+            var yEnd = ti < timeSlots.length - 1 ? timeSlots[ti + 1].y - 5 : yStart + 40;
+
+            colBounds.forEach(function(col) {
+              var cellTexts = items.filter(function(item) {
+                return item.x >= col.left && item.x < col.right && item.y >= yStart && item.y < yEnd;
+              });
+              if (cellTexts.length > 0) {
+                cellTexts.sort(function(a, b) { return a.y - b.y || a.x - b.x; });
+                var name = cellTexts.map(function(t) { return t.text; }).join(' ').replace(/\s+/g, ' ').trim();
+                if (name && name.length > 1) {
+                  schedule[col.date].push({ time: timeSlots[ti].time, name: name, type: inferActivityType(name) });
+                }
+              }
+            });
+          }
+
+          // Sort by time within each day
+          Object.keys(schedule).forEach(function(date) {
+            schedule[date].sort(function(a, b) { return a.time.localeCompare(b.time); });
+          });
+
+          var days = colBounds.map(function(c) { return c.date; }).sort();
+          return { guestName: guestName, programme: programme, days: days, schedule: schedule };
+        });
+      });
+    });
+  }
+
+  function buildUploadZone(pane, inputs, manualSchedule, manualPane, manualTabBtn, uploadTabBtn) {
+    clearEl(pane);
+    var pdfFileInput = el('input', { type: 'file', accept: '.pdf', style: 'display:none' });
+    var zone = el('div', { className: 'upload-zone' });
+    zone.appendChild(el('div', { className: 'upload-zone-icon' }, [svgIcon(ICONS.upload, 40)]));
+    zone.appendChild(el('div', { className: 'upload-zone-text', textContent: 'Drop programme PDF here or click to browse' }));
+    zone.appendChild(el('div', { className: 'upload-zone-sub', textContent: 'Supports TheLifeCo programme plan PDFs' }));
+    zone.appendChild(pdfFileInput);
+
+    function handleFile(file) {
+      if (!file || file.type !== 'application/pdf') { showAdminToast('Please select a PDF file.'); return; }
+      if (typeof pdfjsLib === 'undefined') { showAdminToast('PDF library not loaded. Check your internet connection.'); return; }
+      handlePDFUpload(file, pane, inputs, manualSchedule, manualPane, manualTabBtn, uploadTabBtn);
+    }
+
+    zone.addEventListener('click', function() { pdfFileInput.click(); });
+    zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', function() { zone.classList.remove('drag-over'); });
+    zone.addEventListener('drop', function(e) { e.preventDefault(); zone.classList.remove('drag-over'); handleFile(e.dataTransfer.files[0]); });
+    pdfFileInput.addEventListener('change', function() { handleFile(pdfFileInput.files[0]); pdfFileInput.value = ''; });
+    pane.appendChild(zone);
+  }
+
+  function handlePDFUpload(file, pane, inputs, manualSchedule, manualPane, manualTabBtn, uploadTabBtn) {
+    clearEl(pane);
+    var status = el('div', { style: 'padding:30px;text-align:center' });
+    status.appendChild(el('div', { className: 'spinner' }));
+    status.appendChild(el('div', { style: 'margin-top:12px;color:var(--text-secondary);font-size:0.88rem', textContent: 'Parsing "' + file.name + '"...' }));
+    pane.appendChild(status);
+
+    parseProgrammePDF(file).then(function(result) {
+      if (!result || !result.days || result.days.length === 0) {
+        clearEl(pane);
+        pane.appendChild(el('div', { style: 'padding:20px;text-align:center' }, [
+          el('div', { style: 'color:var(--red);font-weight:600;margin-bottom:8px', textContent: 'Could not parse schedule from this PDF.' }),
+          el('div', { style: 'color:var(--text-secondary);font-size:0.85rem;margin-bottom:16px', textContent: 'Make sure it is a TheLifeCo programme plan PDF with a time/day grid.' })
+        ]));
+        var retryBtn = el('button', { className: 'btn btn-outline', textContent: 'Try Another PDF' });
+        retryBtn.addEventListener('click', function() { buildUploadZone(pane, inputs, manualSchedule, manualPane, manualTabBtn, uploadTabBtn); });
+        pane.appendChild(retryBtn);
+        return;
+      }
+
+      // Auto-fill form fields if empty
+      if (result.guestName && inputs.firstName && !inputs.firstName.value) {
+        var parts = result.guestName.split(/\s+/);
+        if (parts.length >= 2) { inputs.firstName.value = parts[0]; inputs.lastName.value = parts.slice(1).join(' '); }
+      }
+      if (result.programme && inputs.programme) {
+        var opts = inputs.programme.querySelectorAll ? inputs.programme.querySelectorAll('option') : [];
+        for (var i = 0; i < opts.length; i++) {
+          if (opts[i].value.toLowerCase() === result.programme.toLowerCase() ||
+              opts[i].value.toLowerCase().indexOf(result.programme.toLowerCase()) >= 0) {
+            inputs.programme.value = opts[i].value; break;
+          }
+        }
+      }
+      if (result.days[0] && inputs.checkIn && !inputs.checkIn.value) inputs.checkIn.value = result.days[0];
+      if (inputs.duration) inputs.duration.value = String(result.days.length);
+
+      renderPDFPreview(pane, result, file.name, inputs, manualSchedule, manualPane, manualTabBtn, uploadTabBtn);
+    }).catch(function(err) {
+      clearEl(pane);
+      pane.appendChild(el('div', { style: 'padding:20px;color:var(--red);text-align:center', textContent: 'Error parsing PDF: ' + err.message }));
+      var retryBtn = el('button', { className: 'btn btn-outline', textContent: 'Try Again', style: 'margin-top:12px' });
+      retryBtn.addEventListener('click', function() { buildUploadZone(pane, inputs, manualSchedule, manualPane, manualTabBtn, uploadTabBtn); });
+      pane.appendChild(retryBtn);
+    });
+  }
+
+  function renderPDFPreview(pane, result, filename, inputs, manualSchedule, manualPane, manualTabBtn, uploadTabBtn) {
+    clearEl(pane);
+    var typeColors = { group: 'var(--gray)', food: 'var(--green)', clinic: 'var(--orange)', extra: 'var(--teal)' };
+    var typeLabels = { group: 'Group', food: 'Food/Drink', clinic: 'Clinic', extra: 'Extra' };
+
+    // Success info
+    var info = el('div', { className: 'parse-step' });
+    var titleRow = el('div', { className: 'parse-step-title' });
+    titleRow.appendChild(el('span', { className: 'parse-step-check', textContent: '\u2713 ' }));
+    titleRow.appendChild(document.createTextNode('PDF Parsed Successfully'));
+    info.appendChild(titleRow);
+
+    var totalActs = 0;
+    result.days.forEach(function(d) { totalActs += (result.schedule[d] || []).length; });
+
+    var details = [
+      result.guestName ? 'Guest: ' + result.guestName : null,
+      result.programme ? 'Programme: ' + result.programme : null,
+      result.days.length + ' days (' + formatDate(result.days[0]) + ' \u2014 ' + formatDate(result.days[result.days.length - 1]) + ')',
+      totalActs + ' activities detected'
+    ].filter(Boolean);
+    details.forEach(function(d) {
+      info.appendChild(el('div', { style: 'font-size:0.85rem;color:var(--text-secondary);margin-top:2px', textContent: d }));
+    });
+
+    // Color legend
+    var legend = el('div', { style: 'display:flex;gap:14px;margin-top:10px;flex-wrap:wrap' });
+    ['group','food','clinic','extra'].forEach(function(t) {
+      var item = el('div', { style: 'display:flex;align-items:center;gap:5px;font-size:0.78rem;color:var(--text-secondary)' });
+      item.appendChild(el('span', { style: 'width:8px;height:8px;border-radius:50%;background:' + typeColors[t] }));
+      item.appendChild(document.createTextNode(typeLabels[t]));
+      legend.appendChild(item);
+    });
+    info.appendChild(legend);
+    pane.appendChild(info);
+
+    // Schedule preview by day
+    result.days.forEach(function(date, idx) {
+      var acts = result.schedule[date] || [];
+      if (acts.length === 0) return;
+      var dayEl = el('div', { className: 'schedule-day' });
+      var dayLabel = new Date(date + 'T12:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+      dayEl.appendChild(el('div', { className: 'schedule-day-title', textContent: 'Day ' + (idx + 1) + ' \u2014 ' + dayLabel + ' (' + acts.length + ' items)' }));
+      acts.forEach(function(act) {
+        var row = el('div', { style: 'display:flex;align-items:center;gap:8px;padding:3px 0;font-size:0.82rem' });
+        row.appendChild(el('span', { style: 'color:var(--text-muted);width:42px;flex-shrink:0;font-family:monospace;font-size:0.8rem', textContent: act.time }));
+        row.appendChild(el('span', { style: 'width:8px;height:8px;border-radius:50%;flex-shrink:0;background:' + (typeColors[act.type] || typeColors.group) }));
+        row.appendChild(el('span', { style: 'color:var(--text)', textContent: act.name }));
+        dayEl.appendChild(row);
+      });
+      pane.appendChild(dayEl);
+    });
+
+    // Action buttons
+    var btnRow = el('div', { style: 'margin-top:16px;display:flex;gap:10px;flex-wrap:wrap' });
+    var useBtn = el('button', { className: 'btn btn-primary' });
+    useBtn.appendChild(svgIcon(ICONS.check, 16));
+    useBtn.appendChild(document.createTextNode(' Use This Schedule'));
+    useBtn.addEventListener('click', function() {
+      // Convert to manual schedule format
+      manualSchedule.length = 0;
+      result.days.forEach(function(date, idx) {
+        var acts = (result.schedule[date] || []).map(function(a) { return { time: a.time, name: a.name, type: a.type }; });
+        manualSchedule.push({ title: 'Day ' + (idx + 1), activities: acts });
+      });
+      if (inputs.duration) inputs.duration.value = String(result.days.length);
+      buildManualScheduleUI(manualPane, manualSchedule, inputs);
+      manualTabBtn.classList.add('active'); uploadTabBtn.classList.remove('active');
+      manualPane.style.display = 'block'; pane.style.display = 'none';
+      showAdminToast('Schedule imported from PDF \u2014 review and adjust in the builder.');
+    });
+    btnRow.appendChild(useBtn);
+
+    var retryBtn = el('button', { className: 'btn btn-outline' });
+    retryBtn.appendChild(svgIcon(ICONS.upload, 16));
+    retryBtn.appendChild(document.createTextNode(' Upload Different PDF'));
+    retryBtn.addEventListener('click', function() { buildUploadZone(pane, inputs, manualSchedule, manualPane, manualTabBtn, uploadTabBtn); });
+    btnRow.appendChild(retryBtn);
+    pane.appendChild(btnRow);
+
+    // Log it
+    addLog('PDF Uploaded', 'Parsed "' + filename + '": ' + totalActs + ' activities across ' + result.days.length + ' days');
+    store.pdfHistory.unshift({ filename: filename, guest: result.guestName || '(auto-detected)', uploadedAt: new Date().toISOString(), status: 'parsed' });
+  }
 
   function getProgrammeSchedule(programme) {
     var schedules = {
